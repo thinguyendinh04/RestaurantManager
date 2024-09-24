@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.dinhthi2004.restaurantmanager.presentation.screen.BottomNavigation
 import com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen.LoginScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.auth.WelcomeScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.employee.EmployeeScreen
@@ -12,6 +13,7 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.MenuMana
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.addnewfood.AddNewFoodScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.restaurant_management.RestaurantManagerScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_report.RevenueReportScreen
+import com.dinhthi2004.restaurantmanager.uilts.Route
 
 @Composable
 fun MyApp() {
@@ -32,6 +34,8 @@ fun MyApp() {
         //Admin
         composable(Routes.MENU_MANAGEMENT_ADMIN) { MenuManagementScreen(navController) }
         composable(Routes.ADD_NEW_FOOD) { AddNewFoodScreen(navController) }
+        //Manager
+        composable(Route.BottomNavigation.screen){ BottomNavigation(navController) }
 
     }
 }
