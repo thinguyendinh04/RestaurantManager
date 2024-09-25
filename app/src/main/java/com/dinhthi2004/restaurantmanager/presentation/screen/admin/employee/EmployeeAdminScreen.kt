@@ -45,7 +45,7 @@ import com.dinhthi2004.restaurantmanager.R
 @Composable
 fun EmployeeScreen(
     navController: NavController,
-    onAddnewClick: () -> Unit
+
 ) {
     var searchQuery by remember { mutableStateOf("") }
 
@@ -67,7 +67,7 @@ fun EmployeeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddnewClick
+                onClick = {}
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_add),

@@ -97,4 +97,11 @@ dependencies {
 
     //Paging 3
     implementation("androidx.paging:paging-compose:3.2.1")
+    //icon
+    implementation("androidx.compose.material:material-icons-core:1.0.1")
+    implementation("androidx.compose.material:material-icons-extended:1.0.1")
+
+    //asyc image
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation ("androidx.compose.material3:material3:1.0.0")
 }
