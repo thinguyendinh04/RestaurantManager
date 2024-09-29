@@ -48,8 +48,6 @@ val employ = listOf(
     Employee(3, "Nguyen Van F", R.drawable.employee, "0975432170", 0, "Nhân Viên",3322.4,444.3),
     Employee(4, "Nguyen Van V", R.drawable.employee, "0975432176", 2, "Nhân Viên",3344.4,444.5),
     Employee(5, "Nguyen Van T", R.drawable.employee, "0975432174", 1, "Nhân Viên",999.777,444.7)
-
-
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

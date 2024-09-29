@@ -27,7 +27,10 @@ import androidx.compose.ui.unit.sp
 import com.dinhthi2004.restaurantmanager.R
 
 @Composable
-fun MenuItemCard(item: MenuItem, onDeleteClick: (MenuItem) -> Unit) {
+fun MenuItemCard(
+    item: MenuItem,
+    onDeleteClick: (MenuItem) -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,13 +42,13 @@ fun MenuItemCard(item: MenuItem, onDeleteClick: (MenuItem) -> Unit) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Image
             Image(
                 painter = painterResource(id = item.imageResId),
                 contentDescription = null,
                 modifier = Modifier
                     .size(80.dp)
-                    .padding(8.dp).clip(CircleShape),
+                    .padding(8.dp)
+                    .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
 

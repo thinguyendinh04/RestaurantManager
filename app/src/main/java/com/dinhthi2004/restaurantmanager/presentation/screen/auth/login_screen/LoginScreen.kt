@@ -1,38 +1,30 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import android.widget.Toast
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen.component.SignInButton
 import com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen.component.TextEmailInput
 import com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen.component.TextPasswordInput
+import com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel = viewModel()
+) {
+    var emailState by remember { mutableStateOf("") }
+    var passwordState by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     Scaffold(
@@ -62,116 +54,84 @@ fun LoginScreen(navController: NavController) {
             )
 
             Spacer(modifier = Modifier.height(30.dp))
-            TextEmailInput()
+
+            // Email Input Field
+            TextEmailInput(
+                email = emailState,
+                onEmailChange = { emailState = it }
+            )
+
+            when {
+                viewModel.emptyEmailError.value -> {
+                    Text(
+                        text = "Email cannot be empty",
+                        color = Color.Red,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+                viewModel.emailError.value -> {
+                    Text(
+                        text = "Please enter a valid email address",
+                        color = Color.Red,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
-            TextPasswordInput()
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 5.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Text(
-                    text = "Forgot password?",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        color = Color.Blue
+            // Password Input Field
+            TextPasswordInput(
+                password = passwordState,
+                onPasswordChange = { passwordState = it },
+                passwordVisible = passwordVisible,
+                onPasswordVisibilityChange = { passwordVisible = !passwordVisible }
+            )
+
+            when {
+                viewModel.emptyPasswordError.value -> {
+                    Text(
+                        text = "Password cannot be empty",
+                        color = Color.Red,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 8.dp)
                     )
+                }
+                viewModel.passwordError.value -> {
+                    Text(
+                        text = "Password must be at least 6 characters long",
+                        color = Color.Red,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+            }
+
+            if (viewModel.invalidCredentialsError.value) {
+                Text(
+                    text = "Invalid email or password",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(top = 8.dp)
                 )
             }
 
             Spacer(modifier = Modifier.height(30.dp))
-            SignInButton(navController = navController)
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "OR CONTINUE WITH",
-                    style = MaterialTheme.typography.titleMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = 16.dp)
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 45.dp),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    IconButton(
-                        onClick = {
-
-                        },
-                        modifier = Modifier.size(56.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_google),
-                            contentDescription = "Google",
-                            tint = Color.Red,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-
-                    IconButton(
-                        onClick = {
-
-                        },
-                        modifier = Modifier.size(56.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_facebook),
-                            contentDescription = "Facebook",
-                            tint = Color.Gray,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-
-                    IconButton(
-                        onClick = {
-
-                        },
-                        modifier = Modifier.size(56.dp),
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_apple),
-                            contentDescription = "Apple",
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(80.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(), Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Don't have an account? ",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = 16.sp
-                        ),
-                        color = Color.Gray,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
-                    Text(
-                        text = "Sign up",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = 18.sp,
-                            color = Color.Blue
-                        ),
-                        modifier = Modifier.clickable(onClick = {
-
-                        })
-                    )
+            // Sign In Button
+            SignInButton {
+                viewModel.handleLogin(
+                    email = emailState,
+                    password = passwordState
+                ) { route ->
+                    navController.navigate(route)
+                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
                 }
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

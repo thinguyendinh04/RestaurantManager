@@ -18,7 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun SignInButton(navController: NavController) {
+fun SignInButton(
+    onLoginClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,7 +30,7 @@ fun SignInButton(navController: NavController) {
     ) {
         Button(
             onClick = {
-                navController.navigate("home_admin_screen")
+                onLoginClick()  // Trigger the login callback
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00449A)),
             shape = RoundedCornerShape(6.dp),

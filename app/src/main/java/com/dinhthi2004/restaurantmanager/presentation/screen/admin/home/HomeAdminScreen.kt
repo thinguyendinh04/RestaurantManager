@@ -9,10 +9,11 @@ import com.dinhthi2004.restaurantmanager.navigation.bottomnav.BottomBar
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.home.component.HomeHeader
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.home.component.MenuManagement
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.home.component.RevenueReports
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.home.component.TextFieldSearch
 
 @Composable
-fun HomeAdminScreen(navController: NavController) {
+fun HomeAdminScreen(
+    navController: NavController
+) {
 
     Scaffold(
         bottomBar = {
@@ -25,8 +26,7 @@ fun HomeAdminScreen(navController: NavController) {
                 .padding(it)
         ) {
             HomeHeader()
-            TextFieldSearch()
-            RevenueReports()
+            RevenueReports(navController)
             MenuManagement(navController)
         }
     }

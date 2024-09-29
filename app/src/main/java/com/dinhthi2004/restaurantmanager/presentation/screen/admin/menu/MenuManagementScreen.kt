@@ -11,19 +11,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.sampleItems
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.CategoryRow
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.MenuItemCard
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuManagementScreen(navController: NavController) {
-    var searchQuery by remember { mutableStateOf("") }
+fun MenuManagementScreen(
+    navController: NavController,
+    viewModel: MenuManagementViewModel = viewModel()
+) {
     val showDialog = remember { mutableStateOf(false) }
-    var selectedCategory by remember { mutableStateOf("Tất cả") }
 
     Scaffold(
         topBar = {
@@ -58,8 +59,8 @@ fun MenuManagementScreen(navController: NavController) {
                 .padding(it)
         ) {
             OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
+                value = viewModel.searchQuery.value,
+                onValueChange = { viewModel.updateSearchQuery(it) },
                 label = { Text("Search") },
                 leadingIcon = {
                     Icon(
@@ -74,20 +75,13 @@ fun MenuManagementScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-
             CategoryRow(
-                selectedCategory = selectedCategory,
-                onCategorySelected = { selectedCategory = it })
+                selectedCategory = viewModel.selectedCategory.value,
+                onCategorySelected = { viewModel.updateSelectedCategory(it) })
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            val filteredItems = sampleItems.filter { item ->
-                (selectedCategory == "Tất cả" || item.category == selectedCategory) &&
-                        (searchQuery.isEmpty() || item.name.contains(
-                            searchQuery,
-                            ignoreCase = true
-                        ))
-            }
+            val filteredItems = viewModel.filteredItems
 
             if (filteredItems.isEmpty()) {
                 Box(
@@ -99,16 +93,15 @@ fun MenuManagementScreen(navController: NavController) {
                 }
             }
 
-
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(filteredItems) { item ->
                     MenuItemCard(item, onDeleteClick = {
                         showDialog.value = true
+                        viewModel.deleteMenuItem(item)
                     })
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
-
 
             if (showDialog.value) {
                 AlertDialog(

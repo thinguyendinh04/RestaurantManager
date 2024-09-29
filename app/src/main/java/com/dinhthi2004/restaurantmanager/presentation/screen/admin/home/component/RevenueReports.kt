@@ -1,5 +1,6 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.admin.home.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,9 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.dinhthi2004.restaurantmanager.navigation.Routes
 
 @Composable
-fun RevenueReports() {
+fun RevenueReports(
+    navController: NavController
+) {
     var title by remember { mutableStateOf("Thống kê doanh thu") }
     var money by remember { mutableStateOf("49.000.000 VND") }
     Surface(
@@ -55,7 +60,10 @@ fun RevenueReports() {
                     text = "📊",
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontSize = 32.sp
-                    )
+                    ),
+                    modifier = Modifier.clickable {
+                        navController.navigate(Routes.REVENUE_REPORTS_ADMIN)
+                    }
                 )
             }
             BasicText(

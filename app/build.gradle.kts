@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -76,7 +77,7 @@ dependencies {
 
     //Room Database
     implementation("androidx.room:room-runtime:2.6.0")
-    kapt("androidx.room:room-compiler:2.6.0")  // Sử dụng kapt để tạo mã tự động
+    kapt("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
 
     //Dagger - Hilt
@@ -97,11 +98,12 @@ dependencies {
 
     //Paging 3
     implementation("androidx.paging:paging-compose:3.2.1")
+
     //icon
     implementation("androidx.compose.material:material-icons-core:1.0.1")
     implementation("androidx.compose.material:material-icons-extended:1.0.1")
 
     //asyc image
     implementation("io.coil-kt:coil-compose:2.6.0")
-    implementation ("androidx.compose.material3:material3:1.0.0")
+    implementation("androidx.compose.material3:material3:1.0.0")
 }

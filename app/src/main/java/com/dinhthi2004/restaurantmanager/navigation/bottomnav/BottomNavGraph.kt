@@ -4,10 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.employee.EmployeeScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.home.HomeAdminScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.restaurant_management.RestaurantManagerScreen
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_report.RevenueReportScreen
+import com.dinhthi2004.restaurantmanager.ui.screen.EmployeeScreen
+import com.dinhthi2004.restaurantmanager.ui.screen.RevenueReportScreen
+
 
 @Composable
 fun BottomNavGraph(

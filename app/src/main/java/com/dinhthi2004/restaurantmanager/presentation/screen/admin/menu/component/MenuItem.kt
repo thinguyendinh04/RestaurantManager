@@ -12,16 +12,15 @@ data class MenuItem(
 
 
 val sampleItems = listOf(
-    MenuItem("Tôm nướng phô mai", "1.200.000đ", "Hải sản", R.drawable.img1),
-    MenuItem("Mì Ý sốt kem", "250.000đ", "Best seller", R.drawable.img2),
-    MenuItem("Salad cá hồi", "300.000đ", "Khác", R.drawable.img3),
-    MenuItem("Tôm nướng phô mai", "1.200.000đ", "Hải sản", R.drawable.img2),
-    MenuItem("Tôm nướng phô mai", "1.200.000đ", "Hải sản", R.drawable.img1),
-    MenuItem("Mì Ý sốt kem", "250.000đ", "Best seller", R.drawable.img2),
-    MenuItem("Salad cá hồi", "300.000đ", "Khác", R.drawable.img3),
-    MenuItem("Tôm nướng phô mai", "1.200.000đ", "Hải sản", R.drawable.img2),
-    MenuItem("Tôm nướng phô mai", "1.200.000đ", "Hải sản", R.drawable.img1),
-    MenuItem("Mì Ý sốt kem", "250.000đ", "Best seller", R.drawable.img2),
-    MenuItem("Salad cá hồi", "300.000đ", "Khác", R.drawable.img3),
-    MenuItem("Tôm nướng phô mai", "1.200.000đ", "Hải sản", R.drawable.img2)
+    MenuItem("Tôm hùm bỏ lò", "1.500.000đ", "Hải sản", R.drawable.img1),
+    MenuItem("Mì Ý sốt cà chua", "200.000đ", "Best seller", R.drawable.img2),
+    MenuItem("Salad ức gà", "280.000đ", "Salad", R.drawable.img3),
+    MenuItem("Bò nướng tiêu đen", "800.000đ", "Món chính", R.drawable.thit_bo),
+    MenuItem("Cơm chiên hải sản", "350.000đ", "Hải sản", R.drawable.alaska),
+    MenuItem("Súp tôm hùm", "600.000đ", "Khai vị", R.drawable.cua),
+    MenuItem("Sườn nướng mật ong", "750.000đ", "Món chính", R.drawable.thit_bo),
+    MenuItem("Cá hồi sốt bơ tỏi", "900.000đ", "Hải sản", R.drawable.img1),
+    MenuItem("Lẩu Thái hải sản", "1.200.000đ", "Best seller", R.drawable.img3),
+    MenuItem("Gà chiên giòn", "320.000đ", "Món chính", R.drawable.img3)
+
 )

@@ -6,13 +6,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,12 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
+import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.sampleItems
 
 @Composable
 fun MenuManagement(navController: NavController) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.Start
     ) {
@@ -60,11 +65,11 @@ fun MenuManagement(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn {
-            items(3) {
-                MenuItem(
-                    name = "Tôm nướng phô mai",
-                    price = "1.200.000 đ",
-                    imageUrl = "http://"
+            items(sampleItems.take(5)) { menuItem ->
+                MenuItemCard(
+                    name = menuItem.name,
+                    price = menuItem.price,
+                    imageUrl = menuItem.imageResId
                 )
             }
         }
@@ -73,7 +78,7 @@ fun MenuManagement(navController: NavController) {
 }
 
 @Composable
-fun MenuItem(name: String, price: String, imageUrl: String) {
+fun MenuItemCard(name: String, price: String, imageUrl: Int) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -86,7 +91,7 @@ fun MenuItem(name: String, price: String, imageUrl: String) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(R.drawable.ic_launcher_foreground),
+                painter = painterResource(imageUrl),
                 contentDescription = null,
                 modifier = Modifier.size(64.dp)
             )
