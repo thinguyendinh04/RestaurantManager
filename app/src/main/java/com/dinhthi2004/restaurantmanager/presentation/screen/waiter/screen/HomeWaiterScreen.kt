@@ -33,15 +33,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.items
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.MenuManagementScreen
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.CategoryRow
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.MenuItemCard
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.sampleItems
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.CategoryProduct
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.ItemOrderProduct
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.TopBarComponent
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.ListData
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.ListData
 
 @Composable
 fun HomeWaiterScreen(navController: NavHostController) {
