@@ -1,7 +1,9 @@
-package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model
+package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.BarItem
 
 class NavigationBarModel {
     val barItems = listOf(

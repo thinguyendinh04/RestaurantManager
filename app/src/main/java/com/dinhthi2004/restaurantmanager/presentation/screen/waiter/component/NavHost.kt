@@ -1,13 +1,12 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component
 
+import TableWaiterScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.HomeWaiterScreen
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.OrderWaiterScreen
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.SettingWaiterScreen
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.TableWaiterScreen
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.*
+
 
 @Composable
 fun NavHostComponent(navController: NavHostController) {
@@ -22,7 +21,7 @@ fun NavHostComponent(navController: NavHostController) {
             TableWaiterScreen(navController) // Điều hướng tới TableWaiterScreen
         }
         composable("setting") {
-            SettingWaiterScreen(navController) // Điều hướng tới SettingWaiterScreen
+            SetingWaiterScreen(navController) // Điều hướng tới SettingWaiterScreen
         }
     }
 }

@@ -36,7 +36,7 @@ import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.CategoryProduct
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.ItemOrderProduct
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.TopBarComponent
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.ListData
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.ListData
 
 @Composable
 fun HomeWaiterScreen(navController: NavHostController) {
@@ -189,6 +189,6 @@ fun HomeWaiterScreen(navController: NavHostController) {
                     )
                 }
             }
+        }
     }
-}
 }

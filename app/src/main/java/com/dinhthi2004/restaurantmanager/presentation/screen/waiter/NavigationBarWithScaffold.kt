@@ -1,9 +1,7 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.waiter
 
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.NavigationBarModel
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.NavigationBarModel
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier

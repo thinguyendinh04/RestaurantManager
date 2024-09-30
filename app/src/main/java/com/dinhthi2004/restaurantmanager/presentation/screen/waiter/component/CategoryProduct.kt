@@ -18,7 +18,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CategoryProduct(selectedCategory: String, onCategorySelected: (String) -> Unit) {
     LazyRow(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 15.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         val categoriesProduct = listOf("Tất cả", "Best seller", "Hải sản", "Khác")

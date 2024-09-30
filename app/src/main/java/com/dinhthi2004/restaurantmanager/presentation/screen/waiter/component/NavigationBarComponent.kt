@@ -40,7 +40,10 @@ fun NavigationBarComponent(
                     }
                 },
                 label = {
-                    Text(text = barItem.title, color = if (selected) Color(0xfffe763e) else Color.Unspecified)
+                    Text(
+                        text = barItem.title,
+                        color = if (selected) Color(0xfffe763e) else Color.Unspecified
+                    )
                 },
                 alwaysShowLabel = selected,
                 colors = NavigationBarItemDefaults.colors(

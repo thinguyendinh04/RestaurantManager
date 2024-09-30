@@ -1,4 +1,4 @@
-package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model
+package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database
 
 import com.dinhthi2004.restaurantmanager.R
 
@@ -8,7 +8,6 @@ data class dataProduct(
     val category: String,
     val imageResId: Int
 )
-
 
 
 val ListData = listOf(

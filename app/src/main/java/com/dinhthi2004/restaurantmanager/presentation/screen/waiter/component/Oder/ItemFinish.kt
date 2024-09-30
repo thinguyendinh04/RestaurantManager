@@ -1,4 +1,4 @@
-package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Oder
+package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Order
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.Order
 
 @Composable
-fun OrderItemRow(order: Order, onClick: () -> Unit, onCancel: () -> Unit, onComplete: () -> Unit) {
+fun FinishedOrderItem(order: Order, onClick: () -> Unit) {
     val totalAmount = order.items.sumOf { it.price * it.quantity }
     Card(
         modifier = Modifier
@@ -43,33 +43,12 @@ fun OrderItemRow(order: Order, onClick: () -> Unit, onCancel: () -> Unit, onComp
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Tổng tiền:", style = MaterialTheme.typography.titleMedium)
-                Text("$totalAmount VNĐ", style = MaterialTheme.typography.titleMedium, color = Color(
-                    0x0FFF0000
-                )
-                )
+                Text("$totalAmount VNĐ", style = MaterialTheme.typography.titleMedium, color = Color(0x0FFF0000))
             }
 
+            // Spacer thêm để tạo khoảng cách dưới cùng của card
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Nút Hoàn thành và Hủy
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                Button(
-                    onClick = onCancel,
-                    colors = ButtonDefaults.buttonColors(
-                        Color(0xFFFF0000)
-                    )
-                ) {
-                    Text("Hủy")
-                }
-                Button(
-                    onClick = onComplete,
-                    colors = ButtonDefaults.buttonColors(
-                        Color.Green
-                    )
-                ) {
-                    Text("Hoàn thành")
-                }
-            }
         }
     }
 }
+

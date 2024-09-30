@@ -86,19 +86,22 @@ fun BottomNavigation(navController: NavHostController) {
 fun MyBottomAppBar(navController: NavHostController) {
 
     val navigationController = rememberNavController()
-    val coroutineScope= rememberCoroutineScope()
-    val drawerState= rememberDrawerState(initialValue = DrawerValue.Closed)
-    val context= LocalContext.current.applicationContext
+    val coroutineScope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val context = LocalContext.current.applicationContext
     val selected = remember {
         mutableStateOf(Icons.Default.Home)
     }
     val selectedItem = remember { mutableStateOf(Route.HomeManager.screen) }
     ModalNavigationDrawer(
-        drawerState=drawerState,
+        drawerState = drawerState,
         gesturesEnabled = true,
         drawerContent = {
             ModalDrawerSheet {
-                Box(modifier = Modifier.background(Color.White).fillMaxWidth().height(100.dp)) {
+                Box(modifier = Modifier
+                    .background(Color.White)
+                    .fillMaxWidth()
+                    .height(100.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
@@ -131,116 +134,192 @@ fun MyBottomAppBar(navController: NavHostController) {
                         }
                     }
                 }
-                    Divider()
-                    NavigationDrawerItem(label = { Text(text = "Trang chủ",  color = if (selectedItem.value == Route.HomeManager.screen) Color(0xff2ACCCF) else Color(0xff565e6c))},
-                        icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "", tint = if (selectedItem.value == Route.HomeManager.screen) Color(0xff2ACCCF) else Color(0xff565e6c)) },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                            selectedItem.value = Route.HomeManager.screen
-                            navigationController.navigate(Route.HomeManager.screen) {
-                                popUpTo(0)
-                            }
-                        })
-                    NavigationDrawerItem(label = { Text(
-                            text = "Quản lí Bàn Ăn",
-                        color = if (selectedItem.value == Route.HomeTable.screen) Color(0xff2ACCCF) else Color(0xff565e6c))
-
+                Divider()
+                NavigationDrawerItem(label = {
+                    Text(
+                        text = "Trang chủ",
+                        color = if (selectedItem.value == Route.HomeManager.screen) Color(
+                            0xff2ACCCF
+                        ) else Color(
+                            0xff565e6c
+                        )
+                    )
+                },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "",
+                            tint = if (selectedItem.value == Route.HomeManager.screen) Color(
+                                0xff2ACCCF
+                            ) else Color(
+                                0xff565e6c
+                            )
+                        )
                     },
+                    selected = false,
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        selectedItem.value = Route.HomeManager.screen
+                        navigationController.navigate(Route.HomeManager.screen) {
+                            popUpTo(0)
+                        }
+                    })
+                NavigationDrawerItem(label = {
+                    Text(
+                        text = "Quản lí Bàn Ăn",
+                        color = if (selectedItem.value == Route.HomeTable.screen) Color(
+                            0xff2ACCCF
+                        ) else Color(0xff565e6c)
+                    )
 
-                        icon = { Icon(imageVector = Icons.Default.TableBar, contentDescription = "",
-                            tint = if (selectedItem.value == Route.HomeTable.screen) Color(0xff2ACCCF) else Color(0xff565e6c)) },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                            selectedItem.value = Route.HomeTable.screen
-                            navigationController.navigate(Route.HomeTable.screen) {
-                                popUpTo(0)
-                            }
-                        })
-                    NavigationDrawerItem(label = {
-                        Text(
-                            text = "Quản lí đơn hàng",
-                            color = if (selectedItem.value == Route.HomeOrder.screen) Color(0xff2ACCCF) else Color(0xff565e6c))
+                },
 
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.TableBar, contentDescription = "",
+                            tint = if (selectedItem.value == Route.HomeTable.screen) Color(
+                                0xff2ACCCF
+                            ) else Color(0xff565e6c)
+                        )
                     },
+                    selected = false,
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        selectedItem.value = Route.HomeTable.screen
+                        navigationController.navigate(Route.HomeTable.screen) {
+                            popUpTo(0)
+                        }
+                    })
+                NavigationDrawerItem(label = {
+                    Text(
+                        text = "Quản lí đơn hàng",
+                        color = if (selectedItem.value == Route.HomeOrder.screen) Color(
+                            0xff2ACCCF
+                        ) else Color(0xff565e6c)
+                    )
 
-                        icon = { Icon(imageVector = Icons.Default.ShoppingBag, contentDescription = "",
-                            tint = if (selectedItem.value == Route.HomeOrder.screen) Color(0xff2ACCCF) else Color(0xff565e6c)) },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                            selectedItem.value = Route.HomeOrder.screen
-                            navigationController.navigate(Route.HomeOrder.screen) {
-                                popUpTo(0)
-                            }
-                        })
-                    NavigationDrawerItem(label = {
-                        Text(
-                            text = "Quản lí nguyên liệu",
-                            color = if (selectedItem.value == Route.HomeIngredients.screen) Color(0xff2ACCCF) else Color(0xff565e6c))
+                },
 
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingBag, contentDescription = "",
+                            tint = if (selectedItem.value == Route.HomeOrder.screen) Color(
+                                0xff2ACCCF
+                            ) else Color(0xff565e6c)
+                        )
                     },
-                        icon = { Icon(imageVector = Icons.Default.Restaurant, contentDescription = "",
-                            tint = if (selectedItem.value == Route.HomeIngredients.screen) Color(0xff2ACCCF) else Color(0xff565e6c)) },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                            selectedItem.value = Route.HomeIngredients.screen
-                            navigationController.navigate(Route.HomeIngredients.screen) {
-                                popUpTo(0)
-                            }
-                        })
-                    NavigationDrawerItem(label = { Text(text = "Cài đặt", color = if (selectedItem.value == Route.HomeSetting.screen) Color(0xff2ACCCF) else Color(0xff565e6c)) },
+                    selected = false,
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        selectedItem.value = Route.HomeOrder.screen
+                        navigationController.navigate(Route.HomeOrder.screen) {
+                            popUpTo(0)
+                        }
+                    })
+                NavigationDrawerItem(label = {
+                    Text(
+                        text = "Quản lí nguyên liệu",
+                        color = if (selectedItem.value == Route.HomeIngredients.screen) Color(
+                            0xff2ACCCF
+                        ) else Color(0xff565e6c)
+                    )
 
-                        icon = { Icon(imageVector = Icons.Default.Settings, contentDescription = "",tint = if (selectedItem.value == Route.HomeSetting.screen) Color(0xff2ACCCF) else Color(0xff565e6c)) },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                            selectedItem.value = Route.HomeSetting.screen
-                            navigationController.navigate(Route.HomeSetting.screen) {
-                                popUpTo(0)
-                            }
-                        })
-                    NavigationDrawerItem(label = { Text(text = "Log Out",
-                        color = if (selectedItem.value == Route.HomeManager.screen) Color.Red else Color(0xff565e6c)) },
+                },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Restaurant, contentDescription = "",
+                            tint = if (selectedItem.value == Route.HomeIngredients.screen) Color(
+                                0xff2ACCCF
+                            ) else Color(0xff565e6c)
+                        )
+                    },
+                    selected = false,
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        selectedItem.value = Route.HomeIngredients.screen
+                        navigationController.navigate(Route.HomeIngredients.screen) {
+                            popUpTo(0)
+                        }
+                    })
+                NavigationDrawerItem(label = {
+                    Text(
+                        text = "Cài đặt",
+                        color = if (selectedItem.value == Route.HomeSetting.screen) Color(
+                            0xff2ACCCF
+                        ) else Color(
+                            0xff565e6c
+                        )
+                    )
+                },
 
-                        icon = { Icon(imageVector = Icons.Default.Logout, contentDescription = "",
-                            tint = if (selectedItem.value == Route.HomeManager.screen) Color.Red else Color(0xff565e6c)) },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                            selectedItem.value = Route.HomeManager.screen
-                            navigationController.navigate(Route.HomeManager.screen) {
-                                popUpTo(0)
-                            }
-                        })
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "",
+                            tint = if (selectedItem.value == Route.HomeSetting.screen) Color(
+                                0xff2ACCCF
+                            ) else Color(
+                                0xff565e6c
+                            )
+                        )
+                    },
+                    selected = false,
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        selectedItem.value = Route.HomeSetting.screen
+                        navigationController.navigate(Route.HomeSetting.screen) {
+                            popUpTo(0)
+                        }
+                    })
+                NavigationDrawerItem(label = {
+                    Text(
+                        text = "Log Out",
+                        color = if (selectedItem.value == Route.HomeManager.screen) Color.Red else Color(
+                            0xff565e6c
+                        )
+                    )
+                },
+
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Logout, contentDescription = "",
+                            tint = if (selectedItem.value == Route.HomeManager.screen) Color.Red else Color(
+                                0xff565e6c
+                            )
+                        )
+                    },
+                    selected = false,
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        selectedItem.value = Route.HomeManager.screen
+                        navigationController.navigate(Route.HomeManager.screen) {
+                            popUpTo(0)
+                        }
+                    })
 
 
-                }
+            }
 
 
         }
     ) {
 
 
-
-
         Scaffold(
             topBar = {
-                val coroutineScope= rememberCoroutineScope()
+                val coroutineScope = rememberCoroutineScope()
                 Column(Modifier.fillMaxWidth()) {
                     TopAppBar(
                         title = {
@@ -277,9 +356,9 @@ fun MyBottomAppBar(navController: NavHostController) {
                                 Spacer(modifier = Modifier.weight(1f))
                                 IconButton(
                                     onClick = {
-                                   coroutineScope.launch {
-                                       drawerState.open()
-                                   }
+                                        coroutineScope.launch {
+                                            drawerState.open()
+                                        }
 
                                     },
                                     modifier = Modifier

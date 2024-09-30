@@ -1,4 +1,5 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component
+
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -38,19 +39,19 @@ fun TopBarComponent(
 
     (if (showNavigationIcon) navigationIcon else null)?.let {
         CenterAlignedTopAppBar(
-        modifier = Modifier.windowInsetsPadding(topAppBarPadding.only(WindowInsetsSides.Top)),
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color(0xFFD57D7D),
-            titleContentColor = Color.White
-        ),
-        title = {
-            Text(
-                text = title,
-                overflow = TextOverflow.Ellipsis
-            )
-        },
-        navigationIcon = it,
-        actions = actions
-    )
+            modifier = Modifier.windowInsetsPadding(topAppBarPadding.only(WindowInsetsSides.Top)),
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(0xFFD57D7D),
+                titleContentColor = Color.White
+            ),
+            title = {
+                Text(
+                    text = title,
+                    overflow = TextOverflow.Ellipsis
+                )
+            },
+            navigationIcon = it,
+            actions = actions
+        )
     }
 }
