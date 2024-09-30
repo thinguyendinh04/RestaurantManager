@@ -14,7 +14,6 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.admin.home.componen
 fun HomeAdminScreen(
     navController: NavController
 ) {
-
     Scaffold(
         bottomBar = {
             BottomBar(navController = navController)

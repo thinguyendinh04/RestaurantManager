@@ -478,8 +478,6 @@ fun MyBottomAppBar(navController: NavHostController) {
         )
 
         { paddingValues ->
-
-
             NavHost(
                 navController = navigationController,
                 startDestination = Route.HomeManager.screen,

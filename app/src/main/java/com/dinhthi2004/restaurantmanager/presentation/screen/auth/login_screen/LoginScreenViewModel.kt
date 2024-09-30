@@ -35,14 +35,13 @@ class LoginViewModel : ViewModel() {
                 viewModelScope.launch {
                     val route = when (account.role) {
                         "Admin" -> "home_admin_screen"
-                        "Manager" -> "home_manager_screen"
+                        "Manager" -> "BottomNavigation"
                         "Waiter" -> "home_waiter_screen"
                         else -> "home_user_screen"
                     }
                     onLoginSuccess(route)
                 }
             } else {
-                // Set error for invalid credentials
                 invalidCredentialsError.value = true
             }
         }

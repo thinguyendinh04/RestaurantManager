@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.navigation.Routes
+import com.dinhthi2004.restaurantmanager.navigation.bottomnav.BottomBar
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.employee.EmployeeViewModel
 import com.dinhthi2004.restaurantmanager.ui.component.EmployeeCard
 
@@ -54,6 +55,9 @@ fun EmployeeScreen(
                     contentDescription = "Add Item"
                 )
             }
+        },
+        bottomBar = {
+            BottomBar(navController = navController)
         }
     ) {
         Column(

@@ -95,10 +95,11 @@ fun MenuManagementScreen(
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(filteredItems) { item ->
-                    MenuItemCard(item, onDeleteClick = {
-                        showDialog.value = true
-                        viewModel.deleteMenuItem(item)
-                    })
+                    MenuItemCard(item,
+                        onDeleteClick = {
+                            showDialog.value = true
+                            viewModel.deleteMenuItem(item)
+                        })
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
@@ -132,6 +133,7 @@ fun MenuManagementScreen(
                         Button(
                             onClick = {
                                 showDialog.value = false
+
                             }
                         ) {
                             Text("Xác nhận")

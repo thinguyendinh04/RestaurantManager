@@ -29,7 +29,7 @@ import com.dinhthi2004.restaurantmanager.R
 @Composable
 fun MenuItemCard(
     item: MenuItem,
-    onDeleteClick: (MenuItem) -> Unit
+    onDeleteClick: ()-> Unit
 ) {
     Card(
         modifier = Modifier
@@ -71,7 +71,7 @@ fun MenuItemCard(
 
             // Delete button
             IconButton(
-                onClick = { onDeleteClick(item) }
+                onClick = { onDeleteClick() }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_delete),

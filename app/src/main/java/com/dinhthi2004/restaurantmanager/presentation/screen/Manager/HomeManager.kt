@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -45,7 +47,7 @@ import com.dinhthi2004.restaurantmanager.uilts.Route
 data class NguyenLieu(
     val id: Int,
     val name: String,
-    val loai:String,
+    val loai: String,
     val image: Int,
     val ton: Int,
     val nhap: Int,
@@ -68,91 +70,91 @@ data class HoaDon(
     val price: Double,
     val items: List<Item>,
     val status: Int
-){
+) {
     fun calculateTotalPrice(): Double {
         return items.sumOf { it.price }
     }
 }
 
-data class Item(val name: String,val image:Int, val quantity: Int, val price: Double)
+data class Item(val name: String, val image: Int, val quantity: Int, val price: Double)
 
 val nguyen = listOf(
-    NguyenLieu(1, "Súp Nơ","Rau", R.drawable.sup_no, 2, 3, 100.0),
-    NguyenLieu(2, "Cua Cà Mau","Hải sản", R.drawable.cua, 2, 3, 100.0),
-    NguyenLieu(3, "Tôm Hùm","Hải sản", R.drawable.alaska, 2, 3, 100.0),
-    NguyenLieu(4, "Thịt Bò","Thịt", R.drawable.thit_bo, 2, 3, 100.0),
-    NguyenLieu(6, "Thịt Lợn","Thịt", R.drawable.thit_lon, 2, 3, 100.0),
-    NguyenLieu(9, "Súp Nơ","Rau", R.drawable.sup_no, 2, 3, 100.0),
-    NguyenLieu(10, "Súp Nơ","Rau", R.drawable.sup_no, 2, 3, 100.0),
-    NguyenLieu(5, "Thịt Lợn","Thịt", R.drawable.thit_lon, 2, 3, 100.0),
-    NguyenLieu(7, "Thịt Lợn","Thịt", R.drawable.thit_lon, 2, 3, 100.0),
-    NguyenLieu(8, "Giấy Ăn","Khác", R.drawable.paper, 2, 3, 100.0),
-    NguyenLieu(12, "Giấy Ăn","Khác", R.drawable.paper, 2, 3, 100.0),
+    NguyenLieu(1, "Súp Nơ", "Rau", R.drawable.sup_no, 2, 3, 100.0),
+    NguyenLieu(2, "Cua Cà Mau", "Hải sản", R.drawable.cua, 2, 3, 100.0),
+    NguyenLieu(3, "Tôm Hùm", "Hải sản", R.drawable.alaska, 2, 3, 100.0),
+    NguyenLieu(4, "Thịt Bò", "Thịt", R.drawable.thit_bo, 2, 3, 100.0),
+    NguyenLieu(6, "Thịt Lợn", "Thịt", R.drawable.thit_lon, 2, 3, 100.0),
+    NguyenLieu(9, "Súp Nơ", "Rau", R.drawable.sup_no, 2, 3, 100.0),
+    NguyenLieu(10, "Súp Nơ", "Rau", R.drawable.sup_no, 2, 3, 100.0),
+    NguyenLieu(5, "Thịt Lợn", "Thịt", R.drawable.thit_lon, 2, 3, 100.0),
+    NguyenLieu(7, "Thịt Lợn", "Thịt", R.drawable.thit_lon, 2, 3, 100.0),
+    NguyenLieu(8, "Giấy Ăn", "Khác", R.drawable.paper, 2, 3, 100.0),
+    NguyenLieu(12, "Giấy Ăn", "Khác", R.drawable.paper, 2, 3, 100.0),
 )
 val bill = listOf(
     HoaDon(
         1, "Bàn 11", 256.000, items = listOf(
-            Item(name = "Salat Cá Ngừ",R.drawable.cua, quantity = 2, price = 20000.0),
-            Item(name = "Tôm Sú",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Cua Alaska",R.drawable.cua, quantity = 1, price = 10000.0)
+            Item(name = "Salat Cá Ngừ", R.drawable.cua, quantity = 2, price = 20000.0),
+            Item(name = "Tôm Sú", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Cua Alaska", R.drawable.cua, quantity = 1, price = 10000.0)
         ), 1
     ),
     HoaDon(
         2, "Bàn 13", 256.000, items = listOf(
-            Item(name = "Salat Cá Ngừ",R.drawable.cua, quantity = 2, price = 20000.0),
-            Item(name = "Salat Cá Ngừ1",R.drawable.cua, quantity = 2, price = 20000.0),
-            Item(name = "Salat Cá Ngừ2",R.drawable.cua, quantity = 2, price = 20000.0),
-            Item(name = "Tôm Sú",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Cua Alaska",R.drawable.cua, quantity = 1, price = 10000.0)
+            Item(name = "Salat Cá Ngừ", R.drawable.cua, quantity = 2, price = 20000.0),
+            Item(name = "Salat Cá Ngừ1", R.drawable.cua, quantity = 2, price = 20000.0),
+            Item(name = "Salat Cá Ngừ2", R.drawable.cua, quantity = 2, price = 20000.0),
+            Item(name = "Tôm Sú", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Cua Alaska", R.drawable.cua, quantity = 1, price = 10000.0)
         ), 0
     ),
     HoaDon(
         3, "Bàn 14", 256.000, items = listOf(
-            Item(name = "Salat Cá Ngừ",R.drawable.cua, quantity = 2, price = 20000.0),
-            Item(name = "Tôm Sú",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú1",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú2",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Cua Alaska",R.drawable.cua, quantity = 1, price = 10000.0)
+            Item(name = "Salat Cá Ngừ", R.drawable.cua, quantity = 2, price = 20000.0),
+            Item(name = "Tôm Sú", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú1", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú2", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Cua Alaska", R.drawable.cua, quantity = 1, price = 10000.0)
         ), 1
     ),
     HoaDon(
         4, "Bàn 19", 256.000, items = listOf(
-            Item(name = "Salat Cá Ngừ",R.drawable.cua, quantity = 2, price = 20000.0),
-            Item(name = "Tôm Sú",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Cua Alaska",R.drawable.cua, quantity = 1, price = 10000.0),
-            Item(name = "Cua Alaska1",R.drawable.cua, quantity = 3, price = 700.0),
-            Item(name = "Cua Alaska3",R.drawable.cua, quantity = 3, price = 700.0)
+            Item(name = "Salat Cá Ngừ", R.drawable.cua, quantity = 2, price = 20000.0),
+            Item(name = "Tôm Sú", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Cua Alaska", R.drawable.cua, quantity = 1, price = 10000.0),
+            Item(name = "Cua Alaska1", R.drawable.cua, quantity = 3, price = 700.0),
+            Item(name = "Cua Alaska3", R.drawable.cua, quantity = 3, price = 700.0)
         ), 0
     ),
     HoaDon(
         5, "Bàn 9", 256.000, items = listOf(
-            Item(name = "Salat Cá Ngừ",R.drawable.cua, quantity = 2, price = 20000.0),
-            Item(name = "Tôm Sú",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú4",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-            Item(name = "Cua Alaska",R.drawable.cua, quantity = 1, price = 10000.0)
+            Item(name = "Salat Cá Ngừ", R.drawable.cua, quantity = 2, price = 20000.0),
+            Item(name = "Tôm Sú", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú4", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Cua Alaska", R.drawable.cua, quantity = 1, price = 10000.0)
         ), 1
     ),
     HoaDon(
-            6, "Bàn 34", 256.000, items = listOf(
-        Item(name = "Salat Cá Ngừ",R.drawable.cua, quantity = 2, price = 20000.0),
-        Item(name = "Tôm Sú",R.drawable.cua, quantity = 2, price = 10000.0),
-        Item(name = "Tôm Sú4",R.drawable.cua, quantity = 2, price = 10000.0),
-        Item(name = "Tôm Sú5",R.drawable.cua, quantity = 2, price = 10000.0),
-        Item(name = "Cua Alaska",R.drawable.cua, quantity = 1, price = 10000.0)
-    ), 1
-)
+        6, "Bàn 34", 256.000, items = listOf(
+            Item(name = "Salat Cá Ngừ", R.drawable.cua, quantity = 2, price = 20000.0),
+            Item(name = "Tôm Sú", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú4", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Tôm Sú5", R.drawable.cua, quantity = 2, price = 10000.0),
+            Item(name = "Cua Alaska", R.drawable.cua, quantity = 1, price = 10000.0)
+        ), 1
+    )
 )
 val items = listOf(
     Table(1, "12", "Nguyen B", "0975432178", 4, "không có", isOnline = false),
@@ -170,7 +172,8 @@ fun HomeManager(navigationController: NavHostController) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color.White)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
@@ -186,9 +189,9 @@ fun HomeManager(navigationController: NavHostController) {
         )
         Row(
             modifier = Modifier
-                .fillMaxWidth() // Chiếm toàn bộ chiều rộng
+                .fillMaxWidth()
                 .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween // Căn đều hai đầu
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
             Text(
@@ -210,7 +213,8 @@ fun HomeManager(navigationController: NavHostController) {
         }
         LazyRow(
             modifier = Modifier
-                .fillMaxWidth().padding(top = 10.dp)
+                .fillMaxWidth()
+                .padding(top = 10.dp)
                 .background(Color.White),
             horizontalArrangement = Arrangement.Center
         ) {
@@ -244,13 +248,13 @@ fun HomeManager(navigationController: NavHostController) {
         }
         LazyRow(
             modifier = Modifier
-                .fillMaxWidth().padding(top = 10.dp)
+                .fillMaxWidth()
+                .padding(top = 10.dp)
                 .background(Color.White),
             horizontalArrangement = Arrangement.Center
         ) {
             items(bill.size) { index ->
-                HomeBill(index, navigationController = navigationController){
-                        order ->
+                HomeBill(index, navigationController = navigationController) { order ->
                     selectedOrder = order
                     showDialog = true
                 }
@@ -277,13 +281,14 @@ fun HomeManager(navigationController: NavHostController) {
                 color = Color(0xff379AE6),
                 modifier = Modifier
                     .clickable {
-                navigationController.navigate(Route.HomeIngredients.screen)
+                        navigationController.navigate(Route.HomeIngredients.screen)
                     }
             )
         }
         LazyRow(
             modifier = Modifier
-                .fillMaxWidth().padding(top = 10.dp)
+                .fillMaxWidth()
+                .padding(top = 10.dp)
                 .background(Color.White),
             horizontalArrangement = Arrangement.Center
         ) {
@@ -292,7 +297,6 @@ fun HomeManager(navigationController: NavHostController) {
             }
         }
     }
-    // Hiển thị Dialog nếu có đơn hàng được chọn
 
     if (showDialog && selectedOrder != null) {
         IngreCT(navigationController, order = selectedOrder, onDismiss = {
@@ -301,7 +305,6 @@ fun HomeManager(navigationController: NavHostController) {
         })
     }
 }
-
 
 
 @Composable
@@ -345,7 +348,11 @@ fun HomeItem(index: Int) {
 }
 
 @Composable
-fun HomeBill(index: Int,navigationController: NavHostController,onOrderSelected: (HoaDon) -> Unit) {
+fun HomeBill(
+    index: Int,
+    navigationController: NavHostController,
+    onOrderSelected: (HoaDon) -> Unit
+) {
     val bill = bill[index]
     val itemsToShow = bill.items.take(3)
     val textColor = when (bill.status) {
@@ -358,7 +365,7 @@ fun HomeBill(index: Int,navigationController: NavHostController,onOrderSelected:
             .width(150.dp)
             .height(120.dp)
             .padding(start = 10.dp)
-            .clickable { onOrderSelected(bill)}
+            .clickable { onOrderSelected(bill) }
             .border(
                 border = BorderStroke(1.dp, Color(0xff565E6C)), // Bo viền
                 shape = RoundedCornerShape(8.dp) // Tạo bo góc nếu cần
@@ -419,8 +426,8 @@ fun HomeNguyen(index: Int) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 40.dp, start = 40.dp)
-                    .clip(RoundedCornerShape(16.dp)) // Bo tròn toàn bộ Box
-                    .background(Color.White) // Màu nền của dialog
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.White)
             ) {
                 Column {
                     // TopBar
@@ -448,7 +455,7 @@ fun HomeNguyen(index: Int) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically // Căn giữa theo chiều dọc
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Image(
                                 painter = painterResource(id = nguyen.image),
@@ -460,14 +467,14 @@ fun HomeNguyen(index: Int) {
                                 contentScale = ContentScale.FillHeight
                             )
 
-                            Spacer(modifier = Modifier.width(16.dp)) // Khoảng cách giữa ảnh và văn bản
+                            Spacer(modifier = Modifier.width(16.dp))
 
                             Column {
                                 Text(text = "Hàng nhập: ${nguyen.nhap} kg")
                                 Text(text = "Hàng tồn: ${nguyen.ton} kg")
                                 Text(text = "Hàng tồn hôm nay: $hangTonHomNay kg")
                                 Row {
-                                    Text(text = "Giá: ", color = Color.Black) // Màu đen cho "Giá: "
+                                    Text(text = "Giá: ", color = Color.Black)
                                     Text(
                                         text = "${priceNguyen}k",
                                         color = Color.Red
@@ -495,17 +502,17 @@ fun HomeNguyen(index: Int) {
             .width(120.dp)
             .height(115.dp)
             .padding(start = 10.dp)
-            .clickable {showDialog=true }
+            .clickable { showDialog = true }
             .border(
-                border = BorderStroke(1.dp, Color.White), // Bo viền
-                shape = RoundedCornerShape(8.dp) // Tạo bo góc nếu cần
+                border = BorderStroke(1.dp, Color.White),
+                shape = RoundedCornerShape(8.dp)
             ),
-        contentAlignment = Alignment.Center // Căn giữa toàn bộ nội dung trong Box
+        contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
                 .padding(top = 5.dp)
-                .fillMaxSize(), // Đảm bảo Column chiếm toàn bộ chiều cao của Box
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {

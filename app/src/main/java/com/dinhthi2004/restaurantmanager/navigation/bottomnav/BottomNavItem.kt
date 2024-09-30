@@ -21,12 +21,12 @@ sealed class BottomNavItem(
 
     object RevenueReports : BottomNavItem(
         Routes.REVENUE_REPORTS_ADMIN,
-        R.drawable.ic_home, "Revenue Reports"
+        R.drawable.ic_home, "Revenue"
     )
 
     object ManagerRestaurant :
         BottomNavItem(
             Routes.RESTAURANT_MANAGER_ADMIN,
-            R.drawable.ic_restaurant, "Manager Restaurant"
+            R.drawable.ic_restaurant, "Restaurant"
         )
 }
