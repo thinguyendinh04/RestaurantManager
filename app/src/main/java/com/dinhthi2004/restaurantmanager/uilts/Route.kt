@@ -11,5 +11,4 @@ sealed class Route(val screen: String) {
     data object HomeRevenue:Route("HomeRevenue")
     data object HomeSetting:Route("HomeSetting")
     data object Setting:Route("Setting")
-
 }

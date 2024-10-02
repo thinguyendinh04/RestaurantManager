@@ -36,7 +36,7 @@ class LoginViewModel : ViewModel() {
                     val route = when (account.role) {
                         "Admin" -> "home_admin_screen"
                         "Manager" -> "BottomNavigation"
-                        "Waiter" -> "home_waiter_screen"
+                        "Waiter" -> "WAITER_MAIN_SCREEN"
                         else -> "home_user_screen"
                     }
                     onLoginSuccess(route)
