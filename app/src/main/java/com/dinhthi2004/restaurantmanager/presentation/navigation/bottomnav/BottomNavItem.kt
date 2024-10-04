@@ -1,8 +1,8 @@
-package com.dinhthi2004.restaurantmanager.navigation.bottomnav
+package com.dinhthi2004.restaurantmanager.presentation.navigation.bottomnav
 
 import androidx.annotation.DrawableRes
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.navigation.Routes
+import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 
 sealed class BottomNavItem(
     val route: String,

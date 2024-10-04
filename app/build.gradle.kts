@@ -1,8 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -52,58 +54,41 @@ android {
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+    // Compose
+    implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    // Serialization
+    implementation(libs.bundles.serialization)
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.ui.text.google.fonts)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.work)
+    // Ktor
+    implementation(libs.bundles.ktor)
+    // Coil
+    implementation(libs.coil.kt.coil.compose)
+    // Compose Destination
+    implementation(libs.accompanist.flowlayout)
+    implementation(libs.compose.destination.animation.core)
+    implementation(libs.compose.destination.core)
+    ksp(libs.compose.destination.ksp)
+    // WorkManager
+    implementation(libs.androidx.work.runtime)
+    // Timber
+    implementation(libs.jakewharton.timber)
+    // Retrofit
+    implementation(libs.bundles.retrofit)
+    // Easy validator
+    implementation(libs.easyvalidation.core)
+    // DataStore
+    implementation(libs.bundles.datastore)
+    // Unit Test
+    testImplementation(libs.bundles.testing)
+    // Android Test
+    androidTestImplementation(libs.bundles.android.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-
-    //LiveData ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-
-    //Room Database
-    implementation("androidx.room:room-runtime:2.6.0")
-    kapt("androidx.room:room-compiler:2.6.0")
-    implementation("androidx.room:room-ktx:2.6.0")
-
-    //Dagger - Hilt
-    implementation("com.google.dagger:hilt-android:2.47")
-    kapt("com.google.dagger:hilt-android-compiler:2.47")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-
-    //Navigation Compose
-    implementation("androidx.navigation:navigation-compose:2.7.2")
-
-    //Retrofit - Gson
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.google.code.gson:gson:2.10.1")
-
-    //Coil
-    implementation("io.coil-kt:coil-compose:2.4.0")
-
-    //Paging 3
-    implementation("androidx.paging:paging-compose:3.2.1")
-
-    //icon
-    implementation("androidx.compose.material:material-icons-core:1.0.1")
-    implementation("androidx.compose.material:material-icons-extended:1.0.1")
-
-    //asyc image
-    implementation("io.coil-kt:coil-compose:2.6.0")
-    implementation("androidx.compose.material3:material3:1.0.0")
+    // Debug Test
+    debugImplementation(libs.bundles.debugging)
 }

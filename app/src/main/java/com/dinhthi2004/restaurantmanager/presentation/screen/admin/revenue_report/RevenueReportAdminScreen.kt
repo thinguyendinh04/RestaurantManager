@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.navigation.bottomnav.BottomBar
+import com.dinhthi2004.restaurantmanager.presentation.navigation.bottomnav.BottomBar
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_report.RevenueReportViewModel
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_report.component.DatePickerField
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_report.component.RevenueRow

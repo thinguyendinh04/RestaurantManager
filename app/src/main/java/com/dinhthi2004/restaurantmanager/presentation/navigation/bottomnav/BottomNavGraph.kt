@@ -1,4 +1,4 @@
-package com.dinhthi2004.restaurantmanager.navigation.bottomnav
+package com.dinhthi2004.restaurantmanager.presentation.navigation.bottomnav
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController

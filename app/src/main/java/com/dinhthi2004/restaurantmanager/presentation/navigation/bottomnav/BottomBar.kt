@@ -1,4 +1,4 @@
-package com.dinhthi2004.restaurantmanager.navigation.bottomnav
+package com.dinhthi2004.restaurantmanager.presentation.navigation.bottomnav
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar

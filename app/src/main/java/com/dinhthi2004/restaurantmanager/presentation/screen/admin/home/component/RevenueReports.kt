@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.dinhthi2004.restaurantmanager.navigation.Routes
+import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 
 @Composable
 fun RevenueReports(
