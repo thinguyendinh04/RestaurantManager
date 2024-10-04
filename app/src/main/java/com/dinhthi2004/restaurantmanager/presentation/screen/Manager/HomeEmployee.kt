@@ -93,9 +93,9 @@ fun HomeEmployee(navigationController: NavHostController) {
                         Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")
                     },
                     shape = RoundedCornerShape(10.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Gray,
-                        unfocusedBorderColor = Color.LightGray
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = Color.White
                     )
                 )
             }

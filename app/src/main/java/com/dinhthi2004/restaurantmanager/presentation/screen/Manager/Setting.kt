@@ -28,8 +28,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -107,11 +107,12 @@ fun Setting(navigationController: NavHostController){
                             .padding(horizontal = 20.dp)
                     ) {
                         Text(text = "Họ và Tên", fontSize = 17.sp, color = Color.Black)
-                        OutlinedTextField(
+                        TextField(
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp),
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                containerColor = Color.White
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = Color.White,
+                                focusedContainerColor = Color.White
                             ),
                             value = "",
                             onValueChange = {  },
@@ -125,11 +126,12 @@ fun Setting(navigationController: NavHostController){
                             .padding(horizontal = 20.dp)
                     ) {
                         Text(text = "Email", fontSize = 17.sp, color = Color.Black)
-                        OutlinedTextField(
+                        TextField(
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp),
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                containerColor = Color.White
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = Color.White,
+                                focusedContainerColor = Color.White
                             ),
                             value = "",
                             onValueChange = {  },
@@ -143,11 +145,12 @@ fun Setting(navigationController: NavHostController){
                             .padding(horizontal = 20.dp)
                     ) {
                         Text(text = "Số điện thoại", fontSize = 17.sp, color = Color.Black)
-                        OutlinedTextField(
+                        TextField(
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp),
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                containerColor = Color.White
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = Color.White,
+                                focusedContainerColor = Color.White
                             ),
                             value = "",
                             onValueChange = {  },
@@ -161,11 +164,12 @@ fun Setting(navigationController: NavHostController){
                             .padding(horizontal = 20.dp)
                     ) {
                         Text(text = "Mật khẩu", fontSize = 17.sp, color = Color.Black)
-                        OutlinedTextField(
+                        TextField(
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp),
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                containerColor = Color.White
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = Color.White,
+                                focusedContainerColor = Color.White
                             ),
                             value = "",
                             onValueChange = {  },
@@ -202,23 +206,23 @@ fun Setting(navigationController: NavHostController){
             }
         }
 
-            Divider(thickness = 1.dp, color = Color(0xffBCC1CA))
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFE724C)
-                ),
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxWidth(0.5f)
+        Divider(thickness = 1.dp, color = Color(0xffBCC1CA))
+        Button(
+            onClick = { },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFFE724C)
+            ),
+            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .fillMaxWidth(0.5f)
 
-            ) {
-                Text(
-                    modifier = Modifier.padding(8.dp),
-                    text = "Lưu",
-                    fontSize = 20.sp
-                )
+        ) {
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = "Lưu",
+                fontSize = 20.sp
+            )
         }
     }
 }
