@@ -16,7 +16,6 @@ class GetMenuRepository @Inject constructor(
             val menus = repository.getMenus().map {
 
             }
-            //emit(Resources.Success(menus))
         } catch (e: Exception) {
             emit(Resources.Error("Fail"))
         }

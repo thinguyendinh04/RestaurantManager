@@ -1,9 +1,11 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.admin.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.presentation.navigation.bottomnav.BottomBar
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.home.component.HomeHeader
@@ -22,6 +24,7 @@ fun HomeAdminScreen(
         Column(
             Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(it)
         ) {
             HomeHeader()

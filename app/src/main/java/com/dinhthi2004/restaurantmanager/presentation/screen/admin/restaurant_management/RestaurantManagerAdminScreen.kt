@@ -1,6 +1,7 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.admin.restaurant_management
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -8,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -37,7 +39,11 @@ fun RestaurantManagerScreen(
                             contentDescription = "Back"
                         )
                     }
-                }
+                }, colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = Color.Black,
+                    actionIconContentColor = Color.Black
+                )
             )
         },
         bottomBar = {
@@ -47,6 +53,7 @@ fun RestaurantManagerScreen(
         Column(
             modifier = Modifier
                 .padding(it)
+                .background(Color.White)
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
@@ -61,31 +68,34 @@ fun RestaurantManagerScreen(
             Spacer(modifier = Modifier.size(16.dp))
 
             OptionItem(
-                iconRes = R.drawable.logo,
+                iconRes = R.drawable.btn_4,
                 title = "Menu Management",
                 onClick = {
                     navController.navigate(Routes.MENU_MANAGEMENT_ADMIN)
                 }
             )
+            Spacer(modifier = Modifier.size(16.dp))
 
             OptionItem(
-                iconRes = R.drawable.ic_revenue,
+                iconRes = R.drawable.revenue_8520850,
                 title = "Doanh thu",
                 onClick = {
                     navController.navigate(Routes.REVENUE_REPORTS_ADMIN)
                 }
             )
+            Spacer(modifier = Modifier.size(16.dp))
 
             OptionItem(
-                iconRes = R.drawable.ic_setting,
-                title = "Role and Permission",
+                iconRes = R.drawable.employee_logo,
+                title = "Employee Manager",
                 onClick = {
                     navController.navigate(Routes.EMPLOYEE_ADMIN)
                 }
             )
+            Spacer(modifier = Modifier.size(16.dp))
 
             OptionItem(
-                iconRes = R.drawable.ic_logout,
+                iconRes = R.drawable.btn_6,
                 title = "Logout",
                 onClick = {
                     navController.navigate(Routes.LOGIN_SCREEN)

@@ -30,7 +30,7 @@ fun SignInButton(
     ) {
         Button(
             onClick = {
-                onLoginClick()  // Trigger the login callback
+                onLoginClick()
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00449A)),
             shape = RoundedCornerShape(6.dp),

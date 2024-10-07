@@ -1,6 +1,7 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -30,11 +31,13 @@ fun LoginScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
             .padding(16.dp)
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(paddingValues)
         ) {
             Text(
@@ -70,6 +73,7 @@ fun LoginScreen(
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
+
                 viewModel.emailError.value -> {
                     Text(
                         text = "Please enter a valid email address",
@@ -99,6 +103,7 @@ fun LoginScreen(
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
+
                 viewModel.passwordError.value -> {
                     Text(
                         text = "Password must be at least 6 characters long",

@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
+import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import kotlinx.coroutines.delay
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -25,7 +26,7 @@ fun WelcomeScreen(navController: NavController? = null) {
 
     LaunchedEffect(Unit) {
         delay(3000)
-        navController?.navigate("login_screen")
+        navController?.navigate(Routes.LOGIN_SCREEN)
     }
 
     Box(

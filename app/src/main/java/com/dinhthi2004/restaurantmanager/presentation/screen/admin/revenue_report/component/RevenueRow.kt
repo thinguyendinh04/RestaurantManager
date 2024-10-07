@@ -1,5 +1,6 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_report.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -13,6 +14,7 @@ fun RevenueRow(stt: Int, date: String, revenue: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(Color.White)
             .border(1.dp, Color.Gray)
             .padding(8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
