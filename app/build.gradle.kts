@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.ksp)
 }
 
@@ -59,12 +58,6 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     // Serialization
     implementation(libs.bundles.serialization)
-    // Hilt
-    implementation(libs.hilt.android)
-    implementation(libs.hilt.navigation.compose)
-    implementation(libs.androidx.ui.text.google.fonts)
-    ksp(libs.hilt.compiler)
-    implementation(libs.hilt.work)
     // Ktor
     implementation(libs.bundles.ktor)
     // Coil

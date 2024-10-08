@@ -16,10 +16,6 @@ materialIconsExtended = "1.7.2"
 serialization = "2.0.0"
 serialization-json = "1.7.1"
 serialization-core = "1.7.1"
-# Hilt
-hilt = "2.51.1"
-hilt-work = "1.2.0"
-hilt-compose = "1.2.0"
 # Ktor
 ktorClientAndroid = "2.3.5"
 ktorClientCore = "2.3.12"
@@ -58,11 +54,6 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 # Serialization
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "serialization-core" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json" }
-# Hilt
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-compose" }
-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hilt-work" }
 # Ktor
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroid" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientCore" }
@@ -104,5 +95,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
