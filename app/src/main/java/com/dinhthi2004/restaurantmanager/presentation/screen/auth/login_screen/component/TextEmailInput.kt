@@ -16,18 +16,18 @@ import com.dinhthi2004.restaurantmanager.R
 
 @Composable
 fun TextEmailInput(
-    email: String,
-    onEmailChange: (String) -> Unit
+    username: String,
+    onUsernameChange: (String) -> Unit
 ) {
     Column {
-        Text("Email", color = Color.Gray)
+        Text("Username", color = Color.Gray)
 
         OutlinedTextField(
-            value = email,
-            onValueChange = { onEmailChange(it) },
+            value = username,
+            onValueChange = { onUsernameChange(it) },
             label = {
                 Text(
-                    "Enter email", style = MaterialTheme.typography.titleSmall.copy(
+                    "Enter username", style = MaterialTheme.typography.titleSmall.copy(
                         color = Color.Gray
                     )
                 )
