@@ -43,7 +43,7 @@ fun FinishedOrderItem(order: Order, onClick: () -> Unit) {
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Tổng tiền:", style = MaterialTheme.typography.titleMedium)
-                Text("$totalAmount VNĐ", style = MaterialTheme.typography.titleMedium, color = Color(0x0FFF0000))
+                Text("$totalAmount VNĐ", style = MaterialTheme.typography.titleMedium, color = Color.Red)
             }
 
             // Spacer thêm để tạo khoảng cách dưới cùng của card
