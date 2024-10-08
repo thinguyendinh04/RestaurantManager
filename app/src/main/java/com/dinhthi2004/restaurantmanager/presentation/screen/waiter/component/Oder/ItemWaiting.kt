@@ -43,9 +43,7 @@ fun OrderItemRow(order: Order, onClick: () -> Unit, onCancel: () -> Unit, onComp
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Tổng tiền:", style = MaterialTheme.typography.titleMedium)
-                Text("$totalAmount VNĐ", style = MaterialTheme.typography.titleMedium, color = Color(
-                    0x0FFF0000
-                )
+                Text("$totalAmount VNĐ", style = MaterialTheme.typography.titleMedium, color = Color.Red
                 )
             }
 

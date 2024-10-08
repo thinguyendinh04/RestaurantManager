@@ -49,7 +49,7 @@ fun HomeWaiterScreen(navController: NavHostController) {
         topBar = {
             // Gọi TopBarComponent với nội dung tùy chỉnh
             TopBarComponent(
-                title = "Quản lý nhà hàng",
+                title = "Menu Management",
                 showNavigationIcon = true,
                 onNavigationClick = {
                     navController.popBackStack()
@@ -64,13 +64,13 @@ fun HomeWaiterScreen(navController: NavHostController) {
 //                    }
                 },
                 actions = {
-                    IconButton(onClick = { /* Custom action */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Add",
-                            tint = Color(0xFFFFFFFF)
-                        )
-                    }
+//                    IconButton(onClick = { /* Custom action */ }) {
+//                        Icon(
+//                            imageVector = Icons.Default.Add,
+//                            contentDescription = "Add",
+//                            tint = Color(0xFFFFFFFF)
+//                        )
+//                    }
                 }
             )
 
