@@ -46,7 +46,7 @@ fun HomeSetting(navigationController: NavHostController) {
         Spacer(modifier = Modifier.height(10.dp))
         Text(text = "Chỉnh sửa thông tin", fontSize = 14.sp, modifier = Modifier.padding(vertical = 5.dp).clickable { navigationController.navigate(Route.Setting.screen) })
         Spacer(modifier = Modifier.height(10.dp))
-        Text(text = "Quản lí nhân viên", fontSize = 14.sp, modifier = Modifier.padding(vertical = 5.dp).clickable {  navigationController.navigate(Route.HomeEmployee.screen)})
+        Text(text = "Quản lí nhân viên", fontSize = 14.sp, modifier = Modifier.padding(vertical = 5.dp).clickable {  navigationController.navigate(Route.HomeEmployScreen.screen)})
         Spacer(modifier = Modifier.height(10.dp))
         Text(text = "Notification", fontSize = 14.sp, modifier = Modifier.padding(vertical = 5.dp))
         Spacer(modifier = Modifier.height(10.dp))
