@@ -1,4 +1,4 @@
-package com.dinhthi2004.restaurantmanager.presentation.screen.Manager
+package com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.HoaDon
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.statusToString
 
 @Composable
 fun IngreCT(navigationController: NavHostController, order: HoaDon?, onDismiss: () -> Unit) {
@@ -39,7 +41,7 @@ fun IngreCT(navigationController: NavHostController, order: HoaDon?, onDismiss: 
                     order?.let {
                         CustomTopBar(hoaDon = it)
 
-                        Box(modifier = Modifier.height(350.dp)) { // Giới hạn chiều cao ở đây
+                        Box(modifier = Modifier.height(350.dp)) {
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -48,11 +50,11 @@ fun IngreCT(navigationController: NavHostController, order: HoaDon?, onDismiss: 
                             ) {
                             items(it.items) { item ->
 
-                                // Hiển thị mỗi mặt hàng trong Row
+
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(vertical = 8.dp), // Padding đều cho mỗi hàng
+                                        .padding(vertical = 8.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     // Hiển thị hình ảnh ở bên trái
@@ -80,57 +82,15 @@ fun IngreCT(navigationController: NavHostController, order: HoaDon?, onDismiss: 
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center
                                         ) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(25.dp) // Kích thước Box chứa IconButton
-                                                    .background(
-                                                        Color(0xff2acccf),
-                                                        shape = CircleShape
-                                                    ) // Thêm màu nền và bo tròn
-                                            ) {
-                                                IconButton(
-                                                    onClick = { /* Thêm logic tăng số lượng */ },
-                                                    modifier = Modifier.size(25.dp)
-                                                ) {
-                                                    Icon(
-                                                        imageVector = Icons.Default.Remove, // Biểu tượng nút tăng
-                                                        contentDescription = "Add",
-                                                        tint = Color.Black, // Màu của biểu tượng
-                                                        modifier = Modifier.size(15.dp) // Kích thước của biểu tượng
-                                                    )
-                                                }
-                                            }
-
                                             Text(
-                                                text = "${item.quantity}",
+                                                text ="SL: ${item.quantity}",
                                                 style = MaterialTheme.typography.bodyMedium,
                                                 modifier = Modifier.padding(horizontal = 8.dp)
                                             )
 
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(25.dp) // Kích thước Box chứa IconButton
-                                                    .background(
-                                                        Color(0xff2acccf),
-                                                        shape = CircleShape
-                                                    ) // Thêm màu nền và bo tròn
-                                            ) {
-                                                IconButton(
-                                                    onClick = { /* Thêm logic tăng số lượng */ },
-                                                    modifier = Modifier.size(25.dp)
-                                                ) {
-                                                    Icon(
-                                                        imageVector = Icons.Default.Add, // Biểu tượng nút tăng
-                                                        contentDescription = "Add",
-                                                        tint = Color.Black, // Màu của biểu tượng
-                                                        modifier = Modifier.size(15.dp) // Kích thước của biểu tượng
-                                                    )
-                                                }
-                                            }
                                         }
                                     }
 
-                                    // Hiển thị giá ở bên phải
                                     Text(
                                         text = "${item.price}k",
                                         style = MaterialTheme.typography.bodyMedium,

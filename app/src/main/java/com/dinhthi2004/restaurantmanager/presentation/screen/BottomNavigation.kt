@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.TableBar
 import androidx.compose.material.icons.rounded.Assessment
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.People
+import androidx.compose.material.icons.rounded.ShoppingCartCheckout
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
@@ -60,14 +61,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeEmployee
+import com.dinhthi2004.restaurantmanager.data.Employee
+import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeEmployeeScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeIngredients
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeManager
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeOrder
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeRevenue
+
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeOrderScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeSetting
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeTable
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeTableScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.Setting
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel.OrderViewModel
+import com.dinhthi2004.restaurantmanager.presentation.screen.auth.WelcomeScreen
 import com.dinhthi2004.restaurantmanager.uilts.Route
 import kotlinx.coroutines.launch
 
@@ -213,17 +218,17 @@ fun MyBottomAppBar(navController: NavHostController) {
                             }
                         })
                     NavigationDrawerItem(label = { Text(text = "Log Out",
-                        color = if (selectedItem.value == Route.HomeManager.screen) Color.Red else Color(0xff565e6c)) },
+                        color = if (selectedItem.value == Route.Welcome.screen) Color.Red else Color(0xff565e6c)) },
 
                         icon = { Icon(imageVector = Icons.Default.Logout, contentDescription = "",
-                            tint = if (selectedItem.value == Route.HomeManager.screen) Color.Red else Color(0xff565e6c)) },
+                            tint = if (selectedItem.value == Route.Welcome.screen) Color.Red else Color(0xff565e6c)) },
                         selected = false,
                         onClick = {
                             coroutineScope.launch {
                                 drawerState.close()
                             }
-                            selectedItem.value = Route.HomeManager.screen
-                            navigationController.navigate(Route.HomeManager.screen) {
+                            selectedItem.value = Route.Welcome.screen
+                            navigationController.navigate(Route.Welcome.screen) {
                                 popUpTo(0)
                             }
                         })
@@ -363,7 +368,7 @@ fun MyBottomAppBar(navController: NavHostController) {
                         IconButton(
                             onClick = {
                                 selected.value = Icons.Rounded.People
-                                navigationController.navigate(Route.HomeEmployee.screen) {
+                                navigationController.navigate(Route.HomeEmployScreen.screen) {
                                     popUpTo(0)
                                 }
                             },
@@ -399,8 +404,8 @@ fun MyBottomAppBar(navController: NavHostController) {
 
                         IconButton(
                             onClick = {
-                                selected.value = Icons.Rounded.Assessment
-                                navigationController.navigate(Route.HomeRevenue.screen) {
+                                selected.value = Icons.Rounded.ShoppingCartCheckout
+                                navigationController.navigate(Route.HomeIngredients.screen) {
                                     popUpTo(0)
                                 }
                             },
@@ -415,17 +420,17 @@ fun MyBottomAppBar(navController: NavHostController) {
 
                             ) {
                                 Icon(
-                                    Icons.Rounded.Assessment,
+                                    Icons.Rounded.ShoppingCartCheckout,
                                     contentDescription = "",
                                     modifier = Modifier.size(20.dp),
-                                    tint = if (selected.value == Icons.Rounded.Assessment) Color(
+                                    tint = if (selected.value == Icons.Rounded.ShoppingCartCheckout) Color(
                                         0xff2ACCCF
                                     ) else Color(0xff565e6c)
 
                                 )
                                 Text(
-                                    text = "Thống kê",
-                                    color = if (selected.value == Icons.Rounded.Assessment) Color(
+                                    text = "Nguyên liệu",
+                                    color = if (selected.value == Icons.Rounded.ShoppingCartCheckout) Color(
                                         0xff2ACCCF
                                     ) else Color(0xff565e6c)
                                 )
@@ -486,20 +491,20 @@ fun MyBottomAppBar(navController: NavHostController) {
                 composable(Route.HomeManager.screen) {
                     HomeManager(navigationController)
                 }
-                composable(Route.HomeEmployee.screen) {
-                    HomeEmployee(navigationController)
+                composable(Route.Welcome.screen) {
+                    WelcomeScreen(navController)
+                }
+                composable(Route.HomeEmployScreen.screen) {
+                    HomeEmployeeScreen(navigationController)
                 }
                 composable(Route.HomeTable.screen) {
-                    HomeTable(navigationController)
+                    HomeTableScreen(navigationController)
                 }
                 composable(Route.HomeOrder.screen) {
-                    HomeOrder(navigationController)
+                    HomeOrderScreen(navigationController, viewModel = OrderViewModel())
                 }
                 composable(Route.HomeIngredients.screen) {
                     HomeIngredients(navigationController)
-                }
-                composable(Route.HomeRevenue.screen) {
-                    HomeRevenue(navigationController)
                 }
                 composable(Route.HomeSetting.screen) {
                     HomeSetting(navigationController)
