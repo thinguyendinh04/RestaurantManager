@@ -1,5 +1,6 @@
 package com.dinhthi2004.restaurantmanager.api
 
+import com.dinhthi2004.restaurantmanager.model.Account
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -13,7 +14,7 @@ import retrofit2.http.Url
 interface ApiService {
 
     @POST("login")
-    suspend fun login(@Body loginInfo: Any): Response<Any>
+    suspend fun login(@Body loginInfo: Account): Response<Account>
 
     @POST("register")
     suspend fun signup(@Body signupInfo: Any): Response<Any>
