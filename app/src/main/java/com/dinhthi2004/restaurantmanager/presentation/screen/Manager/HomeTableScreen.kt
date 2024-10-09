@@ -8,6 +8,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,11 +21,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.R
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.AddIngredientDialog
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.DialogTable
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.TableItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.items
 
 @Composable
 fun HomeTableScreen(navigationController: NavHostController) {
+    var showDialog by remember { mutableStateOf(false) }
+
+
+    if (showDialog) {
+       DialogTable(onDismiss = { showDialog = false })
+    }
     Column(
         Modifier
             .fillMaxSize()
@@ -56,7 +68,7 @@ fun HomeTableScreen(navigationController: NavHostController) {
             }
         }
         Button(
-            onClick = {  },
+            onClick = { showDialog=true },
             modifier = Modifier
                 .padding(top = 5.dp)
                 .align(Alignment.CenterHorizontally),
