@@ -73,26 +73,6 @@ fun RevenueReports(
                     color = Color.Blue
                 )
             )
-            Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BasicText(
-                    text = "+ 5.39%",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 16.sp,
-                        color = Color.Green
-                    )
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                BasicText(
-                    text = "in 5 month yet",
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontSize = 14.sp,
-                        color = Color.Gray
-                    )
-                )
-            }
         }
     }
 }

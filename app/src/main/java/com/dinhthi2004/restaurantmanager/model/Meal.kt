@@ -3,7 +3,7 @@ package com.dinhthi2004.restaurantmanager.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Meal (
+data class Meal(
     val _id: String,
     val name: String,
     val price: Int,
@@ -11,7 +11,4 @@ data class Meal (
     val type_id: String,
     val info: String,
     val rating: Double,
-    val createdAt: String,
-    val updatedAt: String,
-    val __v: Int
 )

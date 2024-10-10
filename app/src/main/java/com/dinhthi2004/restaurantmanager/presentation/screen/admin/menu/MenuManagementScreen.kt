@@ -1,5 +1,6 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu
 
+import MenuItemCard
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -7,24 +8,30 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.CategoryRow
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.MenuItemCard
+import com.dinhthi2004.restaurantmanager.model.Meal
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuManagementScreen(
     navController: NavController,
-    viewModel: MenuManagementViewModel = viewModel()
+    viewModel: MenuManageViewModel = viewModel(),
 ) {
+    val mealList by viewModel.mealList.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val filteredItems = viewModel.filteredItems(mealList)
+
+    var selectedMeal by remember { mutableStateOf<Meal?>(null) }
     val showDialog = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.getAllMeals()
+    }
 
     Scaffold(
         topBar = {
@@ -52,14 +59,14 @@ fun MenuManagementScreen(
                 )
             }
         }
-    ) {
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(paddingValues)
         ) {
             OutlinedTextField(
-                value = viewModel.searchQuery.value,
+                value = searchQuery,
                 onValueChange = { viewModel.updateSearchQuery(it) },
                 label = { Text("Search") },
                 leadingIcon = {
@@ -75,14 +82,6 @@ fun MenuManagementScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            CategoryRow(
-                selectedCategory = viewModel.selectedCategory.value,
-                onCategorySelected = { viewModel.updateSelectedCategory(it) })
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            val filteredItems = viewModel.filteredItems
-
             if (filteredItems.isEmpty()) {
                 Box(
                     modifier = Modifier
@@ -91,63 +90,60 @@ fun MenuManagementScreen(
                 ) {
                     Text("No items found", style = MaterialTheme.typography.titleSmall)
                 }
-            }
-
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(filteredItems) { item ->
-                    MenuItemCard(item,
-                        onDeleteClick = {
-                            showDialog.value = true
-                            viewModel.deleteMenuItem(item)
-                        })
-                    Spacer(modifier = Modifier.height(8.dp))
+            } else {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    items(filteredItems) { meal ->
+                        MenuItemCard(
+                            meal = meal,
+                            onClick = {
+                                selectedMeal = meal
+                                showDialog.value = true
+                            },
+                            onDeleteClick = {
+                                viewModel.deleteMeal(mealId = meal._id)
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
             }
-
-            if (showDialog.value) {
-                AlertDialog(
-                    onDismissRequest = { showDialog.value = false },
-                    title = {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "THÔNG BÁO",
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    color = Color(0xFFFF5000),
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                        }
-                    },
-                    text = {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = "Xác nhận xóa món ăn này")
-                        }
-                    },
-                    confirmButton = {
-                        Button(
-                            onClick = {
-                                showDialog.value = false
-
-                            }
-                        ) {
-                            Text("Xác nhận")
-                        }
-                    },
-                    dismissButton = {
-                        Button(
-                            onClick = { showDialog.value = false }
-                        ) {
-                            Text("Hủy")
-                        }
-                    }
+            
+            if (showDialog.value && selectedMeal != null) {
+                MealDetailDialog(
+                    meal = selectedMeal!!,
+                    onDismiss = { showDialog.value = false }
                 )
             }
         }
     }
 }
+
+@Composable
+fun MealDetailDialog(meal: Meal, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Chi tiết món ăn", style = MaterialTheme.typography.titleLarge)
+        },
+        text = {
+            Column {
+                Text(text = "Tên: ${meal.name}", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "Giá: ${meal.price} VND", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = "Trạng thái: ${if (meal.status == 1) "Còn hàng" else "Hết hàng"}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(text = "Thông tin: ${meal.info}", style = MaterialTheme.typography.bodyMedium)
+                Text(text = "Đánh giá: ${meal.rating}", style = MaterialTheme.typography.bodyMedium)
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss) {
+                Text("Đóng")
+            }
+        }
+    )
+}
+
+
+

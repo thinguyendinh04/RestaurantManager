@@ -23,7 +23,7 @@ fun LoginScreen(
     navController: NavController,
     viewModel: LoginViewModel = viewModel()
 ) {
-    var emailState by remember { mutableStateOf("") }
+    var usernameState by remember { mutableStateOf("") }
     var passwordState by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -60,8 +60,8 @@ fun LoginScreen(
 
             // Email Input Field
             TextEmailInput(
-                email = emailState,
-                onEmailChange = { emailState = it }
+                username = usernameState,
+                onUsernameChange = { usernameState = it }
             )
 
             when {
@@ -128,7 +128,7 @@ fun LoginScreen(
             // Sign In Button
             SignInButton {
                 viewModel.handleLogin(
-                    email = emailState,
+                    username = usernameState,
                     password = passwordState
                 ) { route ->
                     navController.navigate(route)

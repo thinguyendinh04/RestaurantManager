@@ -1,59 +1,92 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.admin.employee
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.mutableStateListOf
-import com.dinhthi2004.restaurantmanager.R
+import androidx.lifecycle.viewModelScope
+import com.dinhthi2004.restaurantmanager.api.HttpReq
+import com.dinhthi2004.restaurantmanager.model.Account
+import com.dinhthi2004.restaurantmanager.model.AccountData
+import com.dinhthi2004.restaurantmanager.model.TokenManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class EmployeeViewModel : ViewModel() {
+    private val api = HttpReq.getInstance()
 
-    private val _employees = mutableStateListOf(
-        EmployeeData(
-            1,
-            "Nguyễn Đình Thi",
-            "09xxxxxxxx",
-            "11h-21h",
-            "Nhân viên",
-            R.drawable.ic_launcher_background
-        ),
-        EmployeeData(
-            2,
-            "Lê Văn Minh",
-            "09xxxxxxxx",
-            "10h-19h",
-            "Quản lý",
-            R.drawable.ic_launcher_foreground
-        ),
-        EmployeeData(
-            3,
-            "Trần Quang Khải",
-            "09xxxxxxxx",
-            "08h-17h",
-            "Nhân viên",
-            R.drawable.ic_launcher_foreground
-        )
-    )
+    val token = TokenManager.token
 
-    val employees: List<EmployeeData> = _employees
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
 
-    fun filteredEmployees(query: String): List<EmployeeData> {
-        return if (query.isEmpty()) {
-            employees
-        } else {
-            employees.filter { it.name.contains(query, ignoreCase = true) }
+    private val _userList = MutableStateFlow<List<Account>>(emptyList())
+    val userList: StateFlow<List<Account>> = _userList
+
+    private val _accountDetail = MutableStateFlow<AccountData?>(null)
+    val accountDetail: StateFlow<AccountData?> = _accountDetail
+
+    fun getAllUser() {
+        viewModelScope.launch {
+            try {
+                if (token != null) {
+                    val userResponse = api.getUser("Bearer $token")
+                    Log.d("EmployeeViewModel", "getAllUser: Response received")
+                    if (userResponse.isSuccessful) {
+                        val responseBody = userResponse.body()
+                        Log.d("EmployeeViewModel", "getAllUser: Response body = $responseBody")
+                        if (responseBody != null) {
+                            _userList.value = responseBody.users ?: emptyList()
+                        } else {
+                            _errorMessage.value = "Response body is null"
+                            Log.e("EmployeeViewModel", "getAllUser: Response body is null")
+                        }
+                    } else {
+                        _errorMessage.value = "Failed to load users: ${userResponse.message()}"
+                        Log.e("EmployeeViewModel", "getAllUser: Error = ${userResponse.message()}")
+                    }
+                } else {
+                    _errorMessage.value = "Token is missing, please log in again."
+                    Log.e("EmployeeViewModel", "getAllUser: Token is missing")
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Error occurred: ${e.localizedMessage}"
+                Log.e("EmployeeViewModel", "getAllUser: Exception = ${e.localizedMessage}")
+            }
         }
     }
 
 
-    fun deleteEmployee(id: Int) {
-        _employees.removeIf { it.id == id }
+    fun getUserInformation(idAccount: String) {
+        viewModelScope.launch {
+            try {
+                if (token != null) {
+                    val response = api.getUserInformation("Bearer $token", idAccount = idAccount)
+                    Log.d("EmployeeViewModel", "getUserInformation: Response received for id $idAccount")
+                    if (response.isSuccessful && response.body() != null) {
+                        val accountDetail = response.body()?.accountDetail
+                        Log.d("EmployeeViewModel", "getUserInformation: Account detail = $accountDetail")
+                        _accountDetail.value = accountDetail
+                    } else {
+                        _errorMessage.value = "Failed to load account detail: ${response.message()}"
+                        Log.e("EmployeeViewModel", "getUserInformation: Error = ${response.message()}")
+                    }
+                } else {
+                    _errorMessage.value = "Token is missing, please log in again."
+                    Log.e("EmployeeViewModel", "getUserInformation: Token is missing")
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Error occurred: ${e.localizedMessage}"
+                Log.e("EmployeeViewModel", "getUserInformation: Exception = ${e.localizedMessage}")
+            }
+        }
+    }
+
+
+
+    // Xóa thông tin chi tiết
+    fun clearAccountDetail() {
+        _accountDetail.value = null
     }
 }
 
-data class EmployeeData(
-    val id: Int,
-    val name: String,
-    val phoneNumber: String,
-    val shift: String,
-    val role: String,
-    val avatarResId: Int
-)
+
