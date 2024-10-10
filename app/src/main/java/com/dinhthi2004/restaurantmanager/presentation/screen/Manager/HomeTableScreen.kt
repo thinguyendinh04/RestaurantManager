@@ -34,7 +34,6 @@ import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.model.Table
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.NguyenLieuItem
-=======
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.AddIngredientDialog
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.DialogTable
 
@@ -111,9 +110,6 @@ fun HomeTableScreen(navigationController: NavHostController) {
         }
 
         Button(
-
-            onClick = { /* Hành động thêm bàn mới */ },
-
             onClick = { showDialog=true },
 
             modifier = Modifier
