@@ -1,34 +1,31 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.HoaDon
+import com.dinhthi2004.restaurantmanager.model.Bill
+import com.dinhthi2004.restaurantmanager.model.BillDetail
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.statusToString
 
 @Composable
-fun IngreCT(navigationController: NavHostController, order: HoaDon?, onDismiss: () -> Unit) {
+fun IngreCT(
+    navigationController: NavHostController, order: Bill?,onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
         Box(
-            modifier = Modifier.fillMaxWidth().height(600.dp).clip(RoundedCornerShape(12.dp)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(300.dp)
+                .clip(RoundedCornerShape(12.dp)),
             contentAlignment = Alignment.Center
         ) {
             Box(
@@ -36,78 +33,18 @@ fun IngreCT(navigationController: NavHostController, order: HoaDon?, onDismiss: 
                     .fillMaxSize()
                     .background(Color.White)
             ) {
-
-                Column {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     order?.let {
-                        CustomTopBar(hoaDon = it)
-
-                        Box(modifier = Modifier.height(350.dp)) {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                            items(it.items) { item ->
-
-
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    // Hiển thị hình ảnh ở bên trái
-                                    Image(
-                                        painter = painterResource(id = item.image),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(60.dp)
-                                            .padding(start = 10.dp)
-                                            .clip(CircleShape)
-                                    )
-
-                                    // Cột chứa tên và số lượng
-                                    Column(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .padding(start = 16.dp)
-                                    ) {
-                                        Text(
-                                            text = item.name,
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-                                            Text(
-                                                text ="SL: ${item.quantity}",
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                modifier = Modifier.padding(horizontal = 8.dp)
-                                            )
-
-                                        }
-                                    }
-
-                                    Text(
-                                        text = "${item.price}k",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = Color.Red,
-                                        modifier = Modifier.padding(end = 16.dp)
-                                    )
-                                }
-                                Divider(thickness = 2.dp, color = Color(0xffBCC1CA))
-                            }
-                        }
+                        CustomTopBar(it)
                     }
-                        Divider(thickness = 2.dp, color = Color(0xffBCC1CA))
-                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
                         onClick = {
-                          onDismiss()
+                            onDismiss()
                         },
                         modifier = Modifier
                             .padding(top = 5.dp)
@@ -127,8 +64,8 @@ fun IngreCT(navigationController: NavHostController, order: HoaDon?, onDismiss: 
 }
 
 @Composable
-fun CustomTopBar(hoaDon: HoaDon) {
-    val textColor = when (hoaDon.status) {
+fun CustomTopBar(hoaDon: Bill) {
+    val textColor = when (hoaDon.bill_status) {
         0 -> Color.Red
         1 -> Color.Green
         else -> Color.Gray
@@ -150,7 +87,7 @@ fun CustomTopBar(hoaDon: HoaDon) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Đơn hàng - ${hoaDon.banId}",
+                    text = "Mã bàn - ${hoaDon.id_table ?: "N/A"}",
                     color = Color.White,
                     style = MaterialTheme.typography.titleLarge
                 )
@@ -159,20 +96,22 @@ fun CustomTopBar(hoaDon: HoaDon) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Tổng: ",
+                        text = "Tổng tiền: ",
                         fontSize = 12.sp,
                         style = MaterialTheme.typography.labelLarge
                     )
+
                     Text(
-                        text = "${hoaDon.calculateTotalPrice()}k",
+                        text = "${hoaDon.total}k",
                         fontSize = 12.sp,
                         style = MaterialTheme.typography.labelLarge,
                         color = Color.Red,
                         modifier = Modifier.padding(end = 10.dp)
                     )
+
                 }
                 Text(
-                    text = "${statusToString(hoaDon.status)}",
+                    text = statusToString(hoaDon.bill_status),
                     color = textColor,
                     style = MaterialTheme.typography.bodyMedium
                 )

@@ -13,20 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dinhthi2004.restaurantmanager.model.Bill
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.HoaDon
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.statusToString
 
 
 @Composable
-fun OrderItem(order: HoaDon, onOrderSelected: (HoaDon) -> Unit) {
-    val textColor = when (order.status) {
+fun OrderItem(order: Bill, onOrderSelected: (Bill) -> Unit) {
+    val textColor = when (order.bill_status) {
         0 -> Color.Red
         1 -> Color.Green
         else -> Color.Gray
     }
-
-    val itemsToShow = order.items.take(4)
-    val totalPrice = order.calculateTotalPrice()
 
     Box(
         modifier = Modifier
@@ -40,19 +38,27 @@ fun OrderItem(order: HoaDon, onOrderSelected: (HoaDon) -> Unit) {
             )
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
-            Row {
-                Text(text = "${order.banId} - ", fontSize = 14.sp, color = Color.Black)
-                Text(text = "$totalPrice k", fontSize = 14.sp, color = Color(0xfffe763e))
-            }
+            // Thông tin bàn và tổng giá tiền
 
-            itemsToShow.forEach { item ->
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(text = "${item.name}: ${item.quantity}", fontSize = 12.sp)
-                    Text(text = "${item.price}k", fontSize = 12.sp, color = Color(0xfffe763e))
-                }
-            }
+                Text(
+                    text = "Table: ${order.id_table ?: "Unknown"}", // Hiển thị ID bàn
+                    fontSize = 14.sp,
+                    color = Color.Black
+                )
+                Text(
+                    text = "Total: ${order.total}k", // Hiển thị tổng tiền hóa đơn
+                    fontSize = 14.sp,
+                    color = Color(0xfffe763e)
+                )
+                // Trạng thái hóa đơn
+                Text(
+                    text = statusToString(order.bill_status),
+                    fontSize = 12.sp,
+                    color = textColor
+                )
 
-            Text(text = statusToString(order.status), fontSize = 12.sp, color = textColor)
+
+
         }
     }
 }

@@ -1,14 +1,18 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.Manager
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -18,19 +22,40 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.R
+import com.dinhthi2004.restaurantmanager.model.Bill
+import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.IngreCT
 
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.OrderItem
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.HoaDon
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel.OrderViewModel
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel.BillDetailViewModel
+import com.dinhthi2004.restaurantmanager.viewmodel.OrderViewModel
 
 
 @Composable
-fun HomeOrderScreen(navigationController: NavHostController, viewModel: OrderViewModel) {
-      var showDialog by remember { mutableStateOf(false) }
-   var selectedOrder by remember { mutableStateOf<HoaDon?>(null) }
+fun HomeOrderScreen(navigationController: NavHostController) {
+    val orderViewModel: OrderViewModel = viewModel()
+    val billDetailViewModel: BillDetailViewModel = viewModel()
+    val token = TokenManager.token
+    Log.d("tokeen", "OrderViewModel: " + token)
+
+    LaunchedEffect(Unit) {
+        if (token != null) {
+            orderViewModel.getBills(token)
+        }
+    }
+    LaunchedEffect(Unit) {
+        if (token != null) {
+            billDetailViewModel.getBillDetail(token)
+        }
+    }
+
+    val order by orderViewModel.bills.observeAsState(emptyList())
+    val billDetail by billDetailViewModel.billDetails.observeAsState(emptyList())
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedOrder by remember { mutableStateOf<Bill?>(null) }
 
     Column(
         Modifier
@@ -63,18 +88,20 @@ fun HomeOrderScreen(navigationController: NavHostController, viewModel: OrderVie
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(viewModel.orders.size) { index ->
-                OrderItem(order = viewModel.orders[index], onOrderSelected = { order ->
-                      selectedOrder=order
-                    showDialog=true
-                })
+            items(order) { currentOrder ->
+                OrderItem(order = currentOrder) { selected ->
+                    selectedOrder = selected
+                    showDialog = true
+                }
             }
         }
     }
-       if (showDialog && selectedOrder != null) {
-       IngreCT(navigationController, order = selectedOrder, onDismiss = {
+
+    if (showDialog && selectedOrder != null) {
+        IngreCT(navigationController, order = selectedOrder,onDismiss = {
             showDialog = false
             selectedOrder = null
-    })
-   }
+        })
+    }
 }
+
