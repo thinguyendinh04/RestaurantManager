@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.accompanist.flowlayout)
     implementation(libs.compose.destination.animation.core)
     implementation(libs.compose.destination.core)
+    implementation(libs.androidx.runtime.livedata)
     ksp(libs.compose.destination.ksp)
     // WorkManager
     implementation(libs.androidx.work.runtime)

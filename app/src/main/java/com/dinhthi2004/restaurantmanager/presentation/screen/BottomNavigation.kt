@@ -71,7 +71,6 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeOrderSc
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeSetting
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeTableScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.Setting
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel.OrderViewModel
 import com.dinhthi2004.restaurantmanager.presentation.screen.auth.WelcomeScreen
 import com.dinhthi2004.restaurantmanager.uilts.Route
 import kotlinx.coroutines.launch
@@ -501,7 +500,7 @@ fun MyBottomAppBar(navController: NavHostController) {
                     HomeTableScreen(navigationController)
                 }
                 composable(Route.HomeOrder.screen) {
-                    HomeOrderScreen(navigationController, viewModel = OrderViewModel())
+                    HomeOrderScreen(navigationController)
                 }
                 composable(Route.HomeIngredients.screen) {
                     HomeIngredients(navigationController)

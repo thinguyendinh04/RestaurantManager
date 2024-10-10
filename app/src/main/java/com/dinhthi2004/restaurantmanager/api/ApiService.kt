@@ -1,6 +1,10 @@
 package com.dinhthi2004.restaurantmanager.api
 
 import com.dinhthi2004.restaurantmanager.model.Account
+import com.dinhthi2004.restaurantmanager.model.Bill
+import com.dinhthi2004.restaurantmanager.model.BillDetail
+import com.dinhthi2004.restaurantmanager.model.Ingredient
+import com.dinhthi2004.restaurantmanager.model.Table
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -19,6 +23,17 @@ interface ApiService {
     @POST("register")
     suspend fun signup(@Body signupInfo: Any): Response<Any>
 
+    @GET("ingredient/get-list")
+    suspend fun getIngredients(@Header("authorization") jwtToken: String): ApiResponse<List<Ingredient>>
+
+    @GET("tables")
+    suspend fun getTables(@Header("authorization") jwtToken: String): ApiResponse1<List<Table>>
+
+    @GET("bill/get-list-bill")
+    suspend fun getBills(@Header("authorization") jwtToken: String): ApiResponse<List<Bill>>
+
+    @GET("billDetail/get-list-billDetail")
+    suspend fun getBillDetails(@Header("authorization") jwtToken: String): ApiResponse<List<BillDetail>>
     @GET
     suspend fun <Model> getFromApi(@Header("authorization") jwtToken: String, @Url endpoint: String, @Path("id") id: String): Response<Model> // chỉ cần chuyền id khi muốn lấy 1 món ăn(meal) theo id không thì chuyền 1 String trống ""
 
