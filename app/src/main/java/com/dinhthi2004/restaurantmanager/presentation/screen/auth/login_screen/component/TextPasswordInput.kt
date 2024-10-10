@@ -37,7 +37,8 @@ fun TextPasswordInput(
                 )
             },
             trailingIcon = {
-                val icon = if (passwordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off
+                val icon =
+                    if (passwordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off
                 IconButton(onClick = { onPasswordVisibilityChange() }) {
                     Icon(
                         painter = painterResource(id = icon),

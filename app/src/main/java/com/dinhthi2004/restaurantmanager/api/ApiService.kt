@@ -1,6 +1,8 @@
 package com.dinhthi2004.restaurantmanager.api
 
 import com.dinhthi2004.restaurantmanager.model.Account
+import com.dinhthi2004.restaurantmanager.model.Table
+import com.dinhthi2004.restaurantmanager.model.TableResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -30,4 +32,7 @@ interface ApiService {
 
     @DELETE
     suspend fun <Model> deleteFromApi(@Header("authorization") jwtToken: String, @Url endpoint: String, @Path("id") id:String): Response<Model>
+
+    @GET("tables")
+    suspend fun getTables(@Header("authorization") token: String): Response<TableResponse>
 }

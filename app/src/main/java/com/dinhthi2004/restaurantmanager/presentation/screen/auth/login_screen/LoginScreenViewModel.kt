@@ -36,6 +36,9 @@ class LoginViewModel : ViewModel() {
             viewModelScope.launch {
                 try {
                     val response = api.login(Account(username = username, password = password, role = 0, _id = ""))
+//                    Log.d("response")
+
+
 
                     if (response.isSuccessful && response.body() != null) {
                         val account = response.body()!!
