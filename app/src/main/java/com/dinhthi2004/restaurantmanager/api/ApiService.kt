@@ -61,7 +61,6 @@ interface ApiService {
     @GET("user")
     suspend fun getUserInformation(
         @Header("authorization") jwtToken: String,
-        @Path("id_account") idAccount: String
     ): Response<AccountDetailResponse>
 
     @DELETE
