@@ -1,4 +1,6 @@
 package com.dinhthi2004.restaurantmanager.model
 
-class Menu {
-}
+data class Menu (
+    val _id: String,
+    val id_meal: String
+)

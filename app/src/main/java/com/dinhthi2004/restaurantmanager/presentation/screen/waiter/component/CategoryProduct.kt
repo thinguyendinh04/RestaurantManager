@@ -1,6 +1,7 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -18,10 +19,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CategoryProduct(selectedCategory: String, onCategorySelected: (String) -> Unit) {
     LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 15.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.fillMaxWidth(),
+//            .padding(horizontal = 15.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 10.dp)
     ) {
         val categoriesProduct = listOf("Tất cả", "Best seller", "Hải sản", "Khác")
         items(categoriesProduct) { category ->

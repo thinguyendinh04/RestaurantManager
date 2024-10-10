@@ -27,27 +27,27 @@ fun FinishedOrderItem(order: Order, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text("Danh sách món ăn:", style = MaterialTheme.typography.titleMedium)
-
-            // Hiển thị danh sách 3 món ăn đầu tiên
-            Column(modifier = Modifier.fillMaxWidth()) {
-                order.items.take(3).forEach { item ->  // Giới hạn chỉ hiển thị 3 items
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Text(item.name, modifier = Modifier.weight(2f))
-                        Text("SL: ${item.quantity}", modifier = Modifier.weight(0.5f))
-                        Text("${item.price} VNĐ", modifier = Modifier.weight(1.5f))
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height((8.dp)))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Tổng tiền:", style = MaterialTheme.typography.titleMedium)
-                Text("$totalAmount VNĐ", style = MaterialTheme.typography.titleMedium, color = Color.Red)
-            }
+//            Text("Danh sách món ăn:", style = MaterialTheme.typography.titleMedium)
+//
+//            // Hiển thị danh sách 3 món ăn đầu tiên
+//            Column(modifier = Modifier.fillMaxWidth()) {
+//                order.items.take(3).forEach { item ->  // Giới hạn chỉ hiển thị 3 items
+//                    Row(modifier = Modifier.fillMaxWidth()) {
+//                        Text(item.name, modifier = Modifier.weight(2f))
+//                        Text("SL: ${item.quantity}", modifier = Modifier.weight(0.5f))
+//                        Text("${item.price} VNĐ", modifier = Modifier.weight(1.5f))
+//                    }
+//                }
+//            }
+//            Spacer(modifier = Modifier.height((8.dp)))
+//
+//            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+//                Text("Tổng tiền:", style = MaterialTheme.typography.titleMedium)
+//                Text("$totalAmount VNĐ", style = MaterialTheme.typography.titleMedium, color = Color.Red)
+//            }
 
             // Spacer thêm để tạo khoảng cách dưới cùng của card
-            Spacer(modifier = Modifier.height(16.dp))
+//            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
