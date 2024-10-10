@@ -36,8 +36,7 @@ fun ItemOrderProduct(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp),
+            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -46,7 +45,7 @@ fun ItemOrderProduct(
         ) {
             // Ảnh sản phẩm
             Image(
-                painter = painterResource(id = item.imageResId),
+                painter = painterResource(id = R.drawable.img1),
                 contentDescription = null,
                 modifier = Modifier
                     .size(80.dp)

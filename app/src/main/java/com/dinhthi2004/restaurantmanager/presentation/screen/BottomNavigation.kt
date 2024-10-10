@@ -112,8 +112,6 @@ fun MyBottomAppBar(navController: NavHostController) {
                                 .clip(CircleShape)
 
                         )
-
-
                         Column(
                             modifier = Modifier
                                 .padding(start = 7.dp)

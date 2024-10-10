@@ -1,6 +1,8 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -88,7 +90,10 @@ fun WaitingOrdersTab(
     var selectedOrder by remember { mutableStateOf<Order?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
-    LazyColumn(modifier = Modifier.padding(16.dp)) {
+    LazyColumn(
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
         items(orders) { order ->
             OrderItemRow(order = order,
                 onClick = {
@@ -115,7 +120,10 @@ fun WaitingOrdersTab(
 fun CompletedOrdersTab(completedOrders: List<Order>) {
     var selectedOrder by remember { mutableStateOf<Order?>(null) }
     var showDialog by remember { mutableStateOf(false) }
-    LazyColumn(modifier = Modifier.padding(16.dp)) {
+    LazyColumn(
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
         items(completedOrders) { order ->
             FinishedOrderItem(
                 order = order,
@@ -136,7 +144,10 @@ fun CompletedOrdersTab(completedOrders: List<Order>) {
 fun CanceledOrdersTab(canceledOrders: List<Order>) {
     var selectedOrder by remember { mutableStateOf<Order?>(null) }
     var showDialog by remember { mutableStateOf(false) }
-    LazyColumn(modifier = Modifier.padding(16.dp)) {
+    LazyColumn(
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
         items(canceledOrders) { order ->
             FinishedOrderItem(
                 order = order,
