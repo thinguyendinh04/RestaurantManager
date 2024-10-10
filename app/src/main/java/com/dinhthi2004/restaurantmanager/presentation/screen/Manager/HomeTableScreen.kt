@@ -10,9 +10,16 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,9 +30,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.R
+
 import com.dinhthi2004.restaurantmanager.model.Table
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.NguyenLieuItem
+=======
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.AddIngredientDialog
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.DialogTable
+
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.TableItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.items
 import com.dinhthi2004.restaurantmanager.viewmodel.IngredientViewModel
@@ -33,6 +45,7 @@ import com.dinhthi2004.restaurantmanager.viewmodel.TableViewModel
 
 @Composable
 fun HomeTableScreen(navigationController: NavHostController) {
+
     val tableViewModel: TableViewModel = viewModel()
     val token = TokenManager.token
 
@@ -42,6 +55,14 @@ fun HomeTableScreen(navigationController: NavHostController) {
 
     // Khởi tạo tables với giá trị mặc định là một danh sách rỗng
     val tables by tableViewModel.tables.observeAsState(emptyList())
+
+
+    var showDialog by remember { mutableStateOf(false) }
+
+
+    if (showDialog) {
+       DialogTable(onDismiss = { showDialog = false })
+    }
 
     Column(
         Modifier
@@ -90,7 +111,11 @@ fun HomeTableScreen(navigationController: NavHostController) {
         }
 
         Button(
+
             onClick = { /* Hành động thêm bàn mới */ },
+
+            onClick = { showDialog=true },
+
             modifier = Modifier
                 .padding(top = 5.dp)
                 .align(Alignment.CenterHorizontally),
