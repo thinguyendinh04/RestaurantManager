@@ -76,19 +76,16 @@ class MenuManageViewModel : ViewModel() {
                         _deleteMealState.value = Result.success("Meal deleted successfully")
                         getAllMeals()
                     } else {
-                        _deleteMealState.value =
-                            Result.failure(Exception("Failed to delete meal: ${deleteResponse.message()}"))
+                        _deleteMealState.value = Result.failure(Exception("Failed to delete meal: ${deleteResponse.message()}"))
                     }
                 } else {
                     _errorMessage.value = "Token is missing, please log in again."
                 }
             } catch (e: Exception) {
-                _deleteMealState.value =
-                    Result.failure(Exception("Error occurred: ${e.localizedMessage}"))
+                _deleteMealState.value = Result.failure(Exception("Error occurred: ${e.localizedMessage}"))
             } finally {
                 _isLoading.value = false
             }
         }
-
     }
 }

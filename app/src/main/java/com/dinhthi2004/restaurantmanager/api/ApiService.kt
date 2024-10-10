@@ -47,10 +47,10 @@ interface ApiService {
         @Body meal: Meal
     ): Response<MealResponse>
 
-    @DELETE("meal/delete-meal/:mealID")
+    @DELETE("meal/delete-meal/{mealId}")
     suspend fun deleteMeal(
         @Header("authorization") jwtToken: String,
-        @Path("mealId") mealId:String
+        @Path("mealId") mealId: String
     ): Response<MealResponse>
 
     @GET("users")
@@ -61,6 +61,7 @@ interface ApiService {
     @GET("user")
     suspend fun getUserInformation(
         @Header("authorization") jwtToken: String,
+        @Path("userId") idAccount: String
     ): Response<AccountDetailResponse>
 
     @DELETE

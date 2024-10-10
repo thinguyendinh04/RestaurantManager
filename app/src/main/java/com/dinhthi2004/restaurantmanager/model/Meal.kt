@@ -7,4 +7,6 @@ data class Meal(
     val status: Int,
     val info: String,
     val rating: Float,
+    val type_id: String,
+
 )

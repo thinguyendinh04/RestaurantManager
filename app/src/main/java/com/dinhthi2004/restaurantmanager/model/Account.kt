@@ -1,6 +1,6 @@
 package com.dinhthi2004.restaurantmanager.model
 
-data class   Account (
+data class Account (
     val _id: String,
     val username: String,
     val password: String,
