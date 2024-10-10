@@ -23,23 +23,13 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.admin.restaurant_ma
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RestaurantManagerScreen(
-    navController: NavController,
-    viewModel: RestaurantManagerViewModel = viewModel()
+    navController: NavController
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Restaurant Management") },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.navigateUp()
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_back),
-                            contentDescription = "Back"
-                        )
-                    }
-                }, colors = TopAppBarDefaults.topAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.White,
                     titleContentColor = Color.Black,
                     actionIconContentColor = Color.Black

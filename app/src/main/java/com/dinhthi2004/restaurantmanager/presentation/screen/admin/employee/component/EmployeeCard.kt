@@ -2,6 +2,7 @@ package com.dinhthi2004.restaurantmanager.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -15,25 +16,30 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.employee.EmployeeData
+import com.dinhthi2004.restaurantmanager.R
+import com.dinhthi2004.restaurantmanager.model.Account
 
 @Composable
 fun EmployeeCard(
-    employee: EmployeeData,
+    account: Account,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .padding(10.dp)
+            .clickable {
+                onClick()
+            },
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = employee.avatarResId),
+                painter = painterResource(id = R.drawable.ic_person),
                 contentDescription = "Avatar",
                 modifier = Modifier
                     .size(64.dp)
@@ -46,10 +52,14 @@ fun EmployeeCard(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = "Tên: ${employee.name}", style = MaterialTheme.typography.titleSmall)
-                Text(text = "SĐT: ${employee.phoneNumber}", style = MaterialTheme.typography.bodyMedium)
-                Text(text = "Ca làm việc: ${employee.shift}", style = MaterialTheme.typography.bodyMedium)
-                Text(text = "Chức vụ: ${employee.role}", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = "Tài khoản: ${account.username}",
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    text = "Chức vụ: ${getRoleText(account.role)}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
             IconButton(onClick = onEditClick) {
@@ -60,5 +70,13 @@ fun EmployeeCard(
                 Icon(Icons.Default.Delete, contentDescription = "Delete")
             }
         }
+    }
+}
+
+fun getRoleText(role: Int): String {
+    return when (role) {
+        1 -> "Quản lí"
+        2 -> "Nhan vien"
+        else -> "Unknown"
     }
 }

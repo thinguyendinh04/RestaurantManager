@@ -41,13 +41,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.model.Bill
-import com.dinhthi2004.restaurantmanager.model.BillDetail
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.IngreCT
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.NguyenLieuItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.TableItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.items
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel.BillDetailViewModel
 import com.dinhthi2004.restaurantmanager.uilts.Route
 import com.dinhthi2004.restaurantmanager.viewmodel.IngredientViewModel
 import com.dinhthi2004.restaurantmanager.viewmodel.OrderViewModel
@@ -56,21 +54,14 @@ import com.dinhthi2004.restaurantmanager.viewmodel.TableViewModel
 @Composable
 fun HomeManager(navigationController: NavHostController) {
     val orderViewModel: OrderViewModel = viewModel()
-    val billDetailViewModel:BillDetailViewModel=viewModel()
     val token = TokenManager.token
-    Log.d("tokeen", "OrderViewModel: " + token)
+    Log.d("token", "OrderViewModel: " + token)
 
     LaunchedEffect(Unit) {
         if (token != null) {
             orderViewModel.getBills(token)
         }
     }
-    LaunchedEffect(Unit) {
-        if (token != null) {
-            billDetailViewModel.getBillDetail(token)
-        }
-    }
-    val billDetail by billDetailViewModel.billDetails.observeAsState(emptyList())
     val bill by orderViewModel.bills.observeAsState(emptyList())
     val tableViewModel: TableViewModel = viewModel()
     var showDialog by remember { mutableStateOf(false) }

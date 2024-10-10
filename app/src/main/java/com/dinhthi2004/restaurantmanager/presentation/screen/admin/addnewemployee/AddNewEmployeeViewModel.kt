@@ -1,70 +1,66 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.employee.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.employee.EmployeeData
+import androidx.lifecycle.viewModelScope
+import com.dinhthi2004.restaurantmanager.api.HttpReq
+import com.dinhthi2004.restaurantmanager.model.Account
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
-class EmployeeFormViewModel : ViewModel() {
+class AddNewEmployeeViewModel : ViewModel() {
+    private val api = HttpReq.getInstance()
 
-    // Fields for the employee form
-    var name = mutableStateOf("")
-    var phoneNumber = mutableStateOf("")
-    var role = mutableStateOf("Nhân viên") // Default role
-    var workShift = mutableStateOf("")
+    private val _email = MutableStateFlow("")
+    val email: StateFlow<String> = _email
 
-    // Error messages for validation
-    var nameError = mutableStateOf<String?>(null)
-    var phoneNumberError = mutableStateOf<String?>(null)
-    var shiftError = mutableStateOf<String?>(null)
+    private val _role = MutableStateFlow(2)
+    val role: StateFlow<Int> = _role
 
-    // Function to create a new EmployeeData object from form input
-    fun createEmployee(id: Int): EmployeeData? {
-        if (validateFields()) {
-            return EmployeeData(
-                id = id,
-                name = name.value,
-                phoneNumber = phoneNumber.value,
-                role = role.value,
-                shift = workShift.value,
-                avatarResId = R.drawable.ic_launcher_background // Default avatar
-            )
-        }
-        return null
+    private val _password = MutableStateFlow("")
+    val password: StateFlow<String> = _password
+
+    // StateFlow để theo dõi quá trình đăng ký
+    private val _signupSuccess = MutableStateFlow(false)
+    val signupSuccess: StateFlow<Boolean> = _signupSuccess
+
+    private val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> = _loading
+
+    fun onRoleChange(newValue: Int) {
+        _role.value = newValue
     }
 
-    private fun validateFields(): Boolean {
-        var isValid = true
-
-        if (name.value.isBlank()) {
-            nameError.value = "Name cannot be empty"
-            isValid = false
-        } else {
-            nameError.value = null
-        }
-
-        if (phoneNumber.value.isBlank()) {
-            phoneNumberError.value = "Phone number cannot be empty"
-            isValid = false
-        } else {
-            phoneNumberError.value = null
-        }
-
-        // Validate work shift
-        if (workShift.value.isBlank()) {
-            shiftError.value = "Shift cannot be empty"
-            isValid = false
-        } else {
-            shiftError.value = null
-        }
-
-        return isValid
+    fun onEmailChange(newValue: String) {
+        _email.value = newValue
     }
 
-    fun clearForm() {
-        name.value = ""
-        phoneNumber.value = ""
-        workShift.value = ""
-        role.value = "Nhân viên"
+    fun onPasswordChange(newValue: String) {
+        _password.value = newValue
     }
+
+    fun signup() {
+        viewModelScope.launch {
+            _loading.value = true
+            try {
+                val account = Account(
+                    _id = "",
+                    username = _email.value,
+                    password = _password.value,
+                    role = _role.value
+                )
+
+                val response = api.signup(account)
+                if (response.isSuccessful && response.body() != null) {
+                    _signupSuccess.value = true
+                } else {
+                    Log.d("Sign up fail", "${response.message()}")
+                }
+            } catch (e: Exception) {
+                Log.d("Sign up fail", "${e.localizedMessage}")
+            }
+        }
+    }
+
 }

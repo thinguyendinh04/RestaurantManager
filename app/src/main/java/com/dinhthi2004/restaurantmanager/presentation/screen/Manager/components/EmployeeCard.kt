@@ -28,7 +28,6 @@ import com.dinhthi2004.restaurantmanager.data.Employee
 fun EmployeeCard(employee: Employee, onClick: () -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     val total=employee.thuong + employee.luongCb
-    // Hiển thị dialog chi tiết khi người dùng nhấn vào
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },

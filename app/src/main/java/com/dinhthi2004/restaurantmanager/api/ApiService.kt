@@ -4,6 +4,7 @@ import com.dinhthi2004.restaurantmanager.model.Account
 import com.dinhthi2004.restaurantmanager.model.Bill
 import com.dinhthi2004.restaurantmanager.model.BillDetail
 import com.dinhthi2004.restaurantmanager.model.Ingredient
+import com.dinhthi2004.restaurantmanager.model.Meal
 import com.dinhthi2004.restaurantmanager.model.Table
 import retrofit2.Response
 import retrofit2.http.Body
@@ -21,7 +22,7 @@ interface ApiService {
     suspend fun login(@Body loginInfo: Account): Response<Account>
 
     @POST("register")
-    suspend fun signup(@Body signupInfo: Any): Response<Any>
+    suspend fun signup(@Body signupInfo: Account): Response<Account>
 
     @GET("ingredient/get-list")
     suspend fun getIngredients(@Header("authorization") jwtToken: String): ApiResponse<List<Ingredient>>
@@ -34,15 +35,36 @@ interface ApiService {
 
     @GET("billDetail/get-list-billDetail")
     suspend fun getBillDetails(@Header("authorization") jwtToken: String): ApiResponse<List<BillDetail>>
-    @GET
-    suspend fun <Model> getFromApi(@Header("authorization") jwtToken: String, @Url endpoint: String, @Path("id") id: String): Response<Model> // chỉ cần chuyền id khi muốn lấy 1 món ăn(meal) theo id không thì chuyền 1 String trống ""
 
-    @POST
-    suspend fun <Model> addToApi(@Header("authorization") jwtToken: String, @Url endpoint: String, @Body inputModel: Model): Response<Model>
+    @GET("meal/get-meals")
+    suspend fun getMeals(
+        @Header("authorization") jwtToken: String,
+    ): Response<MealResponse>
 
-    @PUT
-    suspend fun <Model> updateToApi(@Header("authorization") jwtToken: String, @Url endpoint: String, @Path("id") id: String, @Body inputModel: Model): Response<Model>
+    @POST("")
+    suspend fun addMeal(
+        @Header("authorization") jwtToken: String,
+        @Body meal: Meal
+    ): Response<MealResponse>
+
+    @DELETE("meal/delete-meal/:mealID")
+    suspend fun deleteMeal(
+        @Header("authorization") jwtToken: String,
+        @Path("mealId") mealId:String
+    ): Response<MealResponse>
+
+    @GET("users")
+    suspend fun getUser(
+        @Header("authorization") jwtToken: String,
+    ): Response<AccountResponse>
+
+    @GET("user")
+    suspend fun getUserInformation(
+        @Header("authorization") jwtToken: String,
+    ): Response<AccountDetailResponse>
 
     @DELETE
-    suspend fun <Model> deleteFromApi(@Header("authorization") jwtToken: String, @Url endpoint: String, @Path("id") id:String): Response<Model>
+    suspend fun deleteUser(
+        @Header("authorization") jwtToken: String,
+    ): Response<Account>
 }

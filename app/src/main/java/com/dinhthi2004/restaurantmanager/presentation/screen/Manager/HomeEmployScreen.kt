@@ -21,12 +21,16 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel.H
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeEmployeeScreen(navigationController: NavHostController,
-                       viewModel: HomeEmployeeViewModel= viewModel()) {
+fun HomeEmployeeScreen(
+    navigationController: NavHostController,
+    viewModel: HomeEmployeeViewModel = viewModel()
+) {
     var searchQuery by remember { mutableStateOf("") }
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.White)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
 
         Column(
             modifier = Modifier
@@ -59,7 +63,7 @@ fun HomeEmployeeScreen(navigationController: NavHostController,
                     .background(Color.White)
             ) {
                 items(viewModel.filteredEmployees(searchQuery).size) { index ->
-                    EmployeeCard(employee = employ[index]){}
+                    EmployeeCard(employee = employ[index]) {}
                 }
             }
         }

@@ -30,14 +30,12 @@ import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.IngreCT
 
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.OrderItem
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel.BillDetailViewModel
 import com.dinhthi2004.restaurantmanager.viewmodel.OrderViewModel
 
 
 @Composable
 fun HomeOrderScreen(navigationController: NavHostController) {
     val orderViewModel: OrderViewModel = viewModel()
-    val billDetailViewModel: BillDetailViewModel = viewModel()
     val token = TokenManager.token
     Log.d("tokeen", "OrderViewModel: " + token)
 
@@ -46,14 +44,8 @@ fun HomeOrderScreen(navigationController: NavHostController) {
             orderViewModel.getBills(token)
         }
     }
-    LaunchedEffect(Unit) {
-        if (token != null) {
-            billDetailViewModel.getBillDetail(token)
-        }
-    }
 
     val order by orderViewModel.bills.observeAsState(emptyList())
-    val billDetail by billDetailViewModel.billDetails.observeAsState(emptyList())
     var showDialog by remember { mutableStateOf(false) }
     var selectedOrder by remember { mutableStateOf<Bill?>(null) }
 

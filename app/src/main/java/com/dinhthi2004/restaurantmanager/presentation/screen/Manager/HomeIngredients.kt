@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -20,9 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.model.TokenManager
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.AddIngredientDialog
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.NguyenLieuItem
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.nguyen
 import com.dinhthi2004.restaurantmanager.viewmodel.IngredientViewModel
 
 @Composable

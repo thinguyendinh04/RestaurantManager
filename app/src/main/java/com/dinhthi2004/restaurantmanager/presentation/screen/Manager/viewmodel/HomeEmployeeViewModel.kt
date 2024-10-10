@@ -3,7 +3,6 @@ package com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel
 import androidx.lifecycle.ViewModel
 import com.dinhthi2004.restaurantmanager.data.Employee
 import com.dinhthi2004.restaurantmanager.data.employ
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.employee.EmployeeData
 
 class HomeEmployeeViewModel : ViewModel() {
 

@@ -27,23 +27,14 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_repor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RevenueReportScreen(
-navController: NavController,
+    navController: NavController,
     viewModel: RevenueReportViewModel = viewModel()
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Thống kê") },
-                navigationIcon = {
-                    IconButton(onClick = {
-//                        navController.navigateUp()
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_back),
-                            contentDescription = "Back"
-                        )
-                    }
-                }, colors = TopAppBarDefaults.topAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.White,
                     titleContentColor = Color.Black,
                     actionIconContentColor = Color.Black
@@ -51,7 +42,7 @@ navController: NavController,
             )
         },
         bottomBar = {
-BottomBar(navController = navController)
+            BottomBar(navController = navController)
         }
     ) {
         Column(
@@ -126,9 +117,3 @@ BottomBar(navController = navController)
         }
     }
 }
-
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun Preview(){
-//    RevenueReportScreen()
-//}
