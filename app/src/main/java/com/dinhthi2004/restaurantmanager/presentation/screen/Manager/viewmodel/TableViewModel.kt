@@ -46,4 +46,30 @@ class TableViewModel : ViewModel() {
             }
         }
     }
+
+    fun addTable(token: String, table: Table, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            try {
+                // Gọi API để thêm bàn mới
+                val response = api.addTable("Bearer $token", table)
+
+                // Kiểm tra phản hồi từ API
+                if (response.message == "Table added successfully") {
+                    _table.postValue(response.table)
+                    Log.d(TAG, "Table added successfully: ${response.table}")
+                    _statusCode.postValue(200) // Cập nhật mã trạng thái khi thành công
+
+                    // Gọi callback onSuccess để cập nhật danh sách bàn
+                    onSuccess()
+                } else {
+                    Log.e(TAG, "Failed to add table: ${response.message}")
+                    _statusCode.postValue(400) // Cập nhật mã trạng thái khi thất bại
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error adding table: ${e.message}")
+                _statusCode.postValue(500) // Cập nhật mã trạng thái khi có lỗi
+            }
+        }
+    }
+
 }
