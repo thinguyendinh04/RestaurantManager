@@ -30,6 +30,12 @@ interface ApiService {
     @GET("tables")
     suspend fun getTables(@Header("authorization") jwtToken: String): ApiResponse1<List<Table>>
 
+    @POST("table")
+    suspend fun addTable(
+        @Header("authorization") jwtToken: String,
+        @Body table: Table
+    ): ApiResponse2<Table>
+
     @GET("bill/get-list-bill")
     suspend fun getBills(@Header("authorization") jwtToken: String): ApiResponse<List<Bill>>
 
@@ -68,4 +74,5 @@ interface ApiService {
     suspend fun deleteUser(
         @Header("authorization") jwtToken: String,
     ): Response<Account>
+
 }

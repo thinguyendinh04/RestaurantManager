@@ -14,6 +14,12 @@ data class ApiResponse1<T>(
     val tables: T
 )
 
+data class ApiResponse2<T>(
+    val message: String,
+    val table: T
+)
+
+
 data class MealResponse(
     val message: String,
     val data: List<Meal>

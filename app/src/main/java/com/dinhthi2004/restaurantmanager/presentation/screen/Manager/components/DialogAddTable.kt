@@ -7,23 +7,33 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.dinhthi2004.restaurantmanager.model.Table
+import com.dinhthi2004.restaurantmanager.model.TokenManager
+import com.dinhthi2004.restaurantmanager.viewmodel.TableViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogTable(onDismiss: () -> Unit) {
-    var ban by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var quantity by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var isOnline by remember { mutableStateOf(false) }
+    val tableViewModel: TableViewModel = viewModel()
+    val token = TokenManager.token
+
+    var tableName by remember { mutableStateOf("") }
+    var tableStatus by remember { mutableStateOf("") }
+    var orderName by remember { mutableStateOf("") }
+
+    // Xác thực dữ liệu nhập vào
+    val isTableNameValid = tableName.isNotBlank()
+    val isTableStatusValid = tableStatus.toIntOrNull() != null
+    val isOrderNameValid = orderName.isNotBlank()
 
     AlertDialog(
         onDismissRequest = { onDismiss() },
@@ -31,67 +41,66 @@ fun DialogTable(onDismiss: () -> Unit) {
         text = {
             Column {
                 TextField(
-                    value = ban,
-                    onValueChange = { ban = it },
-                    label = { Text("Ban") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = name,
-                    onValueChange = { name = it },
+                    value = tableName,
+                    onValueChange = { tableName = it },
                     label = { Text("Tên bàn") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = phone,
-                    onValueChange = { phone = it },
-                    label = { Text("Số điện thoại") },
+                    value = tableStatus,
+                    onValueChange = { tableStatus = it },
+                    label = { Text("Trạng thái bàn") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = quantity,
-                    onValueChange = { quantity = it },
-                    label = { Text("Số lượng") },
+                    value = orderName,
+                    onValueChange = { orderName = it },
+                    label = { Text("Tên người đặt") },
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("Mô tả") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(
-                        checked = isOnline,
-                        onCheckedChange = { isOnline = it }
-                    )
-                    Text(text = "Online")
-                }
             }
         },
         confirmButton = {
-            Button(onClick = { onDismiss() },  modifier = Modifier
-                .padding(top = 5.dp),
+            Button(
+                onClick = {
+                    if (isTableNameValid && isTableStatusValid && isOrderNameValid) {
+                        val newTable = Table(
+                            id = "", // ID có thể được tạo tự động từ backend
+                            table_name = tableName,
+                            table_status = tableStatus.toInt(),
+                            oder_name = orderName,
+                            id_account = null // Giả sử thông tin tài khoản không cần nhập ở đây
+                        )
+                        if (token != null) {
+                            tableViewModel.addTable(token, newTable) {
+                                // Sau khi thêm thành công, cập nhật danh sách bàn
+                                tableViewModel.getTables(token) // Gọi lại API để cập nhật danh sách
+                            }
+                        }
+                        onDismiss()
+                    } else {
+                        // Hiển thị thông báo lỗi cho người dùng
+                        // Bạn có thể sử dụng Toast hoặc Snackbar để thông báo
+                    }
+                },
+                modifier = Modifier
+                    .padding(top = 5.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xff99fdff),
                     contentColor = Color.White
-                )) {
+                )
+            ) {
                 Text("Xác nhận", color = Color.Black)
             }
         },
         dismissButton = {
-            Button(onClick = { onDismiss() },
+            Button(
+                onClick = { onDismiss() },
                 modifier = Modifier
                     .padding(top = 5.dp),
                 shape = RoundedCornerShape(12.dp),
@@ -101,10 +110,7 @@ fun DialogTable(onDismiss: () -> Unit) {
                 )
             ) {
                 Text("Hủy")
-
             }
         }
     )
 }
-
-
