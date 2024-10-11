@@ -3,6 +3,7 @@ package com.dinhthi2004.restaurantmanager.presentation.screen.Manager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,7 +26,12 @@ fun HomeEmployeeScreen(
     navigationController: NavHostController,
     viewModel: HomeEmployeeViewModel = viewModel()
 ) {
+    val employeeList by viewModel.userList.collectAsState()
+    val accountDetail by viewModel.accountDetail.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
+    LaunchedEffect(Unit) {
+        viewModel.getAllUser()
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -62,8 +68,8 @@ fun HomeEmployeeScreen(
                     .fillMaxWidth()
                     .background(Color.White)
             ) {
-                items(viewModel.filteredEmployees(searchQuery).size) { index ->
-                    EmployeeCard(employee = employ[index]) {}
+                items(employeeList) { index ->
+                    EmployeeCard(employee= index) {}
                 }
             }
         }
