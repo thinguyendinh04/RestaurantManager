@@ -21,13 +21,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.data.Employee
+import com.dinhthi2004.restaurantmanager.model.Account
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmployeeCard(employee: Employee, onClick: () -> Unit) {
+fun EmployeeCard(employee: Account, onClick: () -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
-    val total=employee.thuong + employee.luongCb
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
@@ -50,7 +51,7 @@ fun EmployeeCard(employee: Employee, onClick: () -> Unit) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Image(
-                                painter = painterResource(id = employee.image),
+                                painter = painterResource(R.drawable.man),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(100.dp)
@@ -62,20 +63,14 @@ fun EmployeeCard(employee: Employee, onClick: () -> Unit) {
                             Spacer(modifier = Modifier.width(16.dp))
 
                             Column {
-                                Text(text = "Họ tên: ${employee.name}")
-                                Text(text = "Chức vụ: ${employee.job}")
-                                Text(text = "SĐT: ${employee.phone}")
+                                Text(text = "Họ tên: ${employee.username}")
                                 Text(
-                                    text = "${statusToStringEmploy(employee.status)}",
+                                    text = "${getRoleText(employee.role)}",
                                     color = Color.Red
                                 )
 
                             }
                         }
-                        Text(text = "Lương", fontSize = 15.sp)
-                        Text(text = "Lương cơ bản:: ${employee.luongCb} VND")
-                        Text(text = "Lương thưởng: ${employee.thuong} VND")
-                        Text(text = "Tổng lương: ${total} VND")
 
                     }
                     Button(
@@ -108,7 +103,7 @@ fun EmployeeCard(employee: Employee, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = employee.image),
+                painter = painterResource(R.drawable.man),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
@@ -119,10 +114,10 @@ fun EmployeeCard(employee: Employee, onClick: () -> Unit) {
             Column(
                 modifier = Modifier.padding(start = 8.dp)
             ) {
-                Text(text = employee.name, fontSize = 14.sp, color = Color.Black)
-                Text(text = employee.phone, fontSize = 14.sp, color = Color.Black)
-                Text(text = "${statusToStringEmploy(employee.status)}", fontSize = 14.sp, color = Color.Black)
-                Text(text = employee.job, fontSize = 14.sp, color = Color.Black)
+                Text(text = employee.username, fontSize = 14.sp, color = Color.Black)
+
+                Text(text = "${getRoleText(employee.role)}", fontSize = 14.sp, color = Color.Black)
+
             }
             Spacer(modifier = Modifier.weight(1f))
 
@@ -140,12 +135,10 @@ fun EmployeeCard(employee: Employee, onClick: () -> Unit) {
     }
 }
 
-@Composable
-fun statusToStringEmploy(status: Int): String {
-    return when (status) {
-        0 -> "Ca Sáng"
-        1 -> "Ca Tối"
-        2 -> "Ca Đêm"
+fun getRoleText(role: Int): String {
+    return when (role) {
+        1 -> "Quản lí"
+        2 -> "Nhan vien"
         else -> "Unknown"
     }
 }
