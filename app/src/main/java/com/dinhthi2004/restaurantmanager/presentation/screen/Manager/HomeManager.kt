@@ -162,7 +162,6 @@ fun HomeManager(navigationController: NavHostController) {
             items(bill) { order ->
                 HomeBill(bill = order) {
                     selectedOrder = order
-                    showDialog = true
                 }
             }
         }

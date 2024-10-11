@@ -87,6 +87,12 @@ interface ApiService {
         @Body table: Table
     ): ApiResponse2<Table>
 
+    @POST("ingredient/add")
+    suspend fun addIngredient(
+        @Header("authorization") jwtToken: String,
+        @Body ingredient: Ingredient
+    ): ApiResponse<Ingredient>
+
     @PUT
     suspend fun update1Meal(
         @Header("authorization") jwtToken: String,

@@ -19,20 +19,23 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.model.TokenManager
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.AddIngredientDialog
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.DialogTable
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.NguyenLieuItem
 import com.dinhthi2004.restaurantmanager.viewmodel.IngredientViewModel
 
 @Composable
 fun HomeIngredients(navigationController: NavHostController) {
     val ingredientViewModel: IngredientViewModel = viewModel()
-    var showDialog by remember { mutableStateOf(false) }
 
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        AddIngredientDialog (onDismiss = { showDialog = false })
+    }
     val token = TokenManager.token;
     Log.d("tokeen", "HomeIngredients: "+token)
     LaunchedEffect(Unit) {
-        if (token != null) {
-            ingredientViewModel.getIngredients(token)
-        }
+        token?.let { ingredientViewModel.getIngredients(it) }
     }
     val ingredients by ingredientViewModel.ingredients.observeAsState(emptyList())
 
