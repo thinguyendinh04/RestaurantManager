@@ -14,6 +14,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.Url
 
 interface ApiService {
@@ -30,12 +31,6 @@ interface ApiService {
     @GET("tables")
     suspend fun getTables(@Header("authorization") jwtToken: String): ApiResponse1<List<Table>>
 
-    @POST("table")
-    suspend fun addTable(
-        @Header("authorization") jwtToken: String,
-        @Body table: Table
-    ): ApiResponse2<Table>
-
     @GET("bill/get-list-bill")
     suspend fun getBills(@Header("authorization") jwtToken: String): ApiResponse<List<Bill>>
 
@@ -47,13 +42,16 @@ interface ApiService {
         @Header("authorization") jwtToken: String,
     ): Response<MealResponse>
 
-    @POST("")
+
+    @POST("meal/add-meal")
     suspend fun addMeal(
         @Header("authorization") jwtToken: String,
         @Body meal: Meal
-    ): Response<MealResponse>
+    ): Response<Meal>
 
-    @DELETE("meal/delete-meal/{mealId}")
+
+
+    @DELETE("meal/delete-meal")
     suspend fun deleteMeal(
         @Header("authorization") jwtToken: String,
         @Path("mealId") mealId: String
@@ -70,9 +68,48 @@ interface ApiService {
         @Path("userId") idAccount: String
     ): Response<AccountDetailResponse>
 
-    @DELETE
-    suspend fun deleteUser(
+    @GET
+    suspend fun get1Meal(
         @Header("authorization") jwtToken: String,
-    ): Response<Account>
+        @Url endpoint: String
+    ): Response<Meal>
 
+    @GET
+    suspend fun searchMeals(
+        @Header("authorization") jwtToken: String,
+        @Url endpoint: String,
+        @Query("mealname") mealname: String
+    ): Response<ArrayList<Meal>>
+
+    @POST("table")
+    suspend fun addTable(
+        @Header("authorization") jwtToken: String,
+        @Body table: Table
+    ): ApiResponse2<Table>
+
+    @POST("ingredient/add")
+    suspend fun addIngredient(
+        @Header("authorization") jwtToken: String,
+        @Body ingredient: Ingredient
+    ): ApiResponse<Ingredient>
+
+    @PUT
+    suspend fun update1Meal(
+        @Header("authorization") jwtToken: String,
+        @Url endpoint: String,
+        @Path("id") id: String,
+        @Body inputModel: Meal
+    ): Response<Meal>
+
+    @DELETE
+    suspend fun delete1Meal(
+        @Header("authorization") jwtToken: String,
+        @Url endpoint: String,
+        @Path("id") id: String
+    ): Response<Meal>
+
+    @GET("meal-type/get-meal-types")
+    suspend fun getMealType(
+        @Header("authorization") jwtToken: String,
+    ): Response<MealTypeResponse>
 }

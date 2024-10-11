@@ -28,9 +28,6 @@ class AddNewEmployeeViewModel : ViewModel() {
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
-    fun onRoleChange(newValue: Int) {
-        _role.value = newValue
-    }
 
     fun onEmailChange(newValue: String) {
         _email.value = newValue

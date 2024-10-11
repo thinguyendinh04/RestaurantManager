@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.rememberImagePainter
+import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.model.Ingredient
 
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.nguyen
@@ -25,7 +26,6 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.nguyen
 fun NguyenLieuItem(ingredient: Ingredient, onItemClicked: () -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
 
-    val priceNguyen = ingredient.ingredient_price * ingredient.ingredients_amount.toDouble()
 
     // Hiển thị dialog chi tiết khi người dùng nhấn vào
     if (showDialog) {
@@ -64,7 +64,7 @@ fun NguyenLieuItem(ingredient: Ingredient, onItemClicked: () -> Unit) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Image(
-                                painter = rememberImagePainter(ingredient.ingredient_image),
+                                painter = painterResource(R.drawable.ingre),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(100.dp)
@@ -75,7 +75,6 @@ fun NguyenLieuItem(ingredient: Ingredient, onItemClicked: () -> Unit) {
                             Spacer(modifier = Modifier.width(16.dp))
                             Column {
                                 Text(text = "Số lượng: ${ingredient.ingredients_amount}")
-                                Text(text = "Giá: ${priceNguyen}đ")
                             }
                         }
                     }
@@ -111,7 +110,7 @@ fun NguyenLieuItem(ingredient: Ingredient, onItemClicked: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = rememberImagePainter(ingredient.ingredient_image),
+                painter =painterResource(R.drawable.ingre),
                 contentDescription = "",
                 modifier = Modifier
                     .width(70.dp)

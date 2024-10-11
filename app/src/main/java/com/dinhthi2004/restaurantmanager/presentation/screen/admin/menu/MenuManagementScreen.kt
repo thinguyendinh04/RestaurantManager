@@ -1,6 +1,8 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu
 
 import MenuItemCard
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,12 +10,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.model.Meal
+import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
+import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.DeleteConfirmationDialog
+import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.MealDetailDialog
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,8 +33,25 @@ fun MenuManagementScreen(
     val filteredItems = viewModel.filteredItems(mealList)
 
     var selectedMeal by remember { mutableStateOf<Meal?>(null) }
+    var mealToDelete by remember { mutableStateOf<Meal?>(null) }
     val showDialog = remember { mutableStateOf(false) }
+    val showDeleteDialog = remember { mutableStateOf(false) }
 
+    val context = LocalContext.current  // Get the context for Toast
+    val deleteMealState by viewModel.deleteMealState.collectAsState(null)
+    LaunchedEffect(deleteMealState) {
+        deleteMealState?.let {
+            it.onSuccess { message ->
+                Log.d("MenuManagement", message)
+                viewModel.getAllMeals()
+                Toast.makeText(context, "Xóa món ăn thành công", Toast.LENGTH_SHORT).show()
+            }
+            it.onFailure { error ->
+                Log.e("MenuManagement", "Error: ${error.localizedMessage}")
+                Toast.makeText(context, "Xóa món ăn thành công", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
     LaunchedEffect(Unit) {
         viewModel.getAllMeals()
     }
@@ -50,7 +73,7 @@ fun MenuManagementScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate("add_food_screen")
+                    navController.navigate(Routes.ADD_NEW_FOOD)
                 }
             ) {
                 Icon(
@@ -100,49 +123,36 @@ fun MenuManagementScreen(
                                 showDialog.value = true
                             },
                             onDeleteClick = {
-                                viewModel.deleteMeal(mealId = meal._id)
+                                mealToDelete = meal
+                                showDeleteDialog.value = true
                             }
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             }
-            
+
             if (showDialog.value && selectedMeal != null) {
                 MealDetailDialog(
                     meal = selectedMeal!!,
                     onDismiss = { showDialog.value = false }
                 )
             }
+
+            if (showDeleteDialog.value && mealToDelete != null) {
+                DeleteConfirmationDialog(
+                    meal = mealToDelete!!,
+                    onConfirm = {
+                        mealToDelete!!._id?.let { viewModel.deleteMeal(mealId = it) }
+                        showDeleteDialog.value = false
+                    },
+                    onDismiss = {
+                        showDeleteDialog.value = false
+                    }
+                )
+            }
         }
     }
-}
-
-@Composable
-fun MealDetailDialog(meal: Meal, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(text = "Chi tiết món ăn", style = MaterialTheme.typography.titleLarge)
-        },
-        text = {
-            Column {
-                Text(text = "Tên: ${meal.name}", style = MaterialTheme.typography.bodyLarge)
-                Text(text = "Giá: ${meal.price} VND", style = MaterialTheme.typography.bodyMedium)
-                Text(
-                    text = "Trạng thái: ${if (meal.status == 1) "Còn hàng" else "Hết hàng"}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text(text = "Thông tin: ${meal.info}", style = MaterialTheme.typography.bodyMedium)
-                Text(text = "Đánh giá: ${meal.rating}", style = MaterialTheme.typography.bodyMedium)
-            }
-        },
-        confirmButton = {
-            Button(onClick = onDismiss) {
-                Text("Đóng")
-            }
-        }
-    )
 }
 
 

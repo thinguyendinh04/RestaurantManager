@@ -25,7 +25,7 @@ fun WelcomeScreen(navController: NavController? = null) {
     val imageSize = 300.dp
 
     LaunchedEffect(Unit) {
-        delay(3000)
+        delay(1500)
         navController?.navigate(Routes.LOGIN_SCREEN)
     }
 

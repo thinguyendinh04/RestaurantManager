@@ -28,10 +28,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.model.Meal
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.MenuManageViewModel
 
@@ -103,6 +105,12 @@ fun MenuItemCard(meal: Meal) {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_dish),
+                contentDescription = "Meal image",
+                modifier = Modifier
+                    .size(64.dp)
+            )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 BasicText(

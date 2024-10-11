@@ -3,6 +3,7 @@ package com.dinhthi2004.restaurantmanager.api
 import com.dinhthi2004.restaurantmanager.model.Account
 import com.dinhthi2004.restaurantmanager.model.AccountData
 import com.dinhthi2004.restaurantmanager.model.Meal
+import com.dinhthi2004.restaurantmanager.model.MealType
 
 data class ApiResponse<T>(
     val message: String,
@@ -33,4 +34,9 @@ data class AccountResponse(
 data class AccountDetailResponse(
     val message: String,
     val accountDetail: AccountData
+)
+
+data class MealTypeResponse(
+    val message: String,
+    val data: List<MealType>
 )

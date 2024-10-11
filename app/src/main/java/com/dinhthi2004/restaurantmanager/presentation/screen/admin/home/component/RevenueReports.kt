@@ -1,5 +1,6 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.admin.home.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,11 +20,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
+import com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_report.RevenueReportViewModel
 
 @Composable
 fun RevenueReports(
@@ -41,6 +45,11 @@ fun RevenueReports(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(Color(0xFFE0F7FA), Color(0xFFB3E5FC))
+                    )
+                )
                 .padding(15.dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.SpaceBetween

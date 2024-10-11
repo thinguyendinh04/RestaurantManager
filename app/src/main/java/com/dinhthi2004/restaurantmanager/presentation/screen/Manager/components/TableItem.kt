@@ -32,7 +32,7 @@ fun TableItem(table: Table, onItemClicked: () -> Unit) {
     Box(
         modifier = Modifier
             .width(147.dp)
-            .height(146.dp)
+            .height(120.dp)
             .padding(start = 10.dp)
             .clickable { onItemClicked() } // Gọi hàm khi item được nhấp
             .border(

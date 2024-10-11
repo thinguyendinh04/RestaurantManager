@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -7,12 +8,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.model.Meal
 
 @Composable
-fun MenuItemCard(meal: Meal, onClick: () -> Unit, onDeleteClick: () -> Unit) {
+fun MenuItemCard(
+    meal: Meal,
+    onClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,21 +35,35 @@ fun MenuItemCard(meal: Meal, onClick: () -> Unit, onDeleteClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Hiển thị thông tin của meal
-            Column {
-                Text(
-                    text = "Tên: ${meal.name}",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_dish),
+                    contentDescription = "Meal image",
+                    modifier = Modifier
+                        .size(64.dp)
                 )
-                Text(
-                    text = "Giá: ${meal.price} VND",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp)
-                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+                // Hiển thị thông tin của meal
+                Column {
+                    Text(
+                        text = "Tên: ${meal.name}",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
+                    )
+                    Text(
+                        text = "Giá: ${meal.price} VND",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp)
+                    )
+                }
             }
 
-
             IconButton(
-                onClick = onDeleteClick,
+                onClick = {
+                    onDeleteClick()
+                },
                 modifier = Modifier.size(24.dp)
             ) {
                 Icon(
