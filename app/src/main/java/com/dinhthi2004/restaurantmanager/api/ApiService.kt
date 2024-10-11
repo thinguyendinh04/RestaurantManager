@@ -42,13 +42,13 @@ interface ApiService {
         @Header("authorization") jwtToken: String,
     ): Response<MealResponse>
 
-    @POST("")
+    @POST("meal/add-meal")
     suspend fun addMeal(
         @Header("authorization") jwtToken: String,
         @Body meal: Meal
     ): Response<MealResponse>
 
-    @DELETE("meal/delete-meal/{mealId}")
+    @DELETE("meal/delete-meal")
     suspend fun deleteMeal(
         @Header("authorization") jwtToken: String,
         @Path("mealId") mealId: String
@@ -90,6 +90,12 @@ interface ApiService {
         @Query("mealname") mealname: String
     ): Response<ArrayList<Meal>>
 
+    @POST("table")
+    suspend fun addTable(
+        @Header("authorization") jwtToken: String,
+        @Body table: Table
+    ): ApiResponse2<Table>
+
     @PUT
     suspend fun update1Meal(
         @Header("authorization") jwtToken: String,
@@ -104,4 +110,9 @@ interface ApiService {
         @Url endpoint: String,
         @Path("id") id: String
     ): Response<Meal>
+
+    @GET("meal-type/get-meal-types")
+    suspend fun getMealType(
+        @Header("authorization") jwtToken: String,
+    ): Response<MealTypeResponse>
 }

@@ -77,14 +77,12 @@ fun DialogTable(onDismiss: () -> Unit) {
                         )
                         if (token != null) {
                             tableViewModel.addTable(token, newTable) {
-                                // Sau khi thêm thành công, cập nhật danh sách bàn
-                                tableViewModel.getTables(token) // Gọi lại API để cập nhật danh sách
+                                tableViewModel.getTables(token)
                             }
                         }
                         onDismiss()
                     } else {
-                        // Hiển thị thông báo lỗi cho người dùng
-                        // Bạn có thể sử dụng Toast hoặc Snackbar để thông báo
+
                     }
                 },
                 modifier = Modifier

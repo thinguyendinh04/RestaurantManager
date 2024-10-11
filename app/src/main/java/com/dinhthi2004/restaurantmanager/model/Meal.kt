@@ -1,8 +1,6 @@
 package com.dinhthi2004.restaurantmanager.model
 
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class Meal(
     val _id: String,
     val name: String,
