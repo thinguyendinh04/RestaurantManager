@@ -27,7 +27,6 @@ class AddNewFoodViewModel : ViewModel() {
     private val _addMealState = MutableStateFlow<Result<String>?>(null)
     val addMealState: StateFlow<Result<String>?> = _addMealState
 
-    // Lấy tất cả các loại món ăn từ API
     fun getAllMealTypes() {
         viewModelScope.launch {
             _isLoading.value = true
@@ -46,17 +45,15 @@ class AddNewFoodViewModel : ViewModel() {
         }
     }
 
-    // Thêm món ăn mới vào API
     fun addNewMeal(meal: Meal) {
         viewModelScope.launch {
-            _isLoading.value = true // Bắt đầu tải dữ liệu
+            _isLoading.value = true
             try {
                 if (token != null) {
                     val response = api.addMeal("Bearer $token", meal)
                     if (response.isSuccessful) {
-                        val addedMeal = response.body()
-                        _addMealState.value = Result.success("Meal added successfully, ${addedMeal?.data}")
-                        Log.d("API Success", "Meal added: ${addedMeal?.data}")
+                        val addedMeal = response.body()!!
+                        _addMealState.value = Result.success("Meal added successfully, ${addedMeal?._id}")
                     } else {
                         val errorBody = response.errorBody()?.string()
                         _addMealState.value = Result.failure(Exception("Failed to add meal: ${errorBody ?: response.message()}"))
@@ -69,17 +66,15 @@ class AddNewFoodViewModel : ViewModel() {
                 _addMealState.value = Result.failure(e)
                 Log.e("API Exception", "Error occurred: ${e.localizedMessage}")
             } finally {
-                _isLoading.value = false // Kết thúc tải dữ liệu
+                _isLoading.value = false
             }
         }
     }
 
-    // Xóa thông báo lỗi nếu cần
     fun clearErrorMessage() {
         _errorMessage.value = null
     }
 
-    // Xóa trạng thái thêm món ăn
     fun clearAddMealState() {
         _addMealState.value = null
     }

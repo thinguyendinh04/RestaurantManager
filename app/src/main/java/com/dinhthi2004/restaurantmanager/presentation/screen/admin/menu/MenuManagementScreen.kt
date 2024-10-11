@@ -143,7 +143,7 @@ fun MenuManagementScreen(
                 DeleteConfirmationDialog(
                     meal = mealToDelete!!,
                     onConfirm = {
-                        viewModel.deleteMeal(mealId = mealToDelete!!._id)
+                        mealToDelete!!._id?.let { viewModel.deleteMeal(mealId = it) }
                         showDeleteDialog.value = false
                     },
                     onDismiss = {

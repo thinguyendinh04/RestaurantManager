@@ -42,11 +42,14 @@ interface ApiService {
         @Header("authorization") jwtToken: String,
     ): Response<MealResponse>
 
+
     @POST("meal/add-meal")
     suspend fun addMeal(
         @Header("authorization") jwtToken: String,
         @Body meal: Meal
-    ): Response<MealResponse>
+    ): Response<Meal>
+
+
 
     @DELETE("meal/delete-meal")
     suspend fun deleteMeal(
@@ -64,18 +67,6 @@ interface ApiService {
         @Header("authorization") jwtToken: String,
         @Path("userId") idAccount: String
     ): Response<AccountDetailResponse>
-
-    @DELETE
-    suspend fun deleteUser(
-        @Header("authorization") jwtToken: String,
-    ): Response<Account>
-
-    @POST
-    suspend fun add1Meal(
-        @Header("authorization") jwtToken: String,
-        @Url endpoint: String,
-        @Body inputModel: Meal
-    ): Response<Meal>
 
     @GET
     suspend fun get1Meal(

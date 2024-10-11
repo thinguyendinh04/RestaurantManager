@@ -13,25 +13,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.MenuManageViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import com.dinhthi2004.restaurantmanager.model.Meal
-
 import com.dinhthi2004.restaurantmanager.model.MealType
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +38,6 @@ fun AddNewFoodScreen(
     navController: NavController,
     viewModel: AddNewFoodViewModel = viewModel(),
 ) {
-    // Các state cho từng thuộc tính của Meal
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var status by remember { mutableStateOf("") }
@@ -48,7 +45,6 @@ fun AddNewFoodScreen(
     var info by remember { mutableStateOf("") }
     var rating by remember { mutableStateOf("") }
 
-    // State để chọn loại món ăn (dropdown)
     val mealTypes by viewModel.mealTypes.collectAsState()
     var expanded by remember { mutableStateOf(false) }
     var selectedMealType by remember { mutableStateOf<MealType?>(null) }
@@ -56,16 +52,15 @@ fun AddNewFoodScreen(
     val context = LocalContext.current
     val addMealState by viewModel.addMealState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.getAllMealTypes()
-    }
-
-    // Khi thêm món ăn thành công, quay lại màn hình trước
     if (addMealState?.isSuccess == true) {
         LaunchedEffect(Unit) {
             Toast.makeText(context, "Meal added successfully", Toast.LENGTH_SHORT).show()
             navController.navigateUp()
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.getAllMealTypes()
     }
 
     Scaffold(
@@ -88,7 +83,6 @@ fun AddNewFoodScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // Các trường nhập liệu cho từng thuộc tính của Meal
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -164,29 +158,17 @@ fun AddNewFoodScreen(
             // Nút để thêm món ăn
             Button(
                 onClick = {
-                    val priceValue = price.toIntOrNull()
-                    val statusValue = status.toIntOrNull()
-                    val ratingValue = rating.toDoubleOrNull()
-
-                    if (name.isNotBlank() && priceValue != null && statusValue != null && selectedMealType != null && ratingValue != null) {
-                        viewModel.addNewMeal(
-                            Meal(
-                                _id = "",
-                                name = name,
-                                price = priceValue,
-                                status = statusValue,
-                                type_id = selectedMealType!!._id, // Sử dụng typeId đã chọn
-                                info = info,
-                                rating = ratingValue
-                            )
+                    viewModel.addNewMeal(
+                        Meal(
+                            _id = null,
+                            name = name,
+                            price = price.toInt(),
+                            status = status.toInt(),
+                            info = info,
+                            rating = rating.toDouble(),
+                            type_id = typeId
                         )
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Please fill out all fields correctly",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    )
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -195,5 +177,3 @@ fun AddNewFoodScreen(
         }
     }
 }
-
-
