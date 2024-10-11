@@ -25,11 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataProduct
+import com.dinhthi2004.restaurantmanager.model.Meal
 
 @Composable
 fun ItemOrderProduct(
-    item: dataProduct,
+    item: Meal,
     quantity: Int, // Tham số để nhận số lượng hiện tại
     onIncreaseClick: () -> Unit, // Callback khi tăng số lượng
     onDecreaseClick: () -> Unit, // Callback khi giảm số lượng

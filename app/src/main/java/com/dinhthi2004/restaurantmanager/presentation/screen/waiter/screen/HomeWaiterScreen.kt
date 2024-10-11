@@ -44,7 +44,7 @@ fun HomeWaiterScreen(navController: NavHostController) {
     var selectedCategory by remember { mutableStateOf("Tất cả") }
 
     val waiterHomeViewModel: WaiterHomeViewModel = viewModel()
-//    waiterHomeViewModel.getMeals()
+    //    waiterHomeViewModel.getMeals()
     val meals by waiterHomeViewModel.meals.observeAsState(emptyArray<Meal>().toList())
 
     Column(
@@ -105,16 +105,15 @@ fun HomeWaiterScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(20.dp),
             contentPadding = PaddingValues(20.dp)
         ) {
-            items(filteredItems) { item ->
-                var quantity by remember { mutableStateOf(0) } // Khởi tạo số lượng mặc định là 0
+            items(meals) { item ->
+                var quantity by remember { mutableStateOf(0) }
 
                 ItemOrderProduct(
                     item = item,
                     quantity = quantity,
-                    onIncreaseClick = { quantity++ }, // Tăng số lượng
+                    onIncreaseClick = { quantity++ },
                     onDecreaseClick = { if (quantity > 0) quantity-- }, // Giảm số lượng
                 )
-//                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }

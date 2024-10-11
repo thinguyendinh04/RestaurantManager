@@ -14,6 +14,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.Url
 
 interface ApiService {
@@ -29,12 +30,6 @@ interface ApiService {
 
     @GET("tables")
     suspend fun getTables(@Header("authorization") jwtToken: String): ApiResponse1<List<Table>>
-
-    @POST("table")
-    suspend fun addTable(
-        @Header("authorization") jwtToken: String,
-        @Body table: Table
-    ): ApiResponse2<Table>
 
     @GET("bill/get-list-bill")
     suspend fun getBills(@Header("authorization") jwtToken: String): ApiResponse<List<Bill>>
@@ -75,4 +70,38 @@ interface ApiService {
         @Header("authorization") jwtToken: String,
     ): Response<Account>
 
+    @POST
+    suspend fun add1Meal(
+        @Header("authorization") jwtToken: String,
+        @Url endpoint: String,
+        @Body inputModel: Meal
+    ): Response<Meal>
+
+    @GET
+    suspend fun get1Meal(
+        @Header("authorization") jwtToken: String,
+        @Url endpoint: String
+    ): Response<Meal>
+
+    @GET
+    suspend fun searchMeals(
+        @Header("authorization") jwtToken: String,
+        @Url endpoint: String,
+        @Query("mealname") mealname: String
+    ): Response<ArrayList<Meal>>
+
+    @PUT
+    suspend fun update1Meal(
+        @Header("authorization") jwtToken: String,
+        @Url endpoint: String,
+        @Path("id") id: String,
+        @Body inputModel: Meal
+    ): Response<Meal>
+
+    @DELETE
+    suspend fun delete1Meal(
+        @Header("authorization") jwtToken: String,
+        @Url endpoint: String,
+        @Path("id") id: String
+    ): Response<Meal>
 }
