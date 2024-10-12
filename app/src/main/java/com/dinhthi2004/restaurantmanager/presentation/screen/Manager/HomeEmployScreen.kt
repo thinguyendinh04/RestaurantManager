@@ -32,6 +32,12 @@ fun HomeEmployeeScreen(
     LaunchedEffect(Unit) {
         viewModel.getAllUser()
     }
+
+    val filteredEmployeeList = if (searchQuery.isNotBlank()) {
+        employeeList.filter { it.username.contains(searchQuery, ignoreCase = true) }
+    } else {
+        employeeList
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -68,7 +74,7 @@ fun HomeEmployeeScreen(
                     .fillMaxWidth()
                     .background(Color.White)
             ) {
-                items(employeeList) { index ->
+                items(filteredEmployeeList) { index ->
                     EmployeeCard(employee= index) {}
                 }
             }
