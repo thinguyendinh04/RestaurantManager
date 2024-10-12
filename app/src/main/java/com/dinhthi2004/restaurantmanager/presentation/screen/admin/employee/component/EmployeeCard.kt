@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +21,6 @@ import com.dinhthi2004.restaurantmanager.model.Account
 @Composable
 fun EmployeeCard(
     account: Account,
-    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -60,10 +58,6 @@ fun EmployeeCard(
                     text = "Chức vụ: ${getRoleText(account.role)}",
                     style = MaterialTheme.typography.bodyMedium
                 )
-            }
-
-            IconButton(onClick = onEditClick) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit")
             }
 
             IconButton(onClick = onDeleteClick) {

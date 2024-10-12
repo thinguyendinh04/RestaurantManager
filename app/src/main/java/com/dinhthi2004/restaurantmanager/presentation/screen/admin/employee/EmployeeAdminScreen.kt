@@ -97,9 +97,6 @@ fun EmployeeScreen(
                     items(employeeList) { employee ->
                         EmployeeCard(
                             account = employee,
-                            onEditClick = {
-                                navController.navigate("")
-                            },
                             onDeleteClick = {
 
                             },

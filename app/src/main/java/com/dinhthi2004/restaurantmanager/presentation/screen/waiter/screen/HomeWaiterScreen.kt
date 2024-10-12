@@ -44,7 +44,7 @@ fun HomeWaiterScreen(navController: NavHostController) {
     var selectedCategory by remember { mutableStateOf("Tất cả") }
 
     val waiterHomeViewModel: WaiterHomeViewModel = viewModel()
-    //    waiterHomeViewModel.getMeals()
+    waiterHomeViewModel.getMeals()
     val meals by waiterHomeViewModel.meals.observeAsState(emptyArray<Meal>().toList())
 
     Column(
@@ -86,7 +86,10 @@ fun HomeWaiterScreen(navController: NavHostController) {
             onCategorySelected = { selectedCategory = it })
 
         val filteredItems = ListData.filter { item ->
-            (selectedCategory == "Tất cả" || item.category == selectedCategory) && (searchQuery.isEmpty() || item.name.contains(searchQuery, ignoreCase = true))
+            (selectedCategory == "Tất cả" || item.category == selectedCategory) && (searchQuery.isEmpty() || item.name.contains(
+                searchQuery,
+                ignoreCase = true
+            ))
         }
 
         if (filteredItems.isEmpty()) {
@@ -107,7 +110,6 @@ fun HomeWaiterScreen(navController: NavHostController) {
         ) {
             items(meals) { item ->
                 var quantity by remember { mutableStateOf(0) }
-
                 ItemOrderProduct(
                     item = item,
                     quantity = quantity,
@@ -121,6 +123,6 @@ fun HomeWaiterScreen(navController: NavHostController) {
 
 @Preview(showSystemUi = true)
 @Composable
-fun WaiterHomePreview(){
+fun WaiterHomePreview() {
     HomeWaiterScreen(rememberNavController())
 }

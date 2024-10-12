@@ -6,12 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinhthi2004.restaurantmanager.api.HttpReq
 import com.dinhthi2004.restaurantmanager.model.Meal
+import com.dinhthi2004.restaurantmanager.model.TokenManager
 import kotlinx.coroutines.launch
 
 class WaiterHomeViewModel : ViewModel() {
     private val api = HttpReq.getInstance()
 
-    private val token: String = ""
+    val token = TokenManager.token
 
     private val _statuscode = MutableLiveData<Int>()
     val statuscode: LiveData<Int> = _statuscode
@@ -25,7 +26,7 @@ class WaiterHomeViewModel : ViewModel() {
     fun getMeals() {
         viewModelScope.launch {
             try {
-                val response = api.getMeals(token)
+                val response = api.getMeals("Bearer $token")
                 if (response.code() == 200) {
                     _meals.postValue(response.body()?.data as ArrayList<Meal>?)
                 } else {
@@ -41,7 +42,7 @@ class WaiterHomeViewModel : ViewModel() {
     fun getAMeal(id: String) {
         viewModelScope.launch {
             try {
-                val response = api.get1Meal(token, "meal/get-meals/${id}")
+                val response = api.get1Meal("Bearer $token", "meal/get-meals/${id}")
                 if (response.code() == 200) {
                     println(response.body())
                     _aMeal.postValue(response.body())
@@ -57,7 +58,7 @@ class WaiterHomeViewModel : ViewModel() {
     fun searchMeal(keyword: String) {
         viewModelScope.launch {
             try {
-                val response = api.searchMeals(token, "meal/search-meal", keyword)
+                val response = api.searchMeals("Bearer $token", "meal/search-meal", keyword)
                 if (response.code() == 200) {
                     _meals.postValue(response.body())
                 } else {
@@ -72,7 +73,7 @@ class WaiterHomeViewModel : ViewModel() {
     fun deleteMeal(id: String) {
         viewModelScope.launch {
             try {
-                val response = api.delete1Meal(token, "meal/delete-meal", id)
+                val response = api.delete1Meal("Bearer $token", "meal/delete-meal", id)
                 if (response.code() == 200) {
                     _aMeal.postValue(response.body())
                 } else {
@@ -87,7 +88,7 @@ class WaiterHomeViewModel : ViewModel() {
     fun updateMeal(id: String, newMeal: Meal) {
         viewModelScope.launch {
             try {
-                val response = api.update1Meal(token, "meal/update-meal", id, newMeal)
+                val response = api.update1Meal("Bearer $token", "meal/update-meal", id, newMeal)
                 if (response.code() == 200) {
                     _aMeal.postValue(response.body())
                 } else {
