@@ -58,17 +58,17 @@ class IngredientViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = api.addIngredient("Bearer $token", ingredient)
-                if (response.message == "Table added successfully") {
+                if (response.message == "Ingredient added successfully") {
                     _ingredient.postValue(response.data)
-                    Log.d(TAG, "Table added successfully: ${response.data}")
+                    Log.d(TAG, "Ingredient added successfully: ${response.data}")
                     _statusCode.postValue(200)
                     onSuccess()
                 } else {
-                    Log.e(TAG, "Failed to add table: ${response.message}")
+                    Log.e(TAG, "Failed to add Ingredient: ${response.data}")
                     _statusCode.postValue(400)
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error adding table: ${e.message}")
+                Log.e(TAG, "Error adding Ingredient: ${e.message}")
                 _statusCode.postValue(500)
             }
         }
