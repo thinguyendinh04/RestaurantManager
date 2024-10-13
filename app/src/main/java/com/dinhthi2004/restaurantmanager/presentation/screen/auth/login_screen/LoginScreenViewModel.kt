@@ -1,5 +1,6 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen.viewmodel
 
+import android.provider.ContactsContract.CommonDataKinds.Email
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import com.dinhthi2004.restaurantmanager.api.HttpReq
 import com.dinhthi2004.restaurantmanager.model.Account
+import com.dinhthi2004.restaurantmanager.model.LoginRequest
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 
 class LoginViewModel : ViewModel() {
@@ -19,10 +21,10 @@ class LoginViewModel : ViewModel() {
     var invalidCredentialsError = mutableStateOf(false)
     var isLoading = mutableStateOf(false)
 
-    fun handleLogin(username: String, password: String, onLoginSuccess: (String) -> Unit) {
+    fun handleLogin(email: String, password: String, onLoginSuccess: (String) -> Unit) {
         resetErrors()
 
-        if (username.isBlank()) {
+        if (email.isBlank()) {
             emptyEmailError.value = true
         }
         if (password.isBlank()) {
@@ -35,17 +37,10 @@ class LoginViewModel : ViewModel() {
             // Login
             viewModelScope.launch {
                 try {
-                    val response = api.login(
-                        Account(
-                            username = username,
-                            password = password,
-                            role = 0,
-                            _id = ""
-                        )
-                    )
+                    val response = api.login(LoginRequest(email = email, password = password))
 
                     if (response.isSuccessful && response.body() != null) {
-                        val account = response.body()!!
+                        val account = response.body()!!.data
 
                         invalidCredentialsError.value = false;
                         emailError.value = false
@@ -58,9 +53,9 @@ class LoginViewModel : ViewModel() {
                         }
 
                         val route = when (account.role) {
-                            0 -> "home_admin_screen" // admin
-                            1 -> "BottomNavigation" // manager
-                            2 -> "WAITER_MAIN_SCREEN" // waiter
+                            1 -> "home_admin_screen" // admin
+                            2 -> "BottomNavigation" // manager
+                            3 -> "WAITER_MAIN_SCREEN" // waiter
                             else -> "home_user_screen"
                         }
                         onLoginSuccess(route)

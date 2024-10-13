@@ -101,7 +101,7 @@ fun AddNewEmployeeScreen(
             }
 
             Button(onClick = {
-                viewModel.signup()
+//                viewModel.signup()
             }) {
                 Text("Add Employee")
             }
