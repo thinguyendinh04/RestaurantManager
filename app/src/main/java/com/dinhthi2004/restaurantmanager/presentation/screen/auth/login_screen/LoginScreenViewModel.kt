@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dinhthi2004.restaurantmanager.model.Account
 import kotlinx.coroutines.launch
 import com.dinhthi2004.restaurantmanager.api.HttpReq
+import com.dinhthi2004.restaurantmanager.model.Account
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 
 class LoginViewModel : ViewModel() {
@@ -35,7 +35,7 @@ class LoginViewModel : ViewModel() {
             // Login
             viewModelScope.launch {
                 try {
-                    val response = api.login(Account(username = username, password = password, role = 0, _id = ""))
+                    val response = api.login(Account(email = username, password = password, role = 0, _id = ""))
 
                     if (response.isSuccessful && response.body() != null) {
                         val account = response.body()!!

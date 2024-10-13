@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.dinhthi2004.restaurantmanager.api.HttpReq
 import com.dinhthi2004.restaurantmanager.model.Bill
 import com.dinhthi2004.restaurantmanager.model.BillDetail
-import com.dinhthi2004.restaurantmanager.model.Meal
 
 class WaiterOrderViewModel: ViewModel() {
     private val api = HttpReq.getInstance()

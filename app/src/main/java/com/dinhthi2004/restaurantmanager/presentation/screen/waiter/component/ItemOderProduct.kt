@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.model.Meal
 
 @Composable
 fun ItemOrderProduct(

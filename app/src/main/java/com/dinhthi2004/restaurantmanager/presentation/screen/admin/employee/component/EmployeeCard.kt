@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.model.Account
 
 @Composable
 fun EmployeeCard(
