@@ -4,6 +4,7 @@ import com.dinhthi2004.restaurantmanager.model.Account
 import com.dinhthi2004.restaurantmanager.model.AccountData
 import com.dinhthi2004.restaurantmanager.model.Meal
 import com.dinhthi2004.restaurantmanager.model.MealType
+import com.dinhthi2004.restaurantmanager.model.user.User
 
 data class ApiResponse<T>(
     val message: String,
@@ -43,5 +44,5 @@ data class MealTypeResponse(
 
 data class LoginResonse(
     val message: String?,
-    val data: Account
+    val data: User
 )

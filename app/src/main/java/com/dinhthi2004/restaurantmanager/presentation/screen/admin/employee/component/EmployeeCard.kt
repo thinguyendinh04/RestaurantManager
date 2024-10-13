@@ -69,8 +69,8 @@ fun EmployeeCard(
 
 fun getRoleText(role: Int): String {
     return when (role) {
-        1 -> "Quản lí"
-        2 -> "Nhan vien"
+        2 -> "Quản lí"
+        3 -> "Nhan vien"
         else -> "Unknown"
     }
 }

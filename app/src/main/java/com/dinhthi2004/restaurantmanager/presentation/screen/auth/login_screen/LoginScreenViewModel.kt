@@ -42,6 +42,8 @@ class LoginViewModel : ViewModel() {
                     if (response.isSuccessful && response.body() != null) {
                         val account = response.body()!!.data
 
+                        Log.d("token", account.token.toString())
+
                         invalidCredentialsError.value = false;
                         emailError.value = false
                         passwordError.value = false

@@ -8,5 +8,6 @@ data class User(
     val image_url: String,
     val role: Int,
     val sdt: String,
-    val updated_at: String
+    val updated_at: String,
+    val token: String?
 )
