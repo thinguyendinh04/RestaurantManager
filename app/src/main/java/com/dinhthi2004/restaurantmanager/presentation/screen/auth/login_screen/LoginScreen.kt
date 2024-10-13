@@ -128,7 +128,7 @@ fun LoginScreen(
             // Sign In Button
             SignInButton {
                 viewModel.handleLogin(
-                    username = usernameState,
+                    email = usernameState,
                     password = passwordState
                 ) { route ->
                     navController.navigate(route)

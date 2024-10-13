@@ -4,6 +4,7 @@ import com.dinhthi2004.restaurantmanager.model.Account
 import com.dinhthi2004.restaurantmanager.model.Bill
 import com.dinhthi2004.restaurantmanager.model.BillDetail
 import com.dinhthi2004.restaurantmanager.model.Ingredient
+import com.dinhthi2004.restaurantmanager.model.LoginRequest
 import com.dinhthi2004.restaurantmanager.model.Meal
 import com.dinhthi2004.restaurantmanager.model.Table
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
@@ -24,7 +25,7 @@ import retrofit2.http.Url
 interface ApiService {
     //Auth
     @POST("login")
-    suspend fun login(@Body loginInfo: Account): Response<Account>
+    suspend fun login(@Body request: LoginRequest): Response<LoginResonse>
 
     @POST("register")
     suspend fun signup(@Body signupInfo: Account): Response<Account>

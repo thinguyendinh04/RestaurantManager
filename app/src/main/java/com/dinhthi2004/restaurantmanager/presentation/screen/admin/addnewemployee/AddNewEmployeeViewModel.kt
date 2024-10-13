@@ -37,27 +37,27 @@ class AddNewEmployeeViewModel : ViewModel() {
         _password.value = newValue
     }
 
-    fun signup() {
-        viewModelScope.launch {
-            _loading.value = true
-            try {
-                val account = Account(
-                    _id = "",
-                    username = _email.value,
-                    password = _password.value,
-                    role = _role.value
-                )
-
-                val response = api.signup(account)
-                if (response.isSuccessful && response.body() != null) {
-                    _signupSuccess.value = true
-                } else {
-                    Log.d("Sign up fail", "${response.message()}")
-                }
-            } catch (e: Exception) {
-                Log.d("Sign up fail", "${e.localizedMessage}")
-            }
-        }
-    }
+//    fun signup() {
+//        viewModelScope.launch {
+//            _loading.value = true
+//            try {
+//                val account = Account(
+//                    _id = "",
+//                    username = _email.value,
+//                    password = _password.value,
+//                    role = _role.value
+//                )
+//
+//                val response = api.signup(account)
+//                if (response.isSuccessful && response.body() != null) {
+//                    _signupSuccess.value = true
+//                } else {
+//                    Log.d("Sign up fail", "${response.message()}")
+//                }
+//            } catch (e: Exception) {
+//                Log.d("Sign up fail", "${e.localizedMessage}")
+//            }
+//        }
+//    }
 
 }
