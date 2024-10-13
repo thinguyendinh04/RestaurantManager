@@ -28,8 +28,7 @@ import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.model.Bill
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.IngreCT
-
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.OrderItem
+import com.dinhthi2004.restaurantmanager.presentation.screen.manager.components.OrderItem
 import com.dinhthi2004.restaurantmanager.viewmodel.OrderViewModel
 
 

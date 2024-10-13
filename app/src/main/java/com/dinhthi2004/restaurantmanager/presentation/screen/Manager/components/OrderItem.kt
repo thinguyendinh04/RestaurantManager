@@ -1,12 +1,10 @@
-package com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components
+package com.dinhthi2004.restaurantmanager.presentation.screen.manager.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dinhthi2004.restaurantmanager.model.Bill
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.HoaDon
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.statusToString
 
 

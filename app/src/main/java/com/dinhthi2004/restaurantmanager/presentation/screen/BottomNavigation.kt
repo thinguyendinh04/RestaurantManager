@@ -61,8 +61,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.data.Employee
-import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeEmployeeScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeIngredients
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeManager

@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 
@@ -43,30 +45,26 @@ import com.dinhthi2004.restaurantmanager.viewmodel.IngredientViewModel
 import com.dinhthi2004.restaurantmanager.viewmodel.TableViewModel
 
 @Composable
-fun HomeTableScreen(navigationController: NavHostController) {
-
+fun HomeTableScreen(
+    navigationController: NavHostController
+) {
     val tableViewModel: TableViewModel = viewModel()
     val token = TokenManager.token
-
     LaunchedEffect(Unit) {
         token?.let { tableViewModel.getTables(it) }
     }
-
-    // Khởi tạo tables với giá trị mặc định là một danh sách rỗng
     val tables by tableViewModel.tables.observeAsState(emptyList())
-
-
     var showDialog by remember { mutableStateOf(false) }
 
-
     if (showDialog) {
-       DialogTable(onDismiss = { showDialog = false })
+        DialogTable(onDismiss = { showDialog = false })
     }
 
     Column(
         Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color.White)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -83,9 +81,10 @@ fun HomeTableScreen(navigationController: NavHostController) {
             text = "Danh Sách Bàn Ăn",
             style = MaterialTheme.typography.titleMedium,
             color = Color.Black,
-            modifier = Modifier.align(Alignment.Start).padding(start = 10.dp, top = 5.dp)
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 10.dp, top = 5.dp)
         )
-
 
         if (tables != null && tables.isNotEmpty()) {
             LazyVerticalGrid(
@@ -100,17 +99,18 @@ fun HomeTableScreen(navigationController: NavHostController) {
                 }
             }
         } else {
-            // Hiển thị thông báo khi không có bàn nào
             Text(
                 text = "Không có bàn nào.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray,
-                modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterHorizontally)
             )
         }
 
         Button(
-            onClick = { showDialog=true },
+            onClick = { showDialog = true },
 
             modifier = Modifier
                 .padding(top = 5.dp)
