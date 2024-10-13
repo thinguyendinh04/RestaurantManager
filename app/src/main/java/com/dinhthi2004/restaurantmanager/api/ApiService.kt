@@ -18,11 +18,18 @@ import retrofit2.http.Query
 import retrofit2.http.Url
 
 interface ApiService {
+    //Auth
     @POST("login")
     suspend fun login(@Body loginInfo: Account): Response<Account>
 
     @POST("register")
     suspend fun signup(@Body signupInfo: Account): Response<Account>
+
+    //Admin
+
+    //Manager
+
+    //Waiter
 
     @GET("ingredient/get-list")
     suspend fun getIngredients(@Header("authorization") jwtToken: String): ApiResponse<List<Ingredient>>
@@ -33,8 +40,6 @@ interface ApiService {
     @GET("bill/get-list-bill")
     suspend fun getBills(@Header("authorization") jwtToken: String): ApiResponse<List<Bill>>
 
-    @GET("billDetail/get-list-billDetail")
-    suspend fun getBillDetails(@Header("authorization") jwtToken: String): ApiResponse<List<BillDetail>>
 
     @GET("meal/get-meals")
     suspend fun getMeals(
