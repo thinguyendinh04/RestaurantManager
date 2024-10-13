@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
+import com.dinhthi2004.restaurantmanager.model.Meal
 import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.DeleteConfirmationDialog
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.MealDetailDialog

@@ -12,6 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dinhthi2004.restaurantmanager.R
+import com.dinhthi2004.restaurantmanager.model.Meal
 
 @Composable
 fun MenuItemCard(

@@ -52,8 +52,7 @@ import com.dinhthi2004.restaurantmanager.uilts.Route
 fun Setting(navigationController: NavHostController){
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

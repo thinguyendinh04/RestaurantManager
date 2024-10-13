@@ -31,6 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dinhthi2004.restaurantmanager.R
+import com.dinhthi2004.restaurantmanager.model.Meal
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.CategoryProduct
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.ItemOrderProduct
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.TopBarComponent

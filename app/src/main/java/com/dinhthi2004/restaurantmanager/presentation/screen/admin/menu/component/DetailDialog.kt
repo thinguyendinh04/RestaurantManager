@@ -6,6 +6,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.dinhthi2004.restaurantmanager.model.Meal
 
 @Composable
 fun MealDetailDialog(meal: Meal, onDismiss: () -> Unit) {

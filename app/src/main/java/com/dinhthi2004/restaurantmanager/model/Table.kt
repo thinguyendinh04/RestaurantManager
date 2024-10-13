@@ -1,6 +1,6 @@
 package com.dinhthi2004.restaurantmanager.model
 
-data class Table(
+class Table(
     val id: String,
     val table_name: String,
     val table_status: Int,

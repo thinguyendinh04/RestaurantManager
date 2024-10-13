@@ -12,12 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import com.dinhthi2004.restaurantmanager.presentation.navigation.bottomnav.BottomBar
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.restaurant_management.component.OptionItem
-import androidx.compose.foundation.shape.RoundedCornerShape
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,55 +55,42 @@ fun RestaurantManagerScreen(
                     .align(Alignment.CenterHorizontally)
             )
 
-            Spacer(modifier = Modifier.size(24.dp))
+            Spacer(modifier = Modifier.size(16.dp))
 
             OptionItem(
                 iconRes = R.drawable.btn_4,
                 title = "Menu Management",
                 onClick = {
                     navController.navigate(Routes.MENU_MANAGEMENT_ADMIN)
-                },
-                backgroundColor = Color(0xFFEEEEEE), // Màu xám nhạt
-                shape = RoundedCornerShape(16.dp), // Bo góc
-                padding = 16.dp // Padding lớn hơn
+                }
             )
-            Spacer(modifier = Modifier.size(24.dp))
+            Spacer(modifier = Modifier.size(16.dp))
 
             OptionItem(
                 iconRes = R.drawable.revenue_8520850,
                 title = "Doanh thu",
                 onClick = {
                     navController.navigate(Routes.REVENUE_REPORTS_ADMIN)
-                },
-                backgroundColor = Color(0xFFEEEEEE), // Màu xanh nhạt
-                shape = RoundedCornerShape(16.dp),
-                padding = 16.dp
+                }
             )
-            Spacer(modifier = Modifier.size(24.dp))
+            Spacer(modifier = Modifier.size(16.dp))
 
             OptionItem(
                 iconRes = R.drawable.employee_logo,
                 title = "Employee Manager",
                 onClick = {
                     navController.navigate(Routes.EMPLOYEE_ADMIN)
-                },
-                backgroundColor = Color(0xFFEEEEEE),
-                shape = RoundedCornerShape(16.dp),
-                padding = 16.dp
+                }
             )
-            Spacer(modifier = Modifier.size(24.dp))
+            Spacer(modifier = Modifier.size(16.dp))
 
             OptionItem(
                 iconRes = R.drawable.btn_6,
                 title = "Logout",
                 onClick = {
                     navController.navigate(Routes.LOGIN_SCREEN)
-                },
-                backgroundColor = Color(0xFFEEEEEE),
-                shape = RoundedCornerShape(16.dp),
-                padding = 16.dp
+                }
             )
         }
     }
 }
-

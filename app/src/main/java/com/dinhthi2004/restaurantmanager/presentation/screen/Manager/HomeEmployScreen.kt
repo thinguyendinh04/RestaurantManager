@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.R
+import com.dinhthi2004.restaurantmanager.data.Employee
+import com.dinhthi2004.restaurantmanager.data.employ
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.EmployeeCard
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel.HomeEmployeeViewModel
 

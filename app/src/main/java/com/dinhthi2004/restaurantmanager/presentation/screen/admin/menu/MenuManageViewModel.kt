@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import android.util.Log
+import com.dinhthi2004.restaurantmanager.model.Meal
 
 class MenuManageViewModel : ViewModel() {
     private val api = HttpReq.getInstance()

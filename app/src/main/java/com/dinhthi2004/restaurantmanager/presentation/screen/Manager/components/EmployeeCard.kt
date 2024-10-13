@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.data.Employee
+import com.dinhthi2004.restaurantmanager.model.Account
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
