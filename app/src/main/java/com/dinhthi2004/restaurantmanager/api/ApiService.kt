@@ -2,9 +2,17 @@ package com.dinhthi2004.restaurantmanager.api
 
 import com.dinhthi2004.restaurantmanager.model.Account
 import com.dinhthi2004.restaurantmanager.model.Bill
+import com.dinhthi2004.restaurantmanager.model.BillResponse
 import com.dinhthi2004.restaurantmanager.model.Ingredient
 import com.dinhthi2004.restaurantmanager.model.LoginRequest
 import com.dinhthi2004.restaurantmanager.model.Meal
+import com.dinhthi2004.restaurantmanager.model.Order
+import com.dinhthi2004.restaurantmanager.model.Table
+
+import com.dinhthi2004.restaurantmanager.model.Ingredient
+import com.dinhthi2004.restaurantmanager.model.LoginRequest
+import com.dinhthi2004.restaurantmanager.model.Meal
+
 import com.dinhthi2004.restaurantmanager.model.Order.OrderResponse
 import com.dinhthi2004.restaurantmanager.model.Table
 import com.dinhthi2004.restaurantmanager.model.bill.BillResponse
@@ -52,6 +60,8 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<DishResponse>
 
+    @GET("dishes/{id}")
+    suspend fun get1Dish(
 
     @GET("dishes/{id}")
     suspend fun getDishByID(
@@ -170,6 +180,18 @@ interface ApiService {
         @Path("id") id: String
     ): Response<Dish_type>
 
+    //Order, Bill
+    @GET("bills")
+    suspend fun getAllBills(@Header("authorization") jwtToken: String): Response<BillResponse<List<Bill>>>
+
+    @GET("bills/{id}")
+    suspend fun get1Bill(@Header("authorization") jwtToken: String, @Path("id") id: String): BillResponse<Bill>
+
+    @GET("orders")
+    suspend fun getAllOrders(@Header("authorization") jwtToken: String): Response<List<Order>>
+
+    @GET("orders/{id}")
+    suspend fun get1Order(@Header("authorization") jwtToken: String, @Path("id") id: String): Response<Order>
 
     //Manager
     @GET("ingredients")
