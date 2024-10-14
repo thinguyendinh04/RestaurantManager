@@ -11,7 +11,7 @@ import com.dinhthi2004.restaurantmanager.model.Account
 import com.dinhthi2004.restaurantmanager.model.LoginRequest
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 
-class LoginViewModel : ViewModel() {
+class LoginScreenViewModel : ViewModel() {
     var api = HttpReq.getInstance()
 
     var emailError = mutableStateOf(false)

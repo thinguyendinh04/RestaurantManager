@@ -42,7 +42,7 @@ data class MealTypeResponse(
 )
 
 
-data class LoginResonse(
+data class LoginResponse(
     val message: String?,
     val data: User
 )
