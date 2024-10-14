@@ -6,7 +6,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -22,6 +21,12 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.boo
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.emptyTables
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.occupiedTables
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.Table
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.orderItems
+import androidx.compose.material3.*
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.ItemOrderProduct
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataProduct
 
 @Composable
 fun TableWaiterScreen(navController: NavHostController) {
@@ -77,7 +82,7 @@ fun InUseTables(tables: List<Table>) {
                 table = table,
                 onClickDetail = {
                     selectedTable = table
-                    showDialog = true
+                    showDialog = true // Mở dialog
                 },
                 onClickPay = {
                     // Thực hiện hành động thanh toán ở đây
@@ -86,11 +91,19 @@ fun InUseTables(tables: List<Table>) {
         }
     }
 
-    // Hiển thị dialog nếu có bàn được chọn
+    // Hiển thị dialog nếu có bàn được chọn và showDialog == true
     if (showDialog && selectedTable != null) {
-        TableDetailDialog(table = selectedTable!!, onDismiss = { showDialog = false })
+        TableDetailDialog(
+            table = selectedTable!!, // Bạn có thể giữ lại !! ở đây vì đã kiểm tra null trước đó
+            orderItems = orderItems, // Truyền danh sách món đã oder
+            onAddItem = { /* Hàm thêm món ở đây */ },
+            onDismiss = {
+                showDialog = false // Đặt showDialog về false để đóng dialog
+            }
+        )
     }
 }
+
 
 @Composable
 fun EmptyTables(tables: List<Table>) {
@@ -157,7 +170,7 @@ fun TableItemRow(table: Table, onClickDetail: () -> Unit, onClickPay: () -> Unit
         ) {
             // Tên bàn
             Text(
-                text = "Bàn ${table.tableName}",
+                text = "Bàn: ${table.tableName}",
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -232,25 +245,159 @@ fun TableItemRow(table: Table, onClickDetail: () -> Unit, onClickPay: () -> Unit
 }
 
 @Composable
-fun TableDetailDialog(table: Table, onDismiss: () -> Unit) {
-    // Dialog hiển thị chi tiết bàn
+fun TableDetailDialog(
+    table: Table,
+    orderItems: List<com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.OrderItem>, // List of orders
+    onAddItem: () -> Unit, // Function to add a new item
+    onDismiss: () -> Unit
+) {
+    val maxItemsToShow = 5
+    val displayedOrderItems =
+        if (orderItems.size > maxItemsToShow) orderItems.take(maxItemsToShow) else orderItems
+    val totalPrice = orderItems.sumOf { it.price * it.quantity }
+
+    // Biến trạng thái để quản lý việc hiển thị AddItemsDialog
+    var showAddItemsDialog by remember { mutableStateOf(false) }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = "Chi tiết bàn")
+            Text(
+                text = "Chi tiết",
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    color = Color(0xFFFF6D00), // Orange color for title
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
         },
         text = {
-            Column {
-                Text(text = "Tên bàn: ${table.tableName}")
-                Text(text = "Vị trí: ${table.location}")
-                Text(text = "Số khách: ${table.currentGuests}/${table.capacity}")
-                Text(text = "Tổng tiền: ${table.totalAmount}")
-                Text(text = "Trạng thái thanh toán: ${table.paymentStatus}")
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.8f), // Điều chỉnh để đảm bảo cột không chiếm hết màn hình
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "Bàn ${table.tableName}  ${table.location}",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(text = "Số lượng: ${table.currentGuests}")
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Danh sách order:",
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                )
+
+                // Header của bảng
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Món",
+                        modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "SL",
+                        modifier = Modifier.weight(0.5f),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "Giá",
+                        modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
+                Divider(color = Color.Gray, thickness = 1.dp)
+
+                // Hiển thị tối đa 5 món và cuộn nếu nhiều hơn
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f) // Dùng weight để LazyColumn chiếm không gian và cuộn được
+                        .padding(vertical = 8.dp)
+                ) {
+                    items(orderItems) { orderItem ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp), // Tăng chiều cao hàng
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = orderItem.name, modifier = Modifier.weight(1f))
+                            Text(
+                                text = orderItem.quantity.toString(),
+                                modifier = Modifier.weight(0.5f)
+                            )
+                            Text(text = "${orderItem.price} đ", modifier = Modifier.weight(1f))
+                        }
+
+                        Divider(color = Color.LightGray, thickness = 0.5.dp)
+                    }
+                }
+
+                // Hiển thị tổng tiền
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Tổng cộng:",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                    Text(
+                        text = "${totalPrice} đ",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
             }
         },
         confirmButton = {
-            Button(onClick = onDismiss) {
-                Text(text = "Đóng")
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    onClick = onDismiss,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF0F0F0)),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = "Đóng", color = Color.Black)
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Button(
+                    onClick = {
+                        showAddItemsDialog = true // Hiển thị AddItemsDialog khi nhấn "Thêm món"
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFCDD2)),
+                    modifier = Modifier.weight(1f),
+                    enabled = true
+                ) {
+                    Text(text = "Thêm món", color = Color(0xFFFF6D00))
+                }
+            }
+
+            // Hiển thị dialog để thêm món nếu showAddItemsDialog = true
+            if (showAddItemsDialog) {
+                AddItemsDialog(
+                    products = com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.ListData, // Truyền danh sách sản phẩm
+                    onDismiss = { showAddItemsDialog = false },
+                    onAddItems = { selectedItems ->
+                        // Xử lý khi món được thêm vào
+                        showAddItemsDialog = false
+                    }
+                )
             }
         }
     )
@@ -320,7 +467,8 @@ fun BookingTableDialog(table: Table, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = "Chi tiết bàn ${table.tableName}",
+            Text(
+                text = "Chi tiết bàn ${table.tableName}",
                 style = TextStyle(
                     color = Color(0xFF333333), // Màu chữ đậm hơn
                     fontWeight = FontWeight.Bold
@@ -329,23 +477,32 @@ fun BookingTableDialog(table: Table, onDismiss: () -> Unit) {
         },
         text = {
             Column {
-                Text(text = "Vị trí: ${table.location}",
+                Text(
+                    text = "Vị trí: ${table.location}",
                     style = TextStyle(color = Color(0xFF666666)) // Màu chữ nhạt hơn
                 )
-                Text(text = "Sức chứa: ${table.capacity}",
+                Text(
+                    text = "Sức chứa: ${table.capacity}",
                     style = TextStyle(color = Color(0xFF666666)) // Màu chữ nhạt hơn
                 )
-                Text(text = "Tên người đặt: ${table.bookerName}",
+                Text(
+                    text = "Tên người đặt: ${table.bookerName}",
                     style = TextStyle(color = Color(0xFF666666)) // Màu chữ nhạt hơn
                 )
-                Text(text = "Số điện thoại: ${table.bookerPhone}",
+                Text(
+                    text = "Số điện thoại: ${table.bookerPhone}",
                     style = TextStyle(color = Color(0xFF666666)) // Màu chữ nhạt hơn
                 )
-                Text(text = "Thời gian đặt: ${table.bookingTime}",
+                Text(
+                    text = "Thời gian đặt: ${table.bookingTime}",
                     style = TextStyle(color = Color(0xFF666666)) // Màu chữ nhạt hơn
                 )
-                Text(text = "Tiền cọc: ${table.depositAmount} đ",
-                    style = TextStyle(color = Color(0xFF333333), fontWeight = FontWeight.SemiBold) // Màu chữ tối hơn và đậm
+                Text(
+                    text = "Tiền cọc: ${table.depositAmount} đ",
+                    style = TextStyle(
+                        color = Color(0xFF333333),
+                        fontWeight = FontWeight.SemiBold
+                    ) // Màu chữ tối hơn và đậm
                 )
             }
         },
@@ -353,7 +510,7 @@ fun BookingTableDialog(table: Table, onDismiss: () -> Unit) {
             Button(
                 onClick = onDismiss,
                 colors = ButtonDefaults.buttonColors(
-                      Color(0xFF4CAF50), // Màu xanh lá cây
+                    Color(0xFF4CAF50), // Màu xanh lá cây
                     contentColor = Color.White // Màu chữ trắng cho nút
                 )
             ) {
@@ -362,3 +519,97 @@ fun BookingTableDialog(table: Table, onDismiss: () -> Unit) {
         }
     )
 }
+
+@Composable
+fun AddItemsDialog(
+    products: List<dataProduct>, // Danh sách sản phẩm
+    onDismiss: () -> Unit, // Callback khi đóng dialog
+    onAddItems: (Map<dataProduct, Int>) -> Unit // Callback khi thêm món
+) {
+    // Tạo biến trạng thái để lưu trữ số lượng của từng sản phẩm
+    var quantities by remember { mutableStateOf(products.associateWith { 0 }.toMutableMap()) }
+
+    // Tính tổng số lượng
+    val totalQuantity = quantities.values.sum()
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Thêm món",
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    color = Color(0xFFFF6D00), // Màu cam cho tiêu đề
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.8f), // Giới hạn chiều cao của dialog
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Bàn 4  Tầng 1", // Giả định bạn đang làm cho bàn 4 tầng 1
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                // Danh sách các sản phẩm với các nút tăng/giảm số lượng
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 8.dp)
+                ) {
+                    items(products) { product ->
+                        // Gọi ItemOrderProduct với số lượng và callback khi tăng/giảm số lượng
+                        ItemOrderProduct(
+                            item = product,
+                            quantity = quantities[product] ?: 0,
+                            onIncreaseClick = {
+                                // Tăng số lượng sản phẩm
+                                quantities[product] = (quantities[product] ?: 0) + 1
+                            },
+                            onDecreaseClick = {
+                                // Giảm số lượng sản phẩm nếu số lượng > 0
+                                if ((quantities[product] ?: 0) > 0) {
+                                    quantities[product] = (quantities[product] ?: 0) - 1
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    onClick = onDismiss,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF0F0F0)),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = "Đóng", color = Color.Black)
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Button(
+                    onClick = { onAddItems(quantities) }, // Truyền số lượng món đã chọn
+                    enabled = totalQuantity > 0, // Chỉ kích hoạt nếu tổng số lượng > 0
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFCDD2)),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = "Thêm món", color = Color(0xFFFF6D00))
+                }
+            }
+        }
+    )
+}
+

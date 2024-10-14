@@ -18,3 +18,8 @@ data class Table(
     val bookingTime: String = "",
     val depositAmount: Double = 0.0
 )
+data class OrderItem(
+    val name: String,       // Tên món
+    val quantity: Int,      // Số lượng
+    val price: Double       // Giá món
+)
