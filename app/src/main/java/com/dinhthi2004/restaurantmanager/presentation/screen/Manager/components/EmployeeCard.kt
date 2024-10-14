@@ -21,13 +21,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.data.Employee
 import com.dinhthi2004.restaurantmanager.model.Account
+import com.dinhthi2004.restaurantmanager.model.user.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmployeeCard(employee: Account, onClick: () -> Unit) {
+fun EmployeeCard(employee: User, onClick: () -> Unit) {
+    val painter = rememberImagePainter(
+        data = employee.image_url, // employee.image_url là URL của hình ảnh
+        builder = {
+            crossfade(true) // Tùy chọn hiệu ứng chuyển tiếp
+        }
+    )
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         AlertDialog(
@@ -63,7 +72,9 @@ fun EmployeeCard(employee: Account, onClick: () -> Unit) {
                             Spacer(modifier = Modifier.width(16.dp))
 
                             Column {
-                                Text(text = "Họ tên: ${employee.username}")
+                                Text(text = "Họ tên: ${employee.full_name}")
+                                Text(text = "Email: ${employee.email}")
+                                Text(text = "SDT: ${employee.sdt}")
                                 Text(
                                     text = "${getRoleText(employee.role)}",
                                     color = Color.Red
@@ -114,7 +125,7 @@ fun EmployeeCard(employee: Account, onClick: () -> Unit) {
             Column(
                 modifier = Modifier.padding(start = 8.dp)
             ) {
-                Text(text = employee.username, fontSize = 14.sp, color = Color.Black)
+                Text(text = employee.full_name, fontSize = 14.sp, color = Color.Black)
 
                 Text(text = "${getRoleText(employee.role)}", fontSize = 14.sp, color = Color.Black)
 

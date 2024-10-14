@@ -41,8 +41,12 @@ data class MealTypeResponse(
     val data: List<MealType>
 )
 
+data class LoginResponse(
+    val message: String?,
+    val data: User
+)
 
-data class LoginResonse(
+data class UserResponseData(
     val message: String?,
     val data: User
 )

@@ -17,16 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.dinhthi2004.restaurantmanager.model.Table
+import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 
 
 @Composable
-fun TableItem(table: Table, onItemClicked: () -> Unit) {
+fun TableItem(table: Tabledata, onItemClicked: () -> Unit) {
     // Xác định màu sắc và trạng thái dựa trên table_status
-    val statusColor = if (table.table_status == 0) {
-        Color.Green // Trống
+    val statusColor = if (table.status == "Available") {
+        Color.Green
     } else {
-        Color.Red // Đã đặt
+        Color.Red
     }
 
     Box(
@@ -34,7 +34,7 @@ fun TableItem(table: Table, onItemClicked: () -> Unit) {
             .width(147.dp)
             .height(120.dp)
             .padding(start = 10.dp)
-            .clickable { onItemClicked() } // Gọi hàm khi item được nhấp
+            .clickable { onItemClicked() }
             .border(
                 border = BorderStroke(1.dp, Color(0xff565E6C)),
                 shape = RoundedCornerShape(8.dp)
@@ -52,13 +52,13 @@ fun TableItem(table: Table, onItemClicked: () -> Unit) {
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "Trạng thái: ${if (table.table_status == 0) "Trống" else "Đã đặt"}",
+                text = "${table.status}",
                 fontSize = 14.sp,
-                color = statusColor, // Thay đổi màu sắc theo trạng thái
+                color = statusColor,
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "Order: ${table.oder_name}",
+                text = "Order: ${table.customer_name}",
                 fontSize = 14.sp,
                 color = Color.Black,
                 style = MaterialTheme.typography.titleMedium

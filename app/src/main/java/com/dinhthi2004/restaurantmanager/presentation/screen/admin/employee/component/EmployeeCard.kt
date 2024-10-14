@@ -17,10 +17,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.model.Account
+import com.dinhthi2004.restaurantmanager.model.user.User
 
 @Composable
 fun EmployeeCard(
-    account: Account,
+    user: User,
     onDeleteClick: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -51,11 +52,15 @@ fun EmployeeCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Tài khoản: ${account.username}",
+                    text = "Họ Tên: ${user.full_name}",
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
-                    text = "Chức vụ: ${getRoleText(account.role)}",
+                    text = "Tài khoản: ${user.email}",
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    text = "Chức vụ: ${getRoleText(user.role)}",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -69,8 +74,9 @@ fun EmployeeCard(
 
 fun getRoleText(role: Int): String {
     return when (role) {
-        2 -> "Quản lí"
-        3 -> "Nhan vien"
+        1 -> "Admin"
+        2 -> "Manager"
+        3 -> "Waiter"
         else -> "Unknown"
     }
 }

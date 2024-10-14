@@ -1,40 +1,34 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
-import com.dinhthi2004.restaurantmanager.model.Table
-import com.dinhthi2004.restaurantmanager.model.TokenManager
+import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import com.dinhthi2004.restaurantmanager.viewmodel.TableViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogTable(onDismiss: () -> Unit) {
     val tableViewModel: TableViewModel = viewModel()
-    val token = TokenManager.token
-
+    val token = "123"
+    val context= LocalContext.current
     var tableName by remember { mutableStateOf("") }
     var tableStatus by remember { mutableStateOf("") }
     var orderName by remember { mutableStateOf("") }
+    var created_at by remember { mutableStateOf("") }
+    var updated_at by remember { mutableStateOf("") }
 
     // Xác thực dữ liệu nhập vào
     val isTableNameValid = tableName.isNotBlank()
-    val isTableStatusValid = tableStatus.toIntOrNull() != null
+    val isTableStatusValid = tableStatus.isNotBlank()
     val isOrderNameValid = orderName.isNotBlank()
-
     AlertDialog(
         onDismissRequest = { onDismiss() },
         title = { Text(text = "Thêm Bàn Mới") },
@@ -68,21 +62,21 @@ fun DialogTable(onDismiss: () -> Unit) {
             Button(
                 onClick = {
                     if (isTableNameValid && isTableStatusValid && isOrderNameValid) {
-                        val newTable = Table(
-                            id = "", // ID có thể được tạo tự động từ backend
+                        val newTable = Tabledata(
+                            id = null,// ID có thể được tạo tự động từ backend
                             table_name = tableName,
-                            table_status = tableStatus.toInt(),
-                            oder_name = orderName,
-                            id_account = null // Giả sử thông tin tài khoản không cần nhập ở đây
+                            status = tableStatus,
+                            customer_name = orderName,
+                            created_at=created_at,
+                            updated_at=updated_at
                         )
-                        if (token != null) {
+                        if (token.isNotEmpty()) {
                             tableViewModel.addTable(token, newTable) {
                                 tableViewModel.getTables(token)
+                               Toast.makeText(context,"Thêm thành công",Toast.LENGTH_SHORT).show()
                             }
                         }
                         onDismiss()
-                    } else {
-
                     }
                 },
                 modifier = Modifier
