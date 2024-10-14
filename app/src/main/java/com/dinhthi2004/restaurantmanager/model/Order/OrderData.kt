@@ -1,4 +1,4 @@
-package com.dinhthi2004.restaurantmanager.model.Order
+package com.dinhthi2004.restaurantmanager.model
 
 data class OrderData(
     val id: Int,

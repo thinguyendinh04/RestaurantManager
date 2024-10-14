@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dinhthi2004.restaurantmanager.api.HttpReq
 import com.dinhthi2004.restaurantmanager.model.Bill
-import com.dinhthi2004.restaurantmanager.model.BillDetail
+import com.dinhthi2004.restaurantmanager.model.Order
 
 class WaiterOrderViewModel: ViewModel() {
     private val api = HttpReq.getInstance()
@@ -21,12 +21,10 @@ class WaiterOrderViewModel: ViewModel() {
     private val _aBill = MutableLiveData<Bill?>()
     val aBill: LiveData<Bill?> = _aBill
 
-    private val _billDetails = MutableLiveData<ArrayList<BillDetail>>()
-    val billDetails: LiveData<ArrayList<BillDetail>> = _billDetails
+    private val _billDetails = MutableLiveData<ArrayList<Order>>()
+    val billDetails: LiveData<ArrayList<Order>> = _billDetails
 
-    private val _aBillDetail = MutableLiveData<BillDetail?>()
-    val aBillDetail: LiveData<BillDetail?> = _aBillDetail
-
-    
+    private val _aBillDetail = MutableLiveData<Order?>()
+    val aBillDetail: LiveData<Order?> = _aBillDetail
 
 }

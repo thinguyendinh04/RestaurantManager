@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinhthi2004.restaurantmanager.api.HttpReq
-import com.dinhthi2004.restaurantmanager.model.Order.OrderData
+import com.dinhthi2004.restaurantmanager.model.OrderData
 import kotlinx.coroutines.launch
 
 class OrderViewModel : ViewModel() {

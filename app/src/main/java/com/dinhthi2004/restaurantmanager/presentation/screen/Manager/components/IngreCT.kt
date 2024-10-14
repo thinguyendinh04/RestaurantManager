@@ -18,9 +18,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.dinhthi2004.restaurantmanager.model.Bill
-import com.dinhthi2004.restaurantmanager.model.BillDetail
-import com.dinhthi2004.restaurantmanager.model.Order.OrderData
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.model.bill.BillData
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
@@ -75,8 +72,6 @@ fun IngreCT(
                     billData?.let {
                         CustomTopBar(it)
                     }
-
-
 
                     // Hiển thị chi tiết đơn hàng (order)
                     orderDetail?.let { order ->

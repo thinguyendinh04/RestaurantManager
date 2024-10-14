@@ -34,7 +34,7 @@ class BillViewModel : ViewModel() {
 
                 // Kiểm tra phản hồi và cập nhật LiveData
                 if (response.isSuccessful) {
-                    _bills.postValue(response.body()?.data) // Sử dụng response.data cho danh sách hóa đơn
+                    _bills.postValue(response.body()?.data)
                     Log.d(TAG, "Bills retrieved successfully: ${response.body()}")
                 } else {
                     _bills.postValue(emptyList())

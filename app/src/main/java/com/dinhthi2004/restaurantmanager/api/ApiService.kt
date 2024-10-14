@@ -2,19 +2,11 @@ package com.dinhthi2004.restaurantmanager.api
 
 import com.dinhthi2004.restaurantmanager.model.Account
 import com.dinhthi2004.restaurantmanager.model.Bill
-import com.dinhthi2004.restaurantmanager.model.BillResponse
+import com.dinhthi2004.restaurantmanager.model.BillResponse1
 import com.dinhthi2004.restaurantmanager.model.Ingredient
 import com.dinhthi2004.restaurantmanager.model.LoginRequest
 import com.dinhthi2004.restaurantmanager.model.Meal
 import com.dinhthi2004.restaurantmanager.model.Order
-import com.dinhthi2004.restaurantmanager.model.Table
-
-import com.dinhthi2004.restaurantmanager.model.Ingredient
-import com.dinhthi2004.restaurantmanager.model.LoginRequest
-import com.dinhthi2004.restaurantmanager.model.Meal
-
-import com.dinhthi2004.restaurantmanager.model.Order.OrderResponse
-import com.dinhthi2004.restaurantmanager.model.Table
 import com.dinhthi2004.restaurantmanager.model.bill.BillResponse
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.model.dish.Dish1Response
@@ -60,8 +52,6 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<DishResponse>
 
-    @GET("dishes/{id}")
-    suspend fun get1Dish(
 
     @GET("dishes/{id}")
     suspend fun getDishByID(
@@ -106,11 +96,13 @@ interface ApiService {
     suspend fun getAllUser(
         @Header("authorization") jwtToken: String
     ): Response<UserResponse>
+
     @POST("accounts")
     suspend fun addNewUser(
         @Header("authorization") jwtToken: String,
         @Body user: User
     ): Response<User>
+
     @GET("accounts/{id}")
     suspend fun getInforUser(
         @Header("authorization") jwtToken: String,
@@ -153,7 +145,6 @@ interface ApiService {
     ): Response<UserResponseData>
 
 
-
     //Dishes Type
 
     @GET("dish-types")
@@ -182,28 +173,35 @@ interface ApiService {
 
     //Order, Bill
     @GET("bills")
-    suspend fun getAllBills(@Header("authorization") jwtToken: String): Response<BillResponse<List<Bill>>>
+    suspend fun getAllBills(@Header("authorization") jwtToken: String): Response<BillResponse1<List<Bill>>>
 
     @GET("bills/{id}")
-    suspend fun get1Bill(@Header("authorization") jwtToken: String, @Path("id") id: String): BillResponse<Bill>
+    suspend fun get1Bill(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: String
+    ): BillResponse1<Bill>
 
     @GET("orders")
     suspend fun getAllOrders(@Header("authorization") jwtToken: String): Response<List<Order>>
 
     @GET("orders/{id}")
-    suspend fun get1Order(@Header("authorization") jwtToken: String, @Path("id") id: String): Response<Order>
+    suspend fun get1Order(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: String
+    ): Response<Order>
 
     //Manager
     @GET("ingredients")
     suspend fun getAllIngredient(@Header("authorization") jwtToken: String): Response<IngredientResponse>
-        @GET("tables")
-        suspend fun getAllTable(
-            @Header("authorization") jwtToken: String
-        ): Response<TableResponse>
+
+    @GET("tables")
+    suspend fun getAllTable(
+        @Header("authorization") jwtToken: String
+    ): Response<TableResponse>
 
     @POST("tables")
     suspend fun addTable(
-        @Header("authorization") jwtToken: String,@Body tabledata: Tabledata
+        @Header("authorization") jwtToken: String, @Body tabledata: Tabledata
     ): Response<Tabledata>
 
     @DELETE("tables/{id}")
@@ -213,16 +211,27 @@ interface ApiService {
     ): Response<Tabledata>
 
     @GET("orders/{id}")
-    suspend fun get1Order(@Header("authorization") jwtToken: String,@Path("id") id: Int): Response<OrderResponse>
+    suspend fun get1Order(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: Int
+    ): Response<OrderResponse>
 
     @GET("dishes/{id}")
-    suspend fun get1Dish(@Header("authorization") jwtToken: String,@Path("id") id: Int): Response<Dish1Response>
+    suspend fun get1Dish(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: Int
+    ): Response<Dish1Response>
 
     @GET("bills")
-    suspend fun getAllBill(@Header("authorization") jwtToken: String): Response<BillResponse>
+    suspend fun getAllBill(
+        @Header("authorization") jwtToken: String
+    ): Response<BillResponse>
 
     @POST("ingredients")
-    suspend fun add1Ingredient(@Header("authorization") jwtToken: String,@Body ingredient: IngredientData): Response<IngredientData>
+    suspend fun add1Ingredient(
+        @Header("authorization") jwtToken: String,
+        @Body ingredient: IngredientData
+    ): Response<IngredientData>
     //Waiter
 
     @GET("ingredient/get-list")
