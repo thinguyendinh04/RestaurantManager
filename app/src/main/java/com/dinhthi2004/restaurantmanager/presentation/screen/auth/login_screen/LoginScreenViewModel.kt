@@ -47,7 +47,10 @@ class LoginScreenViewModel : ViewModel() {
                         invalidCredentialsError.value = false;
                         emailError.value = false
                         passwordError.value = false
-
+                        val userId=account.id
+                        if (userId != null){
+                            TokenManager.userId=userId
+                        }
                         val token = account.token
                         if (token != null) {
                             Log.d("token", token)
