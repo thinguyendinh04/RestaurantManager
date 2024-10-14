@@ -16,12 +16,12 @@ import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen.component.SignInButton
 import com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen.component.TextEmailInput
 import com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen.component.TextPasswordInput
-import com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen.viewmodel.LoginViewModel
+import com.dinhthi2004.restaurantmanager.presentation.screen.auth.login_screen.viewmodel.LoginScreenViewModel
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel = viewModel()
+    viewModel: LoginScreenViewModel = viewModel()
 ) {
     var usernameState by remember { mutableStateOf("") }
     var passwordState by remember { mutableStateOf("") }

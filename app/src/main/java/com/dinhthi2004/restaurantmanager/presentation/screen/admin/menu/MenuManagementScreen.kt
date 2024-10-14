@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.model.Meal
+import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.DeleteConfirmationDialog
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.MealDetailDialog
@@ -28,12 +28,12 @@ fun MenuManagementScreen(
     navController: NavController,
     viewModel: MenuManageViewModel = viewModel(),
 ) {
-    val mealList by viewModel.mealList.collectAsState()
+    val dishList by viewModel.dishList.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
-    val filteredItems = viewModel.filteredItems(mealList)
+    val filteredItems = viewModel.filteredItems(dishList)
 
-    var selectedMeal by remember { mutableStateOf<Meal?>(null) }
-    var mealToDelete by remember { mutableStateOf<Meal?>(null) }
+    var selectedDish by remember { mutableStateOf<Dish?>(null) }
+    var dishToDelete by remember { mutableStateOf<Dish?>(null) }
     val showDialog = remember { mutableStateOf(false) }
     val showDeleteDialog = remember { mutableStateOf(false) }
 
@@ -43,7 +43,7 @@ fun MenuManagementScreen(
         deleteMealState?.let {
             it.onSuccess { message ->
                 Log.d("MenuManagement", message)
-                viewModel.getAllMeals()
+                viewModel.getAllDishes()
                 Toast.makeText(context, "Xóa món ăn thành công", Toast.LENGTH_SHORT).show()
             }
             it.onFailure { error ->
@@ -53,7 +53,7 @@ fun MenuManagementScreen(
         }
     }
     LaunchedEffect(Unit) {
-        viewModel.getAllMeals()
+        viewModel.getAllDishes()
     }
 
     Scaffold(
@@ -115,16 +115,22 @@ fun MenuManagementScreen(
                 }
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(filteredItems) { meal ->
+                    items(filteredItems) { dish ->
                         MenuItemCard(
-                            meal = meal,
+                            dish = dish,
                             onClick = {
-                                selectedMeal = meal
+                                selectedDish = dish
                                 showDialog.value = true
                             },
                             onDeleteClick = {
-                                mealToDelete = meal
+                                dishToDelete = dish
                                 showDeleteDialog.value = true
+                            },
+                            onUpdateClick = {
+                                navController.navigate(
+                                    Routes.UPDATE_FOOD +
+                                            "?dishId=${dish.id}"
+                                )
                             }
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -132,18 +138,18 @@ fun MenuManagementScreen(
                 }
             }
 
-            if (showDialog.value && selectedMeal != null) {
+            if (showDialog.value && selectedDish != null) {
                 MealDetailDialog(
-                    meal = selectedMeal!!,
+                    dish = selectedDish!!,
                     onDismiss = { showDialog.value = false }
                 )
             }
 
-            if (showDeleteDialog.value && mealToDelete != null) {
+            if (showDeleteDialog.value && dishToDelete != null) {
                 DeleteConfirmationDialog(
-                    meal = mealToDelete!!,
+                    dish = dishToDelete!!,
                     onConfirm = {
-                        mealToDelete!!._id?.let { viewModel.deleteMeal(mealId = it) }
+                        dishToDelete!!.id.let { viewModel.deleteDish(id = it.toString()) }
                         showDeleteDialog.value = false
                     },
                     onDismiss = {

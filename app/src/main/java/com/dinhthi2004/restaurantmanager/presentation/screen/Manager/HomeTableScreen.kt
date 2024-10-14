@@ -1,6 +1,7 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.Manager
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,44 +26,78 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.R
 
-import com.dinhthi2004.restaurantmanager.model.Table
 import com.dinhthi2004.restaurantmanager.model.TokenManager
+import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.NguyenLieuItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.AddIngredientDialog
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.DialogTable
 
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.TableItem
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.items
 import com.dinhthi2004.restaurantmanager.viewmodel.IngredientViewModel
 import com.dinhthi2004.restaurantmanager.viewmodel.TableViewModel
 
 @Composable
 fun HomeTableScreen(navigationController: NavHostController) {
-
+    val context= LocalContext.current
     val tableViewModel: TableViewModel = viewModel()
-    val token = TokenManager.token
-
+    val token=TokenManager.token
     LaunchedEffect(Unit) {
-        token?.let { tableViewModel.getTables(it) }
+        if (token != null) {
+            tableViewModel.getTables(token)
+        }
     }
 
     // Khởi tạo tables với giá trị mặc định là một danh sách rỗng
     val tables by tableViewModel.tables.observeAsState(emptyList())
+    var tableToDelete by remember { mutableStateOf<Tabledata?>(null) }
 
-
+    var showDeleteConfirmDialog by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
 
 
     if (showDialog) {
        DialogTable(onDismiss = { showDialog = false })
     }
-
+    if (showDeleteConfirmDialog && tableToDelete != null) {
+        // Dialog xác nhận xóa
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmDialog = false },
+            title = { Text(text = "Xác nhận xóa") },
+            text = { Text("Bạn có chắc chắn muốn xóa bàn ${tableToDelete?.table_name} không?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        // Gọi hàm xóa bàn
+                        tableToDelete?.let { table ->
+                            table.id?.let {
+                                token?.let { it1 ->
+                                    tableViewModel.deleteTable(it1, it) {
+                                        tableViewModel.getTables(token) // Cập nhật lại danh sách bàn
+                                    }
+                                }
+                            }
+                        }
+                        showDeleteConfirmDialog = false
+                        Toast.makeText(context,"Xóa thành công", Toast.LENGTH_SHORT).show()
+                    }
+                ) {
+                    Text("Xóa")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDeleteConfirmDialog = false }) {
+                    Text("Hủy")
+                }
+            }
+        )
+    }
     Column(
         Modifier
             .fillMaxSize()
@@ -96,7 +131,10 @@ fun HomeTableScreen(navigationController: NavHostController) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(tables) { table ->
-                    TableItem(table = table) { }
+                    TableItem(table = table) {
+                        tableToDelete = table
+                        showDeleteConfirmDialog = true
+                    }
                 }
             }
         } else {

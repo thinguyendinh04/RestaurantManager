@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,6 +18,7 @@ import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.data.Employee
 import com.dinhthi2004.restaurantmanager.data.employ
+import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.EmployeeCard
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel.HomeEmployeeViewModel
 
@@ -26,18 +28,17 @@ fun HomeEmployeeScreen(
     navigationController: NavHostController,
     viewModel: HomeEmployeeViewModel = viewModel()
 ) {
-    val employeeList by viewModel.userList.collectAsState()
-    val accountDetail by viewModel.accountDetail.collectAsState()
+
+    val employees by viewModel.employees.observeAsState(emptyList())
+  val token=TokenManager.token
     var searchQuery by remember { mutableStateOf("") }
+    val filteredEmployees = employees.filter {
+        it.full_name.contains(searchQuery, ignoreCase = true) }
     LaunchedEffect(Unit) {
-        viewModel.getAllUser()
+        viewModel.getUserManager("Bearer $token")
     }
 
-    val filteredEmployeeList = if (searchQuery.isNotBlank()) {
-        employeeList.filter { it.username.contains(searchQuery, ignoreCase = true) }
-    } else {
-        employeeList
-    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -74,7 +75,7 @@ fun HomeEmployeeScreen(
                     .fillMaxWidth()
                     .background(Color.White)
             ) {
-                items(filteredEmployeeList) { index ->
+                items(filteredEmployees) { index ->
                     EmployeeCard(employee= index) {}
                 }
             }

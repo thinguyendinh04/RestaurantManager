@@ -20,7 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.AddIngredientDialog
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.DialogTable
+//import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.DialogTable
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.NguyenLieuItem
 import com.dinhthi2004.restaurantmanager.viewmodel.IngredientViewModel
 

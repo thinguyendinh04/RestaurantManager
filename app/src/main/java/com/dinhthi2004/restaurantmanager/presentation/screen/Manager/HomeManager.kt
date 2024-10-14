@@ -46,7 +46,6 @@ import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.IngreCT
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.NguyenLieuItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.TableItem
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.items
 import com.dinhthi2004.restaurantmanager.uilts.Route
 import com.dinhthi2004.restaurantmanager.viewmodel.IngredientViewModel
 import com.dinhthi2004.restaurantmanager.viewmodel.BillViewModel
@@ -217,47 +216,6 @@ fun HomeManager(navigationController: NavHostController) {
                 showDialog = false
                 selectedOrder = null
             })
-        }
-    }
-}
-
-
-@Composable
-fun HomeItem(index: Int) {
-    val home = items[index]
-    val additionalInfo = if (home.isOnline) "" else " - Online"
-    Box(
-        modifier = Modifier
-            .width(140.dp)
-            .height(80.dp)
-            .padding(start = 10.dp)
-            .clickable { }
-            .border(
-                border = BorderStroke(1.dp, Color(0xff565E6C)),
-                shape = RoundedCornerShape(8.dp)
-            )
-    ) {
-        Column(
-            modifier = Modifier.padding(5.dp),
-        ) {
-            Text(
-                text = "Bàn " + home.ban + additionalInfo,
-                fontSize = 12.sp,
-                color = Color.Black,
-                style = MaterialTheme.typography.labelLarge
-            )
-            Text(
-                text = home.name,
-                fontSize = 12.sp,
-                color = Color.Black,
-                style = MaterialTheme.typography.labelLarge
-            )
-            Text(
-                text = home.phone,
-                fontSize = 12.sp,
-                color = Color.Black,
-                style = MaterialTheme.typography.labelLarge
-            )
         }
     }
 }

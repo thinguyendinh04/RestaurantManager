@@ -8,4 +8,6 @@ data class DishResponse(
 data class Dish1Response(
     val `data`: Dish,
     val message: Any
+    val data: List<Dish>,
+    val message: String?
 )
