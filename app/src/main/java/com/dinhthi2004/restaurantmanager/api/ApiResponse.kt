@@ -41,7 +41,6 @@ data class MealTypeResponse(
     val data: List<MealType>
 )
 
-
 data class LoginResponse(
     val message: String?,
     val data: User

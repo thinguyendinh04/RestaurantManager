@@ -122,6 +122,14 @@ interface ApiService {
         @Body user: User
     ): Response<UserResponse>
 
+    @PUT("accounts/{id}")
+    suspend fun updateRole(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: Int,
+        @Body user: User
+    ): Response<UserResponseData>
+
+
     @DELETE("accounts/{id}")
     suspend fun deleteUser(
         @Header("authorization") jwtToken: String,
