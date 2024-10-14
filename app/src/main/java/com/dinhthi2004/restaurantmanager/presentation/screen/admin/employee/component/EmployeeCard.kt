@@ -52,6 +52,10 @@ fun EmployeeCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
+                    text = "Họ Tên: ${user.full_name}",
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
                     text = "Tài khoản: ${user.email}",
                     style = MaterialTheme.typography.titleSmall
                 )
