@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinhthi2004.restaurantmanager.api.HttpReq
 import com.dinhthi2004.restaurantmanager.model.Ingredient
-import com.dinhthi2004.restaurantmanager.model.Table
 import kotlinx.coroutines.launch
 
 class IngredientViewModel : ViewModel() {

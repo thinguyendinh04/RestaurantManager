@@ -6,11 +6,13 @@ import com.dinhthi2004.restaurantmanager.model.BillDetail
 import com.dinhthi2004.restaurantmanager.model.Ingredient
 import com.dinhthi2004.restaurantmanager.model.LoginRequest
 import com.dinhthi2004.restaurantmanager.model.Meal
-import com.dinhthi2004.restaurantmanager.model.Table
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.model.dish.DishResponse
+import com.dinhthi2004.restaurantmanager.model.table.TableResponse
+import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import com.dinhthi2004.restaurantmanager.model.user.User
 import com.dinhthi2004.restaurantmanager.model.user.UserResponse
+import com.dinhthi2004.restaurantmanager.model.user.UserResponse1
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -62,37 +64,55 @@ interface ApiService {
     suspend fun getAllUser(
         @Header("authorization") jwtToken: String
     ): Response<UserResponse>
-
     @POST("accounts")
     suspend fun addNewUser(
         @Header("authorization") jwtToken: String,
         @Body user: User
     ): Response<User>
+    @GET("accounts/{id}")
+    suspend fun getInforUser(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: Int
+    ): Response<UserResponse1>
 
-    @POST("accounts/{id}")
+
+    @PUT("accounts/{id}")
     suspend fun updateUser(
         @Header("authorization") jwtToken: String,
-        @Path("id") id: String,
+        @Path("id") id: Int,
         @Body user: User
-    ): Response<User>
+    ): Response<UserResponse>
 
     @DELETE("accounts/{id}")
     suspend fun deleteUser(
         @Header("authorization") jwtToken: String,
-        @Path("id") id: String
+        @Path("id") id: Int
     ): Response<User>
 
     //
 
     //Manager
+        @GET("tables")
+        suspend fun getAllTable(
+            @Header("authorization") jwtToken: String
+        ): Response<TableResponse>
+
+    @POST("tables")
+    suspend fun addTable(
+        @Header("authorization") jwtToken: String,@Body tabledata: Tabledata
+    ): Response<Tabledata>
+
+    @DELETE("tables/{id}")
+    suspend fun deleteTable(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: Int
+    ): Response<Tabledata>
 
     //Waiter
 
     @GET("ingredient/get-list")
     suspend fun getIngredients(@Header("authorization") jwtToken: String): ApiResponse<List<Ingredient>>
 
-    @GET("tables")
-    suspend fun getTables(@Header("authorization") jwtToken: String): ApiResponse1<List<Table>>
 
     @GET("bill/get-list-bill")
     suspend fun getBills(@Header("authorization") jwtToken: String): ApiResponse<List<Bill>>
@@ -139,11 +159,6 @@ interface ApiService {
         @Query("mealname") mealname: String
     ): Response<ArrayList<Meal>>
 
-    @POST("table")
-    suspend fun addTable(
-        @Header("authorization") jwtToken: String,
-        @Body table: Table
-    ): ApiResponse2<Table>
 
     @POST("ingredient/add")
     suspend fun addIngredient(
