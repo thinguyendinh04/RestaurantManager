@@ -569,13 +569,17 @@ fun AddItemsDialog(
                             item = product,
                             quantity = quantities[product] ?: 0,
                             onIncreaseClick = {
-                                // Tăng số lượng sản phẩm
-                                quantities[product] = (quantities[product] ?: 0) + 1
+                                // Tạo lại một bản sao của map và cập nhật số lượng
+                                quantities = quantities.toMutableMap().apply {
+                                    this[product] = (this[product] ?: 0) + 1
+                                }
                             },
                             onDecreaseClick = {
-                                // Giảm số lượng sản phẩm nếu số lượng > 0
+                                // Tạo lại một bản sao của map và giảm số lượng nếu số lượng > 0
                                 if ((quantities[product] ?: 0) > 0) {
-                                    quantities[product] = (quantities[product] ?: 0) - 1
+                                    quantities = quantities.toMutableMap().apply {
+                                        this[product] = (this[product] ?: 0) - 1
+                                    }
                                 }
                             }
                         )
@@ -612,4 +616,3 @@ fun AddItemsDialog(
         }
     )
 }
-
