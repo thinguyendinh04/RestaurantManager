@@ -6,5 +6,5 @@ data class UserResponse(
 )
 data class UserResponse1(
     val `data`: User,
-    val message: Any
+    val message: Any?
 )

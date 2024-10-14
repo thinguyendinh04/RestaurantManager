@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,13 +26,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.model.Meal
+import coil.compose.rememberImagePainter
+import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.MenuManageViewModel
 
 @Composable
@@ -42,10 +39,10 @@ fun MenuManagement(
     navController: NavController,
     viewModel: MenuManageViewModel = viewModel()
 ) {
-    val mealList by viewModel.mealList.collectAsState()
+    val dishList by viewModel.dishList.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getAllMeals()
+        viewModel.getAllDishes()
     }
 
     Column(
@@ -82,8 +79,8 @@ fun MenuManagement(
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn {
-            items(mealList.take(5)) { meal ->
-                MenuItemCard(meal = meal)
+            items(dishList.take(5)) { dish ->
+                MenuItemCard(dish = dish)
             }
         }
 
@@ -93,7 +90,7 @@ fun MenuManagement(
 
 
 @Composable
-fun MenuItemCard(meal: Meal) {
+fun MenuItemCard(dish: Dish) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -106,19 +103,18 @@ fun MenuItemCard(meal: Meal) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_dish),
+                painter = rememberImagePainter(data = dish.image_url),
                 contentDescription = "Meal image",
-                modifier = Modifier
-                    .size(64.dp)
+                modifier = Modifier.size(64.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 BasicText(
-                    text = "Tên: ${meal.name}",
+                    text = "Tên: ${dish.name}",
                     style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
                 )
                 BasicText(
-                    text = "Giá: ${meal.price}",
+                    text = "Giá: ${dish.price}",
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp)
                 )
             }

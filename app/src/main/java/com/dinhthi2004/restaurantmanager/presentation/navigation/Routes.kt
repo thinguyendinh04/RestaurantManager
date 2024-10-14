@@ -13,6 +13,7 @@ object Routes {
 
     //Admin - ADD_NEW_FOOD
     const val ADD_NEW_FOOD = "add_new_food"
+    const val UPDATE_FOOD = "update_food"
     const val MENU_MANAGEMENT_ADMIN = "menu_management_admin"
     const val ADD_NEW_EMPLOYEE = "add_new_employee"
     //Waiter
