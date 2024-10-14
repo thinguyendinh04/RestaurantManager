@@ -10,11 +10,8 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.*
 
 @Composable
 fun NavHostComponent(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "home") {
-        composable("home") {
-            HomeWaiterScreen(navController) // Điều hướng tới HomeWaiterScreen
-        }
-        composable("OderStore") {
+    NavHost(navController = navController, startDestination = "OrderStore") {
+        composable("OrderStore") {
             OrderWaiterScreen(navController) // Điều hướng tới OderWaiterScreen
         }
         composable("table") {

@@ -1,4 +1,4 @@
-package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component
+package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Table
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -25,27 +25,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.model.Meal
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataProduct
 
 @Composable
 fun ItemOrderProduct(
-    item: Meal,
-    quantity: Int, // Tham số để nhận số lượng hiện tại
-    onIncreaseClick: () -> Unit, // Callback khi tăng số lượng
-    onDecreaseClick: () -> Unit, // Callback khi giảm số lượng
+    item: dataProduct,
+    quantity: Int, // Nhận số lượng hiện tại
+    onIncreaseClick: () -> Unit, // Callback để tăng số lượng
+    onDecreaseClick: () -> Unit // Callback để giảm số lượng
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Ảnh sản phẩm
+            // Hiển thị ảnh sản phẩm (nếu có)
             Image(
-                painter = painterResource(id = R.drawable.img1),
+                painter = painterResource(id = item.imageResId), // Thay thế với id ảnh thực tế
                 contentDescription = null,
                 modifier = Modifier
                     .size(80.dp)
@@ -56,43 +57,47 @@ fun ItemOrderProduct(
 
             Spacer(modifier = Modifier.width(16.dp))
 
+            // Thông tin sản phẩm
             Column(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Tên: ${item.name}",
+                    text = item.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
                 Text(
-                    text = "Giá: ${item.price}",
+                    text = "${item.price} đ",
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = "Số lượng: $quantity", // Hiển thị số lượng
-                    fontSize = 14.sp
                 )
             }
 
             // Nút giảm số lượng
             IconButton(
-                onClick = { onDecreaseClick() },
-                enabled = quantity > 0 // Ngăn không cho giảm khi số lượng bằng 0
+                onClick = { onDecreaseClick() }, // Gọi callback giảm số lượng
+                enabled = quantity > 0 // Chỉ cho phép giảm nếu số lượng > 0
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_remove), // Thay thế với icon giảm
-                    contentDescription = "Decrease Quantity"
+                    contentDescription = "Giảm"
                 )
             }
 
+            // Hiển thị số lượng hiện tại
+            Text(
+                text = "$quantity",
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+
             // Nút tăng số lượng
             IconButton(
-                onClick = { onIncreaseClick() }
+                onClick = { onIncreaseClick() } // Gọi callback tăng số lượng
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_add), // Thay thế với icon tăng
-                    contentDescription = "Increase Quantity"
+                    contentDescription = "Tăng"
                 )
             }
         }
