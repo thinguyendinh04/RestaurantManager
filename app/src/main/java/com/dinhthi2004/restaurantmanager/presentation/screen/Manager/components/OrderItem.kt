@@ -14,13 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dinhthi2004.restaurantmanager.model.Bill
+import com.dinhthi2004.restaurantmanager.model.bill.BillData
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.HoaDon
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.statusToString
 
 
 @Composable
-fun OrderItem(order: Bill, onOrderSelected: (Bill) -> Unit) {
-    val textColor = when (order.bill_status) {
+fun OrderItem(order: BillData, onOrderSelected: (BillData) -> Unit) {
+    val textColor = when (order.status) {
         0 -> Color.Red
         1 -> Color.Green
         else -> Color.Gray
@@ -41,18 +42,18 @@ fun OrderItem(order: Bill, onOrderSelected: (Bill) -> Unit) {
             // Thông tin bàn và tổng giá tiền
 
                 Text(
-                    text = "Table: ${order.id_table ?: "Unknown"}", // Hiển thị ID bàn
+                    text = "Mã đơn hàng: ${order.order_id ?: "Unknown"}",
                     fontSize = 14.sp,
                     color = Color.Black
                 )
                 Text(
-                    text = "Total: ${order.total}k", // Hiển thị tổng tiền hóa đơn
+                    text = "Total: ${order.tong_tien}k", // Hiển thị tổng tiền hóa đơn
                     fontSize = 14.sp,
                     color = Color(0xfffe763e)
                 )
                 // Trạng thái hóa đơn
                 Text(
-                    text = statusToString(order.bill_status),
+                    text = statusToString(order.status),
                     fontSize = 12.sp,
                     color = textColor
                 )

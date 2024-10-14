@@ -24,6 +24,23 @@ class HomeEmployeeViewModel : ViewModel() {
     fun getUserManager(token: String) {
         viewModelScope.launch {
             try {
+                if (token != null) {
+                    val userResponse = api.getUser("Bearer $token")
+                    Log.d("kaka", "getAllUser: Response received")
+                    if (userResponse.isSuccessful) {
+                        val responseBody = userResponse.body()
+                        Log.d("kaka", "getAllUser: Response body = $responseBody")
+
+                        if (responseBody != null) {
+                            _userList.value = responseBody.users ?: emptyList()
+                        } else {
+                            _errorMessage.value = "Response body is null"
+                            Log.e("EmployeeViewModel", "getAllUser: Response body is null")
+                        }
+                    } else {
+                        _errorMessage.value = "Failed to load users: ${userResponse.message()}"
+                        Log.e("EmployeeViewModel", "getAllUser: Error = ${userResponse.message()}")
+                    }
                 val response = api.getAllUser("Bearer $token") // Sử dụng token để gọi API
 
                 // Kiểm tra phản hồi và cập nhật LiveData

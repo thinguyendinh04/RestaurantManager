@@ -25,29 +25,32 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.model.Bill
 import com.dinhthi2004.restaurantmanager.model.TokenManager
+import com.dinhthi2004.restaurantmanager.model.bill.BillData
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.IngreCT
 
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.OrderItem
+import com.dinhthi2004.restaurantmanager.viewmodel.BillViewModel
+import com.dinhthi2004.restaurantmanager.viewmodel.DishViewModel
 import com.dinhthi2004.restaurantmanager.viewmodel.OrderViewModel
 
 
 @Composable
 fun HomeOrderScreen(navigationController: NavHostController) {
+    val billViewModel: BillViewModel = viewModel()
     val orderViewModel: OrderViewModel = viewModel()
     val token = TokenManager.token
     Log.d("tokeen", "OrderViewModel: " + token)
 
     LaunchedEffect(Unit) {
         if (token != null) {
-            orderViewModel.getBills(token)
+            billViewModel.getBills(token)
         }
     }
 
-    val order by orderViewModel.bills.observeAsState(emptyList())
+    val order by billViewModel.bills.observeAsState(emptyList())
     var showDialog by remember { mutableStateOf(false) }
-    var selectedOrder by remember { mutableStateOf<Bill?>(null) }
+    var selectedOrder by remember { mutableStateOf<BillData?>(null) }
 
     Column(
         Modifier
@@ -90,7 +93,7 @@ fun HomeOrderScreen(navigationController: NavHostController) {
     }
 
     if (showDialog && selectedOrder != null) {
-        IngreCT(navigationController, order = selectedOrder,onDismiss = {
+        IngreCT(navigationController, billData = selectedOrder,onDismiss = {
             showDialog = false
             selectedOrder = null
         })
