@@ -2,6 +2,7 @@ package com.dinhthi2004.restaurantmanager.ui.screen
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,7 +32,7 @@ fun EmployeeScreen(
     val user by viewModel.user.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var showUpdateRoleDialog by remember { mutableStateOf(false) } // Thêm biến này để hiển thị UpdateRoleDialog
+    var showUpdateRoleDialog by remember { mutableStateOf(false) }
     var userToDelete by remember { mutableStateOf<User?>(null) }
 
     LaunchedEffect(Unit) {
@@ -125,7 +126,7 @@ fun EmployeeScreen(
                     viewModel.clearAccountDetail()
                 },
                 onUpdateRoleClick = {
-                    showUpdateRoleDialog = true // Hiển thị UpdateRoleDialog khi nhấn "Update Role"
+                    showUpdateRoleDialog = true
                 }
             )
         }
@@ -138,8 +139,8 @@ fun EmployeeScreen(
                     showUpdateRoleDialog = false
                 },
                 onUpdateRole = { newRole ->
-                    // Gửi vai trò mới cho ViewModel để cập nhật role
-                    //Hafaham update Role
+                    viewModel.updateRole(user!!.id, newRole) // Gọi hàm cập nhật vai trò trong ViewModel
+                    showUpdateRoleDialog = false // Đóng dialog sau khi cập nhật
                 }
             )
         }
@@ -159,7 +160,6 @@ fun EmployeeScreen(
         }
     }
 }
-
 
 @Composable
 fun ConfirmDeleteDialog(user: User, onConfirm: () -> Unit, onDismiss: () -> Unit) {
@@ -222,24 +222,44 @@ fun EmployeeDetailDialog(
 fun UpdateRoleDialog(
     user: User,
     onDismiss: () -> Unit,
-    onUpdateRole: (String) -> Unit // Callback nhận vai trò mới
+    onUpdateRole: (Int) -> Unit
 ) {
-    var selectedRole by remember { mutableStateOf("") }
+    var selectedRole by remember { mutableStateOf(user.role) } // Lưu giữ giá trị số nguyên
+
+    // Danh sách các vai trò
+    val roles = listOf("Admin", "Manager", "Waiter")
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = "Update Role for ${user.full_name}")
+            Text(text = "Update Role for ${user.full_name}", style = MaterialTheme.typography.titleLarge)
         },
         text = {
-            Column {
-                Text("Current Role: ${user.role}")
-                OutlinedTextField(
-                    value = selectedRole,
-                    onValueChange = { selectedRole = it },
-                    label = { Text("New Role") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+            Column(modifier = Modifier.padding(vertical = 16.dp)) {
+                Text("Current Role: ${getRoleText(user.role)}", style = MaterialTheme.typography.bodyMedium)
+
+                roles.forEachIndexed { index, role ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                selectedRole = index + 1
+                            },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (selectedRole == index + 1),
+                            onClick = {
+                                selectedRole = index + 1
+                            }
+                        )
+                        Text(
+                            text = role,
+                            modifier = Modifier.padding(start = 8.dp),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
             }
         },
         confirmButton = {
@@ -260,4 +280,11 @@ fun UpdateRoleDialog(
     )
 }
 
-
+fun getRoleText(role: Int): String {
+    return when (role) {
+        1 -> "Admin"
+        2 -> "Manager"
+        3 -> "Waiter"
+        else -> "Unknown"
+    }
+}

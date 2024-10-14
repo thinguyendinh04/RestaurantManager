@@ -115,6 +115,43 @@ class EmployeeViewModel : ViewModel() {
         }
     }
 
+    fun updateRole(id: Int, newRole: Int) {
+        viewModelScope.launch {
+            try {
+                if (!token.isNullOrBlank()) {
+                    val userToUpdate = user.value?.copy(role = newRole)
+                    val response = api.updateRole("Bearer $token", id, userToUpdate!!)
+                    Log.d("EmployeeViewModel", "updateRole: Response received for id $id, ${response}")
+
+                    if (response.isSuccessful) {
+                        val userResponse = response.body()
+                        Log.d("userResponse", userResponse.toString())
+
+                        if (userResponse != null) {
+                            _user.value = userResponse.data // Cập nhật thông tin người dùng
+
+                            getAllUser()
+                        } else {
+                            // Log dữ liệu thô nếu body null
+                            val responseBodyString = response.errorBody()?.string() ?: "Empty body"
+                            Log.e("EmployeeViewModel", "Response body is null, raw data: $responseBodyString")
+                            _errorMessage.value = "Response body is null"
+                        }
+                    } else {
+                        _errorMessage.value = "Failed to update role: ${response.message()}"
+                        Log.e("EmployeeViewModel", "Error = ${response.message()}")
+                    }
+                } else {
+                    _errorMessage.value = "Token is missing, please log in again."
+                    Log.e("EmployeeViewModel", "Token is missing")
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Error occurred: ${e.localizedMessage}"
+                Log.e("EmployeeViewModel", "Exception = ${e.localizedMessage}")
+            }
+        }
+    }
+
 
 
     // Xóa thông tin chi tiết
