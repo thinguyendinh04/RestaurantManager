@@ -21,6 +21,7 @@ import coil.compose.AsyncImage
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.model.Ingredient
 import com.dinhthi2004.restaurantmanager.model.TokenManager
+import com.dinhthi2004.restaurantmanager.model.ingredient.IngredientData
 import com.dinhthi2004.restaurantmanager.viewmodel.IngredientViewModel
 import com.dinhthi2004.restaurantmanager.viewmodel.TableViewModel
 
@@ -28,42 +29,41 @@ import com.dinhthi2004.restaurantmanager.viewmodel.TableViewModel
 @Composable
 fun AddIngredientDialog(onDismiss: () -> Unit) {
     val ingreViewModel: IngredientViewModel = viewModel()
-    val token = TokenManager.token
+    val token = TokenManager.token;
 
-    var ingredient_name by remember { mutableStateOf("") }
-    var ingredients_amount by remember { mutableStateOf("") }
-    val isTableNameValid = ingredient_name.isNotBlank()
-    val isOrderNameValid = ingredients_amount.isNotBlank()
+    var name by remember { mutableStateOf("") }
+    var amount by remember { mutableStateOf("") }
+    var image by remember { mutableStateOf("") }
+val created_at by remember { mutableStateOf("") }
+    val updated_at by remember { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = { onDismiss() },
         title = { Text(text = "Thêm Nguyên Liệu Mới") },
         text = {
             Column {
 
-                TextField(value = ingredient_name,
-                    onValueChange = { ingredient_name = it },
+                TextField(value = name,
+                    onValueChange = { name = it },
                     label = { Text("Tên nguyên liệu") })
-                TextField(value = ingredients_amount, onValueChange = { ingredients_amount = it }, label = { Text("Số Lượng") })
+                TextField(value = amount, onValueChange = { amount = it }, label = { Text("Số Lượng") })
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    if (isTableNameValid  && isOrderNameValid) {
-                        val newIngredient = Ingredient(
-                            ingredient_name = ingredient_name,
-                            ingredients_amount = ingredients_amount.toInt(),
-
-                        )
-                        if (token != null) {
-                            ingreViewModel.addingredient(token, newIngredient) {
-                                ingreViewModel.getIngredients(token)
-                            }
+                    val newIngre = IngredientData(
+                        id = null, // ID có thể được tạo tự động từ backend
+                        name = name,
+                        amount = amount.toInt(),
+                        created_at = created_at,
+                        updated_at = updated_at
+                    )
+                    if (token != null) {
+                        ingreViewModel.addingredient(token, newIngre) {
+                            ingreViewModel.getIngredients(token)
                         }
-                        onDismiss()
-                    } else {
-
                     }
+                    onDismiss()
                 },
                 modifier = Modifier
                     .padding(top = 5.dp),

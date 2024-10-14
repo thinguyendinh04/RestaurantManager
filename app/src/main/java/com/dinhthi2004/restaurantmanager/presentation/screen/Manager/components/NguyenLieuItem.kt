@@ -1,5 +1,4 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components
-
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,15 +16,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.rememberImagePainter
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.model.Ingredient
-
-import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.nguyen
+import com.dinhthi2004.restaurantmanager.model.ingredient.IngredientData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NguyenLieuItem(ingredient: Ingredient, onItemClicked: () -> Unit) {
+fun NguyenLieuItem(ingredient: IngredientData, onItemClicked: () -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
-
 
     // Hiển thị dialog chi tiết khi người dùng nhấn vào
     if (showDialog) {
@@ -53,7 +49,7 @@ fun NguyenLieuItem(ingredient: Ingredient, onItemClicked: () -> Unit) {
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Text(
-                            text = "${ingredient.ingredient_name}",
+                            text = "${ingredient.name}",
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                             modifier = Modifier.align(Alignment.Center)
                         )
@@ -64,7 +60,7 @@ fun NguyenLieuItem(ingredient: Ingredient, onItemClicked: () -> Unit) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Image(
-                                painter = painterResource(R.drawable.ingre),
+                                painter = rememberImagePainter(data = ingredient.image ?: R.drawable.ingre),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(100.dp)
@@ -74,7 +70,7 @@ fun NguyenLieuItem(ingredient: Ingredient, onItemClicked: () -> Unit) {
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Column {
-                                Text(text = "Số lượng: ${ingredient.ingredients_amount}")
+                                Text(text = "Số lượng: ${ingredient.amount}")
                             }
                         }
                     }
@@ -110,7 +106,7 @@ fun NguyenLieuItem(ingredient: Ingredient, onItemClicked: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter =painterResource(R.drawable.ingre),
+                painter = rememberImagePainter(data = ingredient.image ?: R.drawable.ingre),
                 contentDescription = "",
                 modifier = Modifier
                     .width(70.dp)
@@ -119,7 +115,7 @@ fun NguyenLieuItem(ingredient: Ingredient, onItemClicked: () -> Unit) {
                 contentScale = ContentScale.FillHeight
             )
             Text(
-                text = "Số lượng: ${ingredient.ingredients_amount}",
+                text = "Ten: ${ingredient.name}",
                 fontSize = 12.sp,
                 color = Color.Black,
                 style = MaterialTheme.typography.labelLarge,
@@ -127,4 +123,3 @@ fun NguyenLieuItem(ingredient: Ingredient, onItemClicked: () -> Unit) {
         }
     }
 }
-

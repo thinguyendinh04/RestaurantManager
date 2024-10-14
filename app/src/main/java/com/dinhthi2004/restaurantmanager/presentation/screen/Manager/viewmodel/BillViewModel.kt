@@ -6,38 +6,38 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinhthi2004.restaurantmanager.api.HttpReq
-import com.dinhthi2004.restaurantmanager.model.Order.OrderData
+import com.dinhthi2004.restaurantmanager.model.bill.BillData
 import kotlinx.coroutines.launch
 
-class OrderViewModel : ViewModel() {
+class BillViewModel : ViewModel() {
     private val api = HttpReq.getInstance()
     private val TAG = "BillViewModel"
 
     private val _statusCode = MutableLiveData<Int>()
     val statusCode: LiveData<Int> = _statusCode
 
-    private val _orders = MutableLiveData<List<OrderData>>()
-    val orders: LiveData<List<OrderData>> = _orders
+    private val _bills = MutableLiveData<List<BillData>>()
+    val bills: LiveData<List<BillData>> = _bills
 
-    private val _order = MutableLiveData<OrderData?>()
-    val order: LiveData<OrderData?> = _order
+    private val _bill = MutableLiveData<BillData>()
+    val bill: LiveData<BillData> = _bill
 
     fun resetStatusCode() {
         _statusCode.postValue(0)
     }
 
-    fun getOrderDetail(token: String,id:Int) {
+    fun getBills(token: String) {
         viewModelScope.launch {
             try {
                 // Gọi API để lấy danh sách hóa đơn
-                val response = api.get1Order("Bearer $token",id)
+                val response = api.getAllBill("Bearer $token")
 
                 // Kiểm tra phản hồi và cập nhật LiveData
                 if (response.isSuccessful) {
-                    _order.postValue(response.body()?.data) // Sử dụng response.data cho danh sách hóa đơn
+                    _bills.postValue(response.body()?.data) // Sử dụng response.data cho danh sách hóa đơn
                     Log.d(TAG, "Bills retrieved successfully: ${response.body()}")
                 } else {
-                    _order.postValue(null)
+                    _bills.postValue(emptyList())
                     Log.e(TAG, "Failed to retrieve bills: ${response.body()}")
                 }
             } catch (e: Exception) {

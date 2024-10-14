@@ -6,38 +6,38 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinhthi2004.restaurantmanager.api.HttpReq
-import com.dinhthi2004.restaurantmanager.model.Order.OrderData
+import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import kotlinx.coroutines.launch
 
-class OrderViewModel : ViewModel() {
+class DishViewModel : ViewModel() {
     private val api = HttpReq.getInstance()
-    private val TAG = "BillViewModel"
+    private val TAG = "DishViewModel"
 
     private val _statusCode = MutableLiveData<Int>()
     val statusCode: LiveData<Int> = _statusCode
 
-    private val _orders = MutableLiveData<List<OrderData>>()
-    val orders: LiveData<List<OrderData>> = _orders
+    private val _dishes = MutableLiveData<List<Dish>>()
+    val dishes: LiveData<List<Dish>> = _dishes
 
-    private val _order = MutableLiveData<OrderData?>()
-    val order: LiveData<OrderData?> = _order
+    private val _dish = MutableLiveData<Dish?>()
+    val dish: LiveData<Dish?> = _dish
 
     fun resetStatusCode() {
         _statusCode.postValue(0)
     }
 
-    fun getOrderDetail(token: String,id:Int) {
+    fun getDishDetail(token: String,id:Int) {
         viewModelScope.launch {
             try {
                 // Gọi API để lấy danh sách hóa đơn
-                val response = api.get1Order("Bearer $token",id)
+                val response = api.get1Dish("Bearer $token",id)
 
                 // Kiểm tra phản hồi và cập nhật LiveData
                 if (response.isSuccessful) {
-                    _order.postValue(response.body()?.data) // Sử dụng response.data cho danh sách hóa đơn
+                    _dish.postValue(response.body()?.data) // Sử dụng response.data cho danh sách hóa đơn
                     Log.d(TAG, "Bills retrieved successfully: ${response.body()}")
                 } else {
-                    _order.postValue(null)
+                    _dish.postValue(null)
                     Log.e(TAG, "Failed to retrieve bills: ${response.body()}")
                 }
             } catch (e: Exception) {

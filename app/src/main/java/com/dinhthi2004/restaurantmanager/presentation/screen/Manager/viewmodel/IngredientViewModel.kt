@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinhthi2004.restaurantmanager.api.HttpReq
+import com.dinhthi2004.restaurantmanager.model.ingredient.IngredientData
 import com.dinhthi2004.restaurantmanager.model.Ingredient
 import kotlinx.coroutines.launch
 
@@ -16,11 +17,11 @@ class IngredientViewModel : ViewModel() {
     private val _statusCode = MutableLiveData<Int>()
     val statusCode: LiveData<Int> = _statusCode
 
-    private val _ingredients = MutableLiveData<List<Ingredient>>()
-    val ingredients: LiveData<List<Ingredient>> = _ingredients
+    private val _ingredients = MutableLiveData<List<IngredientData>>()
+    val ingredients: LiveData<List<IngredientData>> = _ingredients
 
-    private val _ingredient = MutableLiveData<Ingredient>()
-    val ingredient: LiveData<Ingredient> = _ingredient
+    private val _ingredient = MutableLiveData<IngredientData>()
+    val ingredient: LiveData<IngredientData> = _ingredient
 
     fun resetStatusCode() {
         _statusCode.postValue(0)
@@ -30,21 +31,15 @@ class IngredientViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 // Gọi API để lấy danh sách nguyên liệu
-                val response = api.getIngredients("Bearer $token")
+                val response = api.getAllIngredient("Bearer $token")
 
                 // Kiểm tra phản hồi và cập nhật LiveData
-                if (response.message == "Ingredients retrieved successfully") {
-                    _ingredients.postValue(response.data)
-                    Log.d(
-                        TAG,
-                        "Data retrieved successfully: ${response.data}"
-                    ) // Log dữ liệu nhận được
+                if (response.isSuccessful) {
+                    _ingredients.postValue(response.body()?.data)
+                    Log.d(TAG, "Data retrieved successfully: ${response.body()}")
                 } else {
                     _ingredients.postValue(emptyList())
-                    Log.e(
-                        TAG,
-                        "Failed to retrieve ingredients: ${response.message}"
-                    ) // Log thông điệp lỗi
+                    Log.e(TAG, "Failed to retrieve ingredients: ${response.body()}")
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error retrieving ingredients: ${e.message}") // Log lỗi
@@ -53,17 +48,17 @@ class IngredientViewModel : ViewModel() {
         }
     }
 
-    fun addingredient(token: String, ingredient: Ingredient, onSuccess: () -> Unit) {
+    fun addingredient(token: String, ingredient: IngredientData, onSuccess: () -> Unit) {
         viewModelScope.launch {
             try {
-                val response = api.addIngredient("Bearer $token", ingredient)
-                if (response.message == "Ingredient added successfully") {
-                    _ingredient.postValue(response.data)
-                    Log.d(TAG, "Ingredient added successfully: ${response.data}")
+                val response = api.add1Ingredient("Bearer $token", ingredient)
+                if (response.isSuccessful && response.body()!=null) {
+                    _ingredient.postValue(response.body())
+                    Log.d(TAG, "Ingredient added successfully: ${response.body()}")
                     _statusCode.postValue(200)
                     onSuccess()
                 } else {
-                    Log.e(TAG, "Failed to add Ingredient: ${response.data}")
+                    Log.e(TAG, "Failed to add Ingredient: ${response.body()}")
                     _statusCode.postValue(400)
                 }
             } catch (e: Exception) {

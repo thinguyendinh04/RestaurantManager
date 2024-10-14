@@ -13,8 +13,14 @@ import com.dinhthi2004.restaurantmanager.model.Ingredient
 import com.dinhthi2004.restaurantmanager.model.LoginRequest
 import com.dinhthi2004.restaurantmanager.model.Meal
 
+import com.dinhthi2004.restaurantmanager.model.Order.OrderResponse
+import com.dinhthi2004.restaurantmanager.model.Table
+import com.dinhthi2004.restaurantmanager.model.bill.BillResponse
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
+import com.dinhthi2004.restaurantmanager.model.dish.Dish1Response
 import com.dinhthi2004.restaurantmanager.model.dish.DishResponse
+import com.dinhthi2004.restaurantmanager.model.ingredient.IngredientData
+import com.dinhthi2004.restaurantmanager.model.ingredient.IngredientResponse
 import com.dinhthi2004.restaurantmanager.model.table.TableResponse
 import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import com.dinhthi2004.restaurantmanager.model.dish_type.Dish_type
@@ -188,6 +194,8 @@ interface ApiService {
     suspend fun get1Order(@Header("authorization") jwtToken: String, @Path("id") id: String): Response<Order>
 
     //Manager
+    @GET("ingredients")
+    suspend fun getAllIngredient(@Header("authorization") jwtToken: String): Response<IngredientResponse>
         @GET("tables")
         suspend fun getAllTable(
             @Header("authorization") jwtToken: String
@@ -204,6 +212,17 @@ interface ApiService {
         @Path("id") id: Int
     ): Response<Tabledata>
 
+    @GET("orders/{id}")
+    suspend fun get1Order(@Header("authorization") jwtToken: String,@Path("id") id: Int): Response<OrderResponse>
+
+    @GET("dishes/{id}")
+    suspend fun get1Dish(@Header("authorization") jwtToken: String,@Path("id") id: Int): Response<Dish1Response>
+
+    @GET("bills")
+    suspend fun getAllBill(@Header("authorization") jwtToken: String): Response<BillResponse>
+
+    @POST("ingredients")
+    suspend fun add1Ingredient(@Header("authorization") jwtToken: String,@Body ingredient: IngredientData): Response<IngredientData>
     //Waiter
 
     @GET("ingredient/get-list")
