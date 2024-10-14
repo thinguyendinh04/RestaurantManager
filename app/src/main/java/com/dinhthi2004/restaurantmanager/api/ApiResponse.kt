@@ -46,3 +46,8 @@ data class LoginResonse(
     val message: String?,
     val data: User
 )
+
+data class UserResponseData(
+    val message: String?,
+    val data: User
+)

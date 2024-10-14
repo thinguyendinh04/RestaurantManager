@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.model.AccountData
+import com.dinhthi2004.restaurantmanager.model.user.User
 import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import com.dinhthi2004.restaurantmanager.presentation.navigation.bottomnav.BottomBar
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.employee.EmployeeViewModel
@@ -35,15 +36,17 @@ fun EmployeeScreen(
     viewModel: EmployeeViewModel = viewModel()
 ) {
     val employeeList by viewModel.userList.collectAsState()
-    val accountDetail by viewModel.accountDetail.collectAsState()
+    val user by viewModel.user.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var userToDelete by remember { mutableStateOf<User?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.getAllUser()
     }
 
-    LaunchedEffect(accountDetail) {
-        if (accountDetail != null) {
+    LaunchedEffect(user) {
+        if (user != null) {
             showDialog = true
         }
     }
@@ -96,13 +99,14 @@ fun EmployeeScreen(
                 ) {
                     items(employeeList) { employee ->
                         EmployeeCard(
-                            account = employee,
+                            user = employee,
                             onDeleteClick = {
-
+                                userToDelete = employee
+                                showDeleteDialog = true
                             },
                             onClick = {
-                                viewModel.getUserInformation(employee._id)
-                                Log.d("Screen", "Fetching info for id = ${employee._id}")
+                                viewModel.getUserById(employee.id)
+                                Log.d("Screen", "Fetching info for id = ${employee.id}")
                             }
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -111,22 +115,58 @@ fun EmployeeScreen(
             }
         }
 
-        // Hiển thị Dialog khi showDialog là true
-        if (showDialog && accountDetail != null) {
+        // Hiển thị Dialog chi tiết nhân viên
+        if (showDialog && user != null) {
             EmployeeDetailDialog(
-                accountDetail = accountDetail!!,
+                user = user!!,
                 onDismiss = {
                     showDialog = false
                     viewModel.clearAccountDetail()
                 }
             )
         }
+
+        // Hiển thị Dialog xác nhận xóa
+        if (showDeleteDialog && userToDelete != null) {
+            ConfirmDeleteDialog(
+                user = userToDelete!!,
+                onConfirm = {
+                    viewModel.deleteUser(userToDelete!!.id)
+                    showDeleteDialog = false
+                },
+                onDismiss = {
+                    showDeleteDialog = false
+                }
+            )
+        }
     }
 }
 
+@Composable
+fun ConfirmDeleteDialog(user: User, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Confirm Delete")
+        },
+        text = {
+            Text(text = "Are you sure you want to delete ${user.full_name}?")
+        },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text("Delete")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
 
 @Composable
-fun EmployeeDetailDialog(accountDetail: AccountData, onDismiss: () -> Unit) {
+fun EmployeeDetailDialog(user: User, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -134,10 +174,10 @@ fun EmployeeDetailDialog(accountDetail: AccountData, onDismiss: () -> Unit) {
         },
         text = {
             Column {
-                Text(text = "Full Name: ${accountDetail.fullname}")
-                Text(text = "Phone Number: ${accountDetail.phone_number}")
-                Text(text = "Address: ${accountDetail.address}")
-                Text(text = "Picture URL: ${accountDetail.picture_url}")
+                Text(text = "Full Name: ${user.full_name}")
+                Text(text = "Phone Number: ${user.sdt}")
+                Text(text = "Email: ${user.email}")
+//                Text(text = "Picture URL: ${user.image_url}")
             }
         },
         confirmButton = {
@@ -147,4 +187,3 @@ fun EmployeeDetailDialog(accountDetail: AccountData, onDismiss: () -> Unit) {
         }
     )
 }
-

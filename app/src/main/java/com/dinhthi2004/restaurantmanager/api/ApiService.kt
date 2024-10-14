@@ -10,6 +10,7 @@ import com.dinhthi2004.restaurantmanager.model.Table
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.model.dish.DishResponse
 import com.dinhthi2004.restaurantmanager.model.user.User
+import com.dinhthi2004.restaurantmanager.model.user.UserRegistration
 import com.dinhthi2004.restaurantmanager.model.user.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -63,11 +64,18 @@ interface ApiService {
         @Header("authorization") jwtToken: String
     ): Response<UserResponse>
 
+    // https://rm-api.imtaedu.com/api/accounts/{id}
+    @GET("accounts/{id}")
+    suspend fun getUserById(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: Int
+    ): Response<UserResponseData>
+
     @POST("accounts")
     suspend fun addNewUser(
         @Header("authorization") jwtToken: String,
-        @Body user: User
-    ): Response<User>
+        @Body userRegistration: UserRegistration
+    ): Response<UserResponseData>
 
     @POST("accounts/{id}")
     suspend fun updateUser(
@@ -79,8 +87,10 @@ interface ApiService {
     @DELETE("accounts/{id}")
     suspend fun deleteUser(
         @Header("authorization") jwtToken: String,
-        @Path("id") id: String
-    ): Response<User>
+        @Path("id") id: Int
+    ): Response<UserResponseData>
+
+
 
     //
 
