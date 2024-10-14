@@ -40,33 +40,38 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.model.Bill
 import com.dinhthi2004.restaurantmanager.model.TokenManager
+import com.dinhthi2004.restaurantmanager.model.bill.BillData
+import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.IngreCT
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.NguyenLieuItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.TableItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.data.items
 import com.dinhthi2004.restaurantmanager.uilts.Route
 import com.dinhthi2004.restaurantmanager.viewmodel.IngredientViewModel
+import com.dinhthi2004.restaurantmanager.viewmodel.BillViewModel
 import com.dinhthi2004.restaurantmanager.viewmodel.OrderViewModel
 import com.dinhthi2004.restaurantmanager.viewmodel.TableViewModel
 
 @Composable
 fun HomeManager(navigationController: NavHostController) {
-    val orderViewModel: OrderViewModel = viewModel()
+    val billViewModel: BillViewModel = viewModel()
+
+    val ingredientViewModel: IngredientViewModel = viewModel()
     val token = TokenManager.token
     Log.d("token", "OrderViewModel: " + token)
 
     LaunchedEffect(Unit) {
         if (token != null) {
-            orderViewModel.getBills(token)
+            billViewModel.getBills(token)
         }
     }
-    val bill by orderViewModel.bills.observeAsState(emptyList())
+    val bill by billViewModel.bills.observeAsState(emptyList())
+
     val tableViewModel: TableViewModel = viewModel()
     var showDialog by remember { mutableStateOf(false) }
-    var selectedOrder by remember { mutableStateOf<Bill?>(null) }
-    val ingredientViewModel: IngredientViewModel = viewModel()
+    var selectedOrder by remember { mutableStateOf<BillData?>(null) }
+    var selectedDish by remember { mutableStateOf<Dish?>(null) }
     LaunchedEffect(Unit) {
         token?.let { ingredientViewModel.getIngredients(it) }
     }
@@ -162,6 +167,7 @@ fun HomeManager(navigationController: NavHostController) {
             items(bill) { order ->
                 HomeBill(bill = order) {
                     selectedOrder = order
+                    showDialog=true
                 }
             }
         }
@@ -206,10 +212,12 @@ fun HomeManager(navigationController: NavHostController) {
     }
 
     if (showDialog && selectedOrder != null) {
-        IngreCT(navigationController, order = selectedOrder, onDismiss = {
-            showDialog = false
-            selectedOrder = null
-        })
+        selectedDish?.let {
+            IngreCT(navigationController, billData = selectedOrder,onDismiss = {
+                showDialog = false
+                selectedOrder = null
+            })
+        }
     }
 }
 
@@ -256,10 +264,10 @@ fun HomeItem(index: Int) {
 
 @Composable
 fun HomeBill(
-    bill: Bill,
-    onOrderSelected: (Bill) -> Unit
+    bill: BillData,
+    onOrderSelected: (BillData) -> Unit
 ) {
-    val textColor = when (bill.bill_status) {
+    val textColor = when (bill.status) {
         0 -> Color.Red
         1 -> Color.Green
         else -> Color.Gray
@@ -280,20 +288,20 @@ fun HomeBill(
             modifier = Modifier.padding(5.dp),
         ) {
             Text(
-                text = "Mã bàn: ${bill.id_table}",
+                text = "Mã đơn hàng: ${bill.order_id}",
                 fontSize = 12.sp,
                 color = Color.Black,
                 style = MaterialTheme.typography.labelLarge
             )
 
             Text(
-                text = "Tổng tiền: ${bill.total} VND",
+                text = "Tổng tiền: ${bill.tong_tien} VND",
                 fontSize = 12.sp,
                 color = Color.Black,
                 style = MaterialTheme.typography.labelLarge
             )
             Text(
-                text = statusToString(bill.bill_status),
+                text = statusToString(bill.status),
                 fontSize = 12.sp,
                 color = textColor,
                 style = MaterialTheme.typography.labelLarge

@@ -32,10 +32,11 @@ class HomeEmployeeViewModel : ViewModel() {
             try {
                 if (token != null) {
                     val userResponse = api.getUser("Bearer $token")
-                    Log.d("EmployeeViewModel", "getAllUser: Response received")
+                    Log.d("kaka", "getAllUser: Response received")
                     if (userResponse.isSuccessful) {
                         val responseBody = userResponse.body()
-                        Log.d("EmployeeViewModel", "getAllUser: Response body = $responseBody")
+                        Log.d("kaka", "getAllUser: Response body = $responseBody")
+
                         if (responseBody != null) {
                             _userList.value = responseBody.users ?: emptyList()
                         } else {
