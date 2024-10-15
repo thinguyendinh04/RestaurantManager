@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.dinhthi2004.restaurantmanager.api.HttpReq
 import com.dinhthi2004.restaurantmanager.model.Meal
 import com.dinhthi2004.restaurantmanager.model.TokenManager
+import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import kotlinx.coroutines.launch
 
 class WaiterHomeViewModel : ViewModel() {
@@ -17,18 +18,18 @@ class WaiterHomeViewModel : ViewModel() {
     private val _statuscode = MutableLiveData<Int>()
     val statuscode: LiveData<Int> = _statuscode
 
-    private val _meals = MutableLiveData<ArrayList<Meal>>()
-    val meals: LiveData<ArrayList<Meal>> = _meals
+    private val _meals = MutableLiveData<List<Dish>>()
+    val meals: LiveData<List<Dish>> = _meals
 
-    private val _aMeal = MutableLiveData<Meal?>()
-    val aMeal: LiveData<Meal?> = _aMeal
+    private val _aMeal = MutableLiveData<Dish?>()
+    val aMeal: LiveData<Dish?> = _aMeal
 
     fun getMeals() {
         viewModelScope.launch {
             try {
-                val response = api.getMeals("Bearer $token")
+                val response = api.getAllDishes("Bearer $token")
                 if (response.code() == 200) {
-                    _meals.postValue(response.body()?.data as ArrayList<Meal>?)
+                    _meals.postValue(response.body()?.data)
                 } else {
                     _meals.postValue(ArrayList())
                 }
@@ -42,7 +43,7 @@ class WaiterHomeViewModel : ViewModel() {
     fun getAMeal(id: String) {
         viewModelScope.launch {
             try {
-                val response = api.get1Meal("Bearer $token", "meal/get-meals/${id}")
+                val response = api.getDishByID("Bearer $token", id)
                 if (response.code() == 200) {
                     println(response.body())
                     _aMeal.postValue(response.body())
@@ -55,25 +56,25 @@ class WaiterHomeViewModel : ViewModel() {
         }
     }
 
-    fun searchMeal(keyword: String) {
-        viewModelScope.launch {
-            try {
-                val response = api.searchMeals("Bearer $token", "meal/search-meal", keyword)
-                if (response.code() == 200) {
-                    _meals.postValue(response.body())
-                } else {
-                    _meals.postValue(ArrayList())
-                }
-            } catch (e: RuntimeException) {
-                println(e)
-            }
-        }
-    }
+//    fun searchMeal(keyword: String) {
+//        viewModelScope.launch {
+//            try {
+//                val response = api.searchMeals("Bearer $token", "meal/search-meal", keyword)
+//                if (response.code() == 200) {
+//                    _meals.postValue(response.body())
+//                } else {
+//                    _meals.postValue(ArrayList())
+//                }
+//            } catch (e: RuntimeException) {
+//                println(e)
+//            }
+//        }
+//    }
 
     fun deleteMeal(id: String) {
         viewModelScope.launch {
             try {
-                val response = api.delete1Meal("Bearer $token", "meal/delete-meal", id)
+                val response = api.deleteDish("Bearer $token", id)
                 if (response.code() == 200) {
                     _aMeal.postValue(response.body())
                 } else {
@@ -85,19 +86,19 @@ class WaiterHomeViewModel : ViewModel() {
         }
     }
 
-    fun updateMeal(id: String, newMeal: Meal) {
-        viewModelScope.launch {
-            try {
-                val response = api.update1Meal("Bearer $token", "meal/update-meal", id, newMeal)
-                if (response.code() == 200) {
-                    _aMeal.postValue(response.body())
-                } else {
-                    _aMeal.postValue(null)
-                }
-            } catch (e: RuntimeException) {
-                println(e)
-            }
-        }
-    }
+//    fun updateMeal(id: String, newMeal: Meal) {
+//        viewModelScope.launch {
+//            try {
+//                val response = api.updateDish("Bearer $token", "meal/update-meal", id, newMeal)
+//                if (response.code() == 200) {
+//                    _aMeal.postValue(response.body())
+//                } else {
+//                    _aMeal.postValue(null)
+//                }
+//            } catch (e: RuntimeException) {
+//                println(e)
+//            }
+//        }
+//    }
 
 }
