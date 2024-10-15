@@ -41,9 +41,6 @@ interface ApiService {
     @POST("login")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
-    @POST("register")
-    suspend fun signup(@Body signupInfo: Account): Response<Account>
-
     //Admin
 
     //Dish
@@ -68,23 +65,20 @@ interface ApiService {
         @Part("status") status: RequestBody,
         @Part("id_type") idType: RequestBody,
         @Part("information") information: RequestBody,
-        @Part image_url: MultipartBody.Part? // Optional image part
+        @Part image_url: MultipartBody.Part?
     ): Response<Dish>
     //
 
-        @Multipart
-        @POST("ingredients")
-        suspend fun add2Ingredient(
-            @Header("authorization") jwtToken: String,
-            @Part image: MultipartBody.Part?,
-            @Part("name") name: RequestBody,
-            @Part("amount") amount: RequestBody,
-            @Part("created_at") createdAt: RequestBody,
-            @Part("updated_at") updatedAt: RequestBody
-        ): Response<IngredientData>
-
-
-
+    @Multipart
+    @POST("ingredients")
+    suspend fun add2Ingredient(
+        @Header("authorization") jwtToken: String,
+        @Part image: MultipartBody.Part?,
+        @Part("name") name: RequestBody,
+        @Part("amount") amount: RequestBody,
+        @Part("created_at") createdAt: RequestBody,
+        @Part("updated_at") updatedAt: RequestBody
+    ): Response<IngredientData>
 
     @Multipart
     @POST("dishes/{id}")
@@ -110,12 +104,6 @@ interface ApiService {
     suspend fun getAllUser(
         @Header("authorization") jwtToken: String
     ): Response<UserResponse>
-
-    @POST("accounts")
-    suspend fun addNewUser(
-        @Header("authorization") jwtToken: String,
-        @Body user: User
-    ): Response<User>
 
     @GET("accounts/{id}")
     suspend fun getInforUser(
@@ -166,43 +154,8 @@ interface ApiService {
         @Header("authorization") jwtToken: String
     ): Response<Dish_type_response>
 
-    @POST("dish-types")
-    suspend fun addNewDishType(
-        @Header("authorization") jwtToken: String,
-        @Body dishType: Dish_type
-    ): Response<Dish_type>
-
-    @POST("dish-types/{id}")
-    suspend fun updateDishType(
-        @Header("authorization") jwtToken: String,
-        @Path("id") id: String,
-        @Body dishType: Dish_type
-    ): Response<Dish_type>
-
-    @DELETE("dish-types/{id}")
-    suspend fun deleteDishType(
-        @Header("authorization") jwtToken: String,
-        @Path("id") id: String
-    ): Response<Dish_type>
-
-    //Order, Bill
-    @GET("bills")
-    suspend fun getAllBills(@Header("authorization") jwtToken: String): Response<BillResponse1<List<Bill>>>
-
-    @GET("bills/{id}")
-    suspend fun get1Bill(
-        @Header("authorization") jwtToken: String,
-        @Path("id") id: String
-    ): BillResponse1<Bill>
-
     @GET("orders")
     suspend fun getAllOrders(@Header("authorization") jwtToken: String): Response<List<Order>>
-
-    @GET("orders/{id}")
-    suspend fun get1Order(
-        @Header("authorization") jwtToken: String,
-        @Path("id") id: String
-    ): Response<Order>
 
     //Manager
     @GET("ingredients")
@@ -240,49 +193,12 @@ interface ApiService {
     suspend fun getAllBill(
         @Header("authorization") jwtToken: String
     ): Response<BillResponse>
-
-    @POST("ingredients")
-    suspend fun add1Ingredient(
-        @Header("authorization") jwtToken: String,
-        @Body ingredient: IngredientData
-    ): Response<IngredientData>
     //Waiter
-
-    @GET("ingredient/get-list")
-    suspend fun getIngredients(@Header("authorization") jwtToken: String): ApiResponse<List<Ingredient>>
-
-
-    @GET("bill/get-list-bill")
-    suspend fun getBills(@Header("authorization") jwtToken: String): ApiResponse<List<Bill>>
-
 
     @GET("meal/get-meals")
     suspend fun getMeals(
         @Header("authorization") jwtToken: String,
     ): Response<MealResponse>
-
-    @POST("meal/add-meal")
-    suspend fun addMeal(
-        @Header("authorization") jwtToken: String,
-        @Body meal: Meal
-    ): Response<Meal>
-
-    @DELETE("meal/delete-meal")
-    suspend fun deleteMeal(
-        @Header("authorization") jwtToken: String,
-        @Path("mealId") mealId: String
-    ): Response<MealResponse>
-
-    @GET("users")
-    suspend fun getUser(
-        @Header("authorization") jwtToken: String,
-    ): Response<AccountResponse>
-
-    @GET("user")
-    suspend fun getUserInformation(
-        @Header("authorization") jwtToken: String,
-        @Path("userId") idAccount: String
-    ): Response<AccountDetailResponse>
 
     @GET
     suspend fun get1Meal(
@@ -296,13 +212,6 @@ interface ApiService {
         @Url endpoint: String,
         @Query("mealname") mealname: String
     ): Response<ArrayList<Meal>>
-
-
-    @POST("ingredient/add")
-    suspend fun addIngredient(
-        @Header("authorization") jwtToken: String,
-        @Body ingredient: Ingredient
-    ): ApiResponse<Ingredient>
 
     @PUT
     suspend fun update1Meal(
@@ -318,13 +227,4 @@ interface ApiService {
         @Url endpoint: String,
         @Path("id") id: String
     ): Response<Meal>
-
-    @GET("meal-type/get-meal-types")
-    suspend fun getMealType(
-        @Header("authorization") jwtToken: String,
-    ): Response<MealTypeResponse>
-
-    /////////////////- TABLE -////////////////////////
-    @GET("tables")
-    suspend fun getAllTables(@Header("Authorization") token: String): ApiResponse1<List<Tabledata>>
 }

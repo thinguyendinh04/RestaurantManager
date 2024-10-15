@@ -9,9 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
 
 @Composable
@@ -41,7 +43,7 @@ fun MenuItemCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = rememberImagePainter(data = dish.image_url),
+                    painter = painterResource(id = R.drawable.img2),
                     contentDescription = "Meal image",
                     modifier = Modifier.size(64.dp)
                 )

@@ -39,6 +39,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.rememberAsyncImagePainter
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
@@ -109,6 +110,32 @@ fun AddNewFoodScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
+
+            // Button to pick an image
+            Button(
+                onClick = { imagePickerLauncher.launch("image/*") },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Pick an Image")
+            }
+
+            // Display selected image
+            imageUri?.let { uri ->
+                Card(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(200.dp)
+                        .align(Alignment.CenterHorizontally),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Image(
+                        painter = rememberAsyncImagePainter(uri),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
             // Input for name
             OutlinedTextField(
                 value = name,
@@ -184,33 +211,6 @@ fun AddNewFoodScreen(
                 label = { Text("Info") },
                 modifier = Modifier.fillMaxWidth()
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Button to pick an image
-            Button(
-                onClick = { imagePickerLauncher.launch("image/*") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Pick an Image")
-            }
-
-            // Display selected image
-            imageUri?.let { uri ->
-                Card(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(200.dp),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(uri),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
 
             Spacer(modifier = Modifier.height(16.dp))
 

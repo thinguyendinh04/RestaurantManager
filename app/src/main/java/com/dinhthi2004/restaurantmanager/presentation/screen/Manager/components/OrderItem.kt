@@ -41,25 +41,22 @@ fun OrderItem(order: BillData, onOrderSelected: (BillData) -> Unit) {
         Column(modifier = Modifier.padding(10.dp)) {
             // Thông tin bàn và tổng giá tiền
 
-                Text(
-                    text = "Mã đơn hàng: ${order.order_id ?: "Unknown"}",
-                    fontSize = 14.sp,
-                    color = Color.Black
-                )
-                Text(
-                    text = "Total: ${order.tong_tien}k", // Hiển thị tổng tiền hóa đơn
-                    fontSize = 14.sp,
-                    color = Color(0xfffe763e)
-                )
-                // Trạng thái hóa đơn
-                Text(
-                    text = statusToString(order.status),
-                    fontSize = 12.sp,
-                    color = textColor
-                )
-
-
-
+            Text(
+                text = "Mã đơn hàng: ${order.order_id ?: "Unknown"}",
+                fontSize = 14.sp,
+                color = Color.Black
+            )
+            Text(
+                text = "Total: ${order.tong_tien}k", // Hiển thị tổng tiền hóa đơn
+                fontSize = 14.sp,
+                color = Color(0xfffe763e)
+            )
+            // Trạng thái hóa đơn
+            Text(
+                text = statusToString(order.status),
+                fontSize = 12.sp,
+                color = textColor
+            )
         }
     }
 }
