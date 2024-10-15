@@ -42,6 +42,7 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.In
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.OrderItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dishSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.orderSampleList
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.tableSampleList
 import java.text.DecimalFormat
 
 @Composable
@@ -81,13 +82,29 @@ fun InUseTables(
         )
     }
 
+
     if (showPaymentDialog && selectedTable != null) {
         ConfirmPaymentDialog(
-            tableId = selectedTable!!.table_name,
-            onConfirm = { /* Handle payment confirmation */ },
-            onCancel = { showPaymentDialog = false }
+            tableId = selectedTable!!.table_name, // Truyền mã bàn hoặc hóa đơn
+            onConfirm = {
+                // Cập nhật trạng thái bàn thành "Available"
+                selectedTable?.let { table ->
+                    val updatedTable = table.copy(status = "Available") // Không cần xử lý orders nữa
+                    val updatedTables = tables.filter { it.table_name != table.table_name } // Xóa bàn khỏi danh sách bàn đang sử dụng
+                    onTableUpdate(updatedTables) // Cập nhật lại danh sách bàn đang sử dụng
+
+                    // Thêm bàn vừa thanh toán vào danh sách bàn trống
+                    onEmptyTableUpdate(tableSampleList.filter { it.status == "Empty" } + updatedTable)
+                }
+
+                showPaymentDialog = false // Đóng dialog sau khi xác nhận
+            },
+            onCancel = {
+                showPaymentDialog = false // Đóng dialog khi hủy
+            }
         )
     }
+
 }
 // Assuming you have an orderSampleList containing all orders
 fun getOrdersForTable(tableId: Int?): List<OrderItem> {
