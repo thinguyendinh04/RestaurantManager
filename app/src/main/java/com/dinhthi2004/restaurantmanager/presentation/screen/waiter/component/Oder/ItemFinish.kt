@@ -6,21 +6,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.Table
+import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 
 @Composable
-fun FinishedOrder(table: Table) {
-    val totalAmount = table.orders.sumOf { it.price * it.quantity }
+fun FinishedOrder(table: Tabledata) {
+//    val totalAmount = table.orders.sumOf { it.price * it.quantity }
     Card(
         modifier = Modifier
             .fillMaxWidth(),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Bàn: ${table.tableName}", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text("Vi tri: ${table.location}", style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text("Tổng tiền: ${totalAmount}", style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text("SL: ${table.currentGuests}", style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-
+            Text("Bàn: ${table.table_name}", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+//            Text("Tổng tiền: ${totalAmount}", style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Spacer(modifier = Modifier.height(16.dp))
 
 //            // Nút Chi tiết và Hoàn thành

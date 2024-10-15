@@ -25,14 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Table.ItemOrderProduct
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.dataProduct
 
 @Composable
 fun AddItemsDialog(
-    products: List<dataProduct>, // Danh sách sản phẩm
+    products: List<Dish>, // Danh sách sản phẩm
     onDismiss: () -> Unit, // Callback khi đóng dialog
-    onAddItems: (Map<dataProduct, Int>) -> Unit // Callback khi thêm món
+    onAddItems: (Map<Dish, Int>) -> Unit // Callback khi thêm món
 ) {
     var quantities by remember { mutableStateOf(products.associateWith { 0 }.toMutableMap()) }
     val totalQuantity = quantities.values.sum()
@@ -57,7 +58,7 @@ fun AddItemsDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Bàn 4 Tầng 1",
+                    text = "Ban: ",
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(bottom = 8.dp)
                 )

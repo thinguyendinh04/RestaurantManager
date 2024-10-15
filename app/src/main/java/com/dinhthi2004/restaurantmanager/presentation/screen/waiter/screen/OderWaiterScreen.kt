@@ -20,12 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Oder.OrderItemRow
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Order.FinishedOrder
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.Table
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table.TableDetailDialog
 
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataTables
+//import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataTables
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dishSampleList
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.orderSampleList
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.tableSampleList
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.OrderItem
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table.getOrdersForTable
 
 @Composable
 fun OrderWaiterScreen(navController: NavHostController) {
@@ -35,8 +40,8 @@ fun OrderWaiterScreen(navController: NavHostController) {
     val tabs = listOf("Đang chờ", "Hoàn Thành")
 
     // Dữ liệu bàn
-    var waitingTables by remember { mutableStateOf(dataTables.filter { it.status == "Occupied" }) }
-    var completedTables by remember { mutableStateOf(dataTables.filter { it.status == "Paid" }) }
+    var waitingTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Occupied" }) }
+    var completedTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Paid" }) }
 
     // Màn hình chính
     Column(modifier = Modifier.fillMaxSize()) {
@@ -75,10 +80,10 @@ fun OrderWaiterScreen(navController: NavHostController) {
 
 @Composable
 fun WaitingTablesTab(
-    tables: List<Table>,
-    onCompleteTable: (Table) -> Unit,
+    tables: List<Tabledata>, // Use Tabledata
+    onCompleteTable: (Tabledata) -> Unit,
 ) {
-    var selectedTable by remember { mutableStateOf<Table?>(null) }
+    var selectedTable by remember { mutableStateOf<Tabledata?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
     LazyColumn(
@@ -100,20 +105,30 @@ fun WaitingTablesTab(
 
     // Hiển thị dialog nếu showDialog là true
     if (showDialog && selectedTable != null) {
+        val ordersForTable = getOrdersForTable(selectedTable!!.id) // Fetch the orders using the table id
         TableDetailDialog(
-            table = selectedTable!!, // Bàn được chọn
-            orderItems = selectedTable!!.orders, // Danh sách order của bàn
-            onAddItem = { /* Hàm thêm món ở đây nếu cần */ },
-            onDismiss = {
-                showDialog = false // Đóng dialog khi nhấn "Đóng"
-            }
+            table = selectedTable!!,
+            orders = ordersForTable, // Pass fetched orders here
+            onAddItem = { /* Handle adding new items */ },
+            onDismiss = { showDialog = false }
         )
     }
 }
-
 @Composable
-fun CompletedTablesTab(completedTables: List<Table>) {
-    var selectedTable by remember { mutableStateOf<Table?>(null) }
+// Fetch the orders for a given table by its table ID
+fun getOrdersForTable(tableId: Int?): List<OrderItem> {
+    return orderSampleList.filter { it.table_id == tableId }.map { orderData ->
+        val dish = dishSampleList.find { it.id == orderData.dish_id }
+        OrderItem(
+            name = dish?.name ?: "Unknown Dish",
+            quantity = orderData.amount,
+            price = dish?.price?.toDoubleOrNull() ?: 0.0
+        )
+    }
+}
+@Composable
+fun CompletedTablesTab(completedTables: List<Tabledata>) {
+    var selectedTable by remember { mutableStateOf<Tabledata?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
     LazyColumn(
@@ -133,7 +148,3 @@ fun CompletedTablesTab(completedTables: List<Table>) {
         FinishedOrder(table = selectedTable!!)
     }
 }
-
-
-
-
