@@ -24,7 +24,7 @@ fun TableWaiterScreen(navController: NavHostController) {
 
     // Sử dụng remember để lưu danh sách bàn sử dụng và bàn trống
     var useTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Occupied" }) }
-    var emptyTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Empty" }) }
+    var emptyTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Available" }) }
     var bookingTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Booked" }) }
 
     // Khởi tạo danh sách hóa đơn
