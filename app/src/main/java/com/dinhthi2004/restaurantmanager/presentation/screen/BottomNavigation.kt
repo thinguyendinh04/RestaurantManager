@@ -43,9 +43,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,12 +60,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.data.Employee
+import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeEmployeeScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeIngredients
@@ -71,6 +77,7 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeOrderSc
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeSetting
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.HomeTableScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.Setting
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel.HomeEmployeeViewModel
 import com.dinhthi2004.restaurantmanager.presentation.screen.auth.WelcomeScreen
 import com.dinhthi2004.restaurantmanager.uilts.Route
 import kotlinx.coroutines.launch
@@ -88,7 +95,20 @@ fun BottomNavigation(navController: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyBottomAppBar(navController: NavHostController) {
+     val homeEmployeeViewModel:HomeEmployeeViewModel= viewModel()
+    val token = TokenManager.token
+    var userId = TokenManager.userId
+    var fullName by remember { mutableStateOf("") }
 
+    val employees = homeEmployeeViewModel.employee.observeAsState().value
+    employees?.let {
+        fullName = it.full_name
+    }
+    LaunchedEffect(userId) {
+        userId?.let {
+            homeEmployeeViewModel.getUserInfo("Bearer $token", it)
+        }
+    }
     val navigationController = rememberNavController()
     val coroutineScope= rememberCoroutineScope()
     val drawerState= rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -122,7 +142,7 @@ fun MyBottomAppBar(navController: NavHostController) {
                                 .offset(y = (-3).dp)
                         ) {
                             Text(
-                                text = "Nguyễn Văn A",
+                                text = fullName,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -267,7 +287,7 @@ fun MyBottomAppBar(navController: NavHostController) {
                                         .offset(y = (-3).dp)
                                 ) {
                                     Text(
-                                        text = "Nguyễn Văn A",
+                                        text = fullName,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold
                                     )
