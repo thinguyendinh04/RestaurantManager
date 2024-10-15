@@ -7,6 +7,7 @@ import com.dinhthi2004.restaurantmanager.model.Ingredient
 import com.dinhthi2004.restaurantmanager.model.LoginRequest
 import com.dinhthi2004.restaurantmanager.model.Meal
 import com.dinhthi2004.restaurantmanager.model.Order
+import com.dinhthi2004.restaurantmanager.model.bill.BillData
 import com.dinhthi2004.restaurantmanager.model.bill.BillResponse
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.model.dish.Dish1Response
@@ -187,13 +188,13 @@ interface ApiService {
 
     //Order, Bill
     @GET("bills")
-    suspend fun getAllBills(@Header("authorization") jwtToken: String): Response<BillResponse1<List<Bill>>>
+    suspend fun getAllBills(@Header("authorization") jwtToken: String): Response<BillResponse1<List<BillData>>>
 
     @GET("bills/{id}")
     suspend fun get1Bill(
         @Header("authorization") jwtToken: String,
         @Path("id") id: String
-    ): BillResponse1<Bill>
+    ): BillResponse1<BillData>
 
     @GET("orders")
     suspend fun getAllOrders(@Header("authorization") jwtToken: String): Response<List<Order>>
@@ -213,10 +214,16 @@ interface ApiService {
         @Header("authorization") jwtToken: String
     ): Response<TableResponse>
 
+    @GET("tables/{id}")
+    suspend fun getTableByID(@Header("authorization") jwtToken: String, @Path("id") id:String): Response<Tabledata>
+
     @POST("tables")
     suspend fun addTable(
         @Header("authorization") jwtToken: String, @Body tabledata: Tabledata
     ): Response<Tabledata>
+
+    @PUT("tables/{id}")
+    suspend fun updateTable(@Header("authorization") jwtToken: String, @Path("id") id: String, @Body tabledata: Tabledata): Response<Tabledata>
 
     @DELETE("tables/{id}")
     suspend fun deleteTable(
@@ -248,9 +255,11 @@ interface ApiService {
     ): Response<IngredientData>
     //Waiter
 
+    @PUT("bill/{id}")
+    suspend fun updateBill(@Header("authorization") jwtToken: String, @Path("id") id: String, @Body newBillData: BillData): Response<BillData>
+
     @GET("ingredient/get-list")
     suspend fun getIngredients(@Header("authorization") jwtToken: String): ApiResponse<List<Ingredient>>
-
 
     @GET("bill/get-list-bill")
     suspend fun getBills(@Header("authorization") jwtToken: String): ApiResponse<List<Bill>>
