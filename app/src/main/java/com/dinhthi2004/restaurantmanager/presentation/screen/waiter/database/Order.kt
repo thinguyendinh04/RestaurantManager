@@ -1,5 +1,8 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database
 
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.Order
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.OrderItem
+
 val waitingOrders = listOf(
     Order(
         orderId = "0001",

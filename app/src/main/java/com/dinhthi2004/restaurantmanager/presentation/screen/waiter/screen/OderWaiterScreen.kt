@@ -21,22 +21,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Oder.OrderItemRow
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Order.FinishedOrderItem
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.OrderDetailDialog
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.waitingOrders
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.Order
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Order.FinishedOrder
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.Table
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table.TableDetailDialog
+
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataTables
 
 @Composable
 fun OrderWaiterScreen(navController: NavHostController) {
     var selectedTabIndex by remember { mutableStateOf(0) }
 
     // Danh sách các tab
-    val tabs = listOf("Đang chờ", "Hoàn Thành", "Đã Hủy")
+    val tabs = listOf("Đang chờ", "Hoàn Thành")
 
-    // Dữ liệu đơn hàng
-    var waitingOrders by remember { mutableStateOf(waitingOrders.toMutableList()) }
-    var completedOrders by remember { mutableStateOf(listOf<Order>()) }
-    var canceledOrders by remember { mutableStateOf(listOf<Order>()) }
+    // Dữ liệu bàn
+    var waitingTables by remember { mutableStateOf(dataTables.filter { it.status == "Occupied" }) }
+    var completedTables by remember { mutableStateOf(dataTables.filter { it.status == "Paid" }) }
 
     // Màn hình chính
     Column(modifier = Modifier.fillMaxSize()) {
@@ -61,108 +61,79 @@ fun OrderWaiterScreen(navController: NavHostController) {
         }
 
         when (selectedTabIndex) {
-            0 -> WaitingOrdersTab(
-                orders = waitingOrders,
-                onCompleteOrder = { completedOrder ->
-                    waitingOrders = waitingOrders.filter { it != completedOrder }.toMutableList()
-                    completedOrders = completedOrders + completedOrder
-                    selectedTabIndex = 1 // Chuyển sang tab Hoàn Thành
-                },
-                onCancelOrder = { canceledOrder ->
-                    waitingOrders = waitingOrders.filter { it != canceledOrder }.toMutableList()
-                    canceledOrders = canceledOrders + canceledOrder
-                    selectedTabIndex = 2 // Chuyển sang tab Đã Hủy
+            0 -> WaitingTablesTab(
+                tables = waitingTables,
+                onCompleteTable = { completedTable ->
+                    waitingTables = waitingTables.filter { it != completedTable }.toMutableList()
+                    completedTables = completedTables + completedTable
                 }
             )
-
-            1 -> CompletedOrdersTab(completedOrders)
-            2 -> CanceledOrdersTab(canceledOrders)
+            1 -> CompletedTablesTab(completedTables)
         }
     }
 }
 
 @Composable
-fun WaitingOrdersTab(
-    orders: List<Order>,
-    onCompleteOrder: (Order) -> Unit,
-    onCancelOrder: (Order) -> Unit
+fun WaitingTablesTab(
+    tables: List<Table>,
+    onCompleteTable: (Table) -> Unit,
 ) {
-    var selectedOrder by remember { mutableStateOf<Order?>(null) }
+    var selectedTable by remember { mutableStateOf<Table?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
     LazyColumn(
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        items(orders) { order ->
-            OrderItemRow(order = order,
+        items(tables) { table ->
+            OrderItemRow(table = table,
                 onClick = {
-                    selectedOrder = order
+                    selectedTable = table
                     showDialog = true
-                },
-                onCancel = {
-                    onCancelOrder(order)
                 },
                 onComplete = {
-                    onCompleteOrder(order)
+                    onCompleteTable(table)
                 }
             )
         }
     }
 
     // Hiển thị dialog nếu showDialog là true
-    if (showDialog && selectedOrder != null) {
-        OrderDetailDialog(order = selectedOrder!!, onDismiss = { showDialog = false })
+    if (showDialog && selectedTable != null) {
+        TableDetailDialog(
+            table = selectedTable!!, // Bàn được chọn
+            orderItems = selectedTable!!.orders, // Danh sách order của bàn
+            onAddItem = { /* Hàm thêm món ở đây nếu cần */ },
+            onDismiss = {
+                showDialog = false // Đóng dialog khi nhấn "Đóng"
+            }
+        )
     }
 }
 
 @Composable
-fun CompletedOrdersTab(completedOrders: List<Order>) {
-    var selectedOrder by remember { mutableStateOf<Order?>(null) }
+fun CompletedTablesTab(completedTables: List<Table>) {
+    var selectedTable by remember { mutableStateOf<Table?>(null) }
     var showDialog by remember { mutableStateOf(false) }
+
     LazyColumn(
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        items(completedOrders) { order ->
-            FinishedOrderItem(
-                order = order,
-                onClick = {
-                    selectedOrder = order
-                    showDialog = true
-                }
+        items(completedTables) { table ->
+            FinishedOrder(
+                table = table,
             )
         }
     }
+
     // Hiển thị dialog nếu showDialog là true
-    if (showDialog && selectedOrder != null) {
-        OrderDetailDialog(order = selectedOrder!!, onDismiss = { showDialog = false })
+    if (showDialog && selectedTable != null) {
+        // Hiển thị chi tiết của table
+        FinishedOrder(table = selectedTable!!)
     }
 }
 
-@Composable
-fun CanceledOrdersTab(canceledOrders: List<Order>) {
-    var selectedOrder by remember { mutableStateOf<Order?>(null) }
-    var showDialog by remember { mutableStateOf(false) }
-    LazyColumn(
-        contentPadding = PaddingValues(20.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        items(canceledOrders) { order ->
-            FinishedOrderItem(
-                order = order,
-                onClick = {
-                    selectedOrder = order
-                    showDialog = true
-                }
-            )
-        }
-    }
-    // Hiển thị dialog nếu showDialog là true
-    if (showDialog && selectedOrder != null) {
-        OrderDetailDialog(order = selectedOrder!!, onDismiss = { showDialog = false })
-    }
-}
 
 
 

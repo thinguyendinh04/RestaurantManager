@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Table.ItemOrderProduct
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataProduct
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.dataProduct
 
 @Composable
 fun AddItemsDialog(

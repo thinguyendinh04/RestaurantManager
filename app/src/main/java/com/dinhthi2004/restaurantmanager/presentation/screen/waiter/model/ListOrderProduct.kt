@@ -1,4 +1,4 @@
-package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database
+package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model
 
 data class Order(
     val orderId: String,

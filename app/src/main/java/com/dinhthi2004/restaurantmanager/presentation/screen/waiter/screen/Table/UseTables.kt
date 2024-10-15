@@ -38,10 +38,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Invoice
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Table.ItemOrderProduct
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.ListData
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.OrderItem
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataProduct
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.ListData
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.OrderItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataTables
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.Table
 import java.text.DecimalFormat

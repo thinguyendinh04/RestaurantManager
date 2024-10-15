@@ -3,16 +3,12 @@ package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.OrderItem
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.Table
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.OrderItem
 
 // Danh sách hóa đơn tạm thời (lưu trong bộ nhớ)
 val invoices = mutableListOf<Invoice>()
