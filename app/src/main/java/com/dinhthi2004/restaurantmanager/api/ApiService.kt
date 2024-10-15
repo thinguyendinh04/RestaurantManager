@@ -70,6 +70,20 @@ interface ApiService {
         @Part("information") information: RequestBody,
         @Part image_url: MultipartBody.Part? // Optional image part
     ): Response<Dish>
+    //
+
+        @Multipart
+        @POST("ingredients")
+        suspend fun add2Ingredient(
+            @Header("authorization") jwtToken: String,
+            @Part image: MultipartBody.Part?,
+            @Part("name") name: RequestBody,
+            @Part("amount") amount: RequestBody,
+            @Part("created_at") createdAt: RequestBody,
+            @Part("updated_at") updatedAt: RequestBody
+        ): Response<IngredientData>
+
+
 
 
     @Multipart

@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 
@@ -124,7 +125,7 @@ fun HomeTableScreen(navigationController: NavHostController) {
 
         if (tables != null && tables.isNotEmpty()) {
             LazyVerticalGrid(
-                modifier = Modifier.height(320.dp),
+                modifier = Modifier.height(380.dp),
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),

@@ -30,7 +30,7 @@ fun HomeIngredients(navigationController: NavHostController) {
 
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
-        AddIngredientDialog (onDismiss = { showDialog = false })
+        AddIngredientDialog (onDismiss = { showDialog = false },  ingreViewModel = ingredientViewModel)
     }
     val token = TokenManager.token;
     Log.d("tokeen", "HomeIngredients: "+token)
@@ -52,7 +52,6 @@ fun HomeIngredients(navigationController: NavHostController) {
             ) {
                 items(ingredients) { ingredient ->
                     NguyenLieuItem(ingredient = ingredient) {
-
                     }
                 }
             }

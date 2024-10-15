@@ -23,7 +23,6 @@ fun HomeSetting(navigationController: NavHostController) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        // Bọc Row bên trong Column
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
