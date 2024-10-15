@@ -16,7 +16,7 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.Ord
 
 @Composable
 fun OrderDetailDialog(order: Order, onDismiss: () -> Unit) {
-    val totalAmount = order.items.sumOf { it.price * it.quantity }
+    val totalAmount = order.items.sumOf { it.price.toDouble() * it.quantity }
 
     AlertDialog(
         onDismissRequest = onDismiss,

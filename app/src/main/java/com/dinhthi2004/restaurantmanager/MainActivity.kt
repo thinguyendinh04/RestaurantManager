@@ -14,7 +14,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RestaurantManagerTheme {
-                MyApp()
+//                MyApp()
+                NavigationBarWithScaffold()
             }
         }
     }
