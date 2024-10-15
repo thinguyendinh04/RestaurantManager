@@ -24,12 +24,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.dinhthi2004.restaurantmanager.R
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataProduct
+import com.dinhthi2004.restaurantmanager.model.dish.Dish
 
 @Composable
 fun ItemOrderProduct(
-    item: dataProduct,
+    item: Dish,
     quantity: Int, // Nhận số lượng hiện tại
     onIncreaseClick: () -> Unit, // Callback để tăng số lượng
     onDecreaseClick: () -> Unit // Callback để giảm số lượng
@@ -45,9 +46,9 @@ fun ItemOrderProduct(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Hiển thị ảnh sản phẩm (nếu có)
-            Image(
-                painter = painterResource(id = item.imageResId), // Thay thế với id ảnh thực tế
-                contentDescription = null,
+            AsyncImage(
+                model = item.image_url, // Sử dụng URL để tải ảnh
+                contentDescription = item.name,
                 modifier = Modifier
                     .size(80.dp)
                     .padding(8.dp)

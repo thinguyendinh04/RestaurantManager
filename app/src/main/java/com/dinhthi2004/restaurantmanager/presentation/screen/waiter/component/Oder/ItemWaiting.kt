@@ -8,56 +8,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.Order
+import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 
 @Composable
-fun OrderItemRow(order: Order, onClick: () -> Unit, onCancel: () -> Unit, onComplete: () -> Unit) {
-    val totalAmount = order.items.sumOf { it.price * it.quantity }
+fun OrderItemRow(table: Tabledata, onClick: () -> Unit, onComplete: () -> Unit) {
+//    val totalAmount = table.orders.sumOf { it.price * it.quantity }
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .fillMaxWidth(),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Mã đơn hàng: ${order.orderId}", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text("Thời gian: ${order.time}", style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text("Người nhận: ${order.recipient}", style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text("Địa chỉ: ${order.address}", style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-
-//            Spacer(modifier = Modifier.height(8.dp))
-
-//            Text("Danh sách món ăn:", style = MaterialTheme.typography.titleMedium)
-
-            // Hiển thị danh sách 3 món ăn đầu tiên
-//            Column(modifier = Modifier.fillMaxWidth()) {
-//                order.items.take(3).forEach { item ->  // Giới hạn chỉ hiển thị 3 items
-//                    Row(modifier = Modifier.fillMaxWidth()) {
-//                        Text(item.name, modifier = Modifier.weight(2f))
-//                        Text("SL: ${item.quantity}", modifier = Modifier.weight(0.5f))
-//                        Text("${item.price} VNĐ", modifier = Modifier.weight(1.5f))
-//                    }
-//                }
-//            }
-//            Spacer(modifier = Modifier.height((8.dp)))
-//
-//            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-//                Text("Tổng tiền:", style = MaterialTheme.typography.titleMedium)
-//                Text("$totalAmount VNĐ", style = MaterialTheme.typography.titleMedium, color = Color.Red
-//                )
-//            }
+            Text("Bàn: ${table.table_name}", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+//            Text("Tổng tiền: ${totalAmount}", style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Nút Hoàn thành và Hủy
+            // Nút Chi tiết và Hoàn thành
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 Button(
                     modifier = Modifier.width(120.dp),
-                    onClick = onCancel,
+                    onClick = onClick,  // Thay thế cho chức năng của nút Chi tiết
                     colors = ButtonDefaults.buttonColors(
-                        Color(0xFFFF0000)
+                        Color(0xFF007BFF) // Màu xanh cho nút Chi tiết
                     )
                 ) {
-                    Text("Hủy")
+                    Text("Chi tiết")
                 }
                 Button(
                     modifier = Modifier.width(120.dp),

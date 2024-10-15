@@ -37,81 +37,76 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Invoice
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Table.ItemOrderProduct
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.ListData
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.OrderItem
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataProduct
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataTables
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.Table
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.OrderItem
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dishSampleList
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.orderSampleList
 import java.text.DecimalFormat
 
 @Composable
 fun InUseTables(
-    tables: List<Table>,
-    onTableUpdate: (List<Table>) -> Unit,
-    onEmptyTableUpdate: (List<Table>) -> Unit,
+    tables: List<Tabledata>,
+    onTableUpdate: (List<Tabledata>) -> Unit,
+    onEmptyTableUpdate: (List<Tabledata>) -> Unit,
     invoices: SnapshotStateList<Invoice>
 ) {
-    var selectedTable by remember { mutableStateOf<Table?>(null) } // Bàn được chọn
-    var showDialog by remember { mutableStateOf(false) } // Kiểm soát việc hiển thị dialog
-    var showPaymentDialog by remember { mutableStateOf(false) } // Kiểm soát dialog thanh toán
+    var selectedTable by remember { mutableStateOf<Tabledata?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
+    var showPaymentDialog by remember { mutableStateOf(false) }
 
     LazyColumn(modifier = Modifier.padding(16.dp)) {
         items(tables) { table ->
             TableItemRow(
                 table = table,
                 onClickDetail = {
-                    selectedTable = table // Cập nhật bàn được chọn
-                    showDialog = true // Mở dialog chi tiết bàn
+                    selectedTable = table
+                    showDialog = true
                 },
                 onClickPay = {
-                    selectedTable = table // Cập nhật bàn được chọn
-                    showPaymentDialog = true // Mở dialog xác nhận thanh toán
+                    selectedTable = table
+                    showPaymentDialog = true
                 }
             )
         }
     }
 
-    // Hiển thị dialog chi tiết bàn nếu có bàn được chọn và showDialog == true
     if (showDialog && selectedTable != null) {
+        val ordersForTable = getOrdersForTable(selectedTable!!.id) // Fetch the orders using the table id
         TableDetailDialog(
-            table = selectedTable!!, // Bàn được chọn
-            orderItems = selectedTable!!.orders, // Danh sách order của bàn
-            onAddItem = { /* Hàm thêm món ở đây nếu cần */ },
-            onDismiss = {
-                showDialog = false // Đóng dialog khi nhấn "Đóng"
-            }
+            table = selectedTable!!,
+            orders = ordersForTable, // Pass fetched orders here
+            onAddItem = { /* Handle adding new items */ },
+            onDismiss = { showDialog = false }
         )
     }
 
-    // Hiển thị dialog xác nhận thanh toán nếu có bàn được chọn và showPaymentDialog == true
     if (showPaymentDialog && selectedTable != null) {
         ConfirmPaymentDialog(
-            tableId = selectedTable!!.tableName, // Truyền mã bàn hoặc hóa đơn
-            onConfirm = {
-                // Cập nhật trạng thái bàn thành "Empty" và xóa đơn hàng
-                selectedTable?.let { table ->
-                    val updatedTable = table.copy(status = "Empty", orders = emptyList()) // Xóa order của bàn
-                    val updatedTables = tables.filter { it.tableName != table.tableName } // Xóa bàn khỏi danh sách bàn đang sử dụng
-                    onTableUpdate(updatedTables) // Cập nhật lại danh sách bàn đang sử dụng
-
-                    // Thêm bàn vừa thanh toán vào danh sách bàn trống
-                    onEmptyTableUpdate(dataTables.filter { it.status == "Empty" } + updatedTable)
-                }
-
-                showPaymentDialog = false // Đóng dialog sau khi xác nhận
-            },
-            onCancel = {
-                showPaymentDialog = false // Đóng dialog khi hủy
-            }
+            tableId = selectedTable!!.table_name,
+            onConfirm = { /* Handle payment confirmation */ },
+            onCancel = { showPaymentDialog = false }
         )
     }
 }
+// Assuming you have an orderSampleList containing all orders
+fun getOrdersForTable(tableId: Int?): List<OrderItem> {
+    // Assuming OrderData has table_id and dish_id
+    return orderSampleList.filter { it.table_id == tableId }
+        .map { orderData ->
+            val dish = dishSampleList.find { it.id == orderData.dish_id }
+            OrderItem(
+                name = dish?.name ?: "Unknown Dish",
+                quantity = orderData.amount,
+                price = dish?.price?.toDoubleOrNull() ?: 0.0
+            )
+        }
+}
+
 @Composable
-fun TableItemRow(table: Table, onClickDetail: () -> Unit, onClickPay: () -> Unit) {
+fun TableItemRow(table: Tabledata, onClickDetail: () -> Unit, onClickPay: () -> Unit) {
     // Tính tổng tiền từ danh sách orderItems
-    val totalAmount = table.orders.sumOf { it.price * it.quantity }
+//    val totalAmount = table.orders.sumOf { it.price * it.quantity }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -126,7 +121,7 @@ fun TableItemRow(table: Table, onClickDetail: () -> Unit, onClickPay: () -> Unit
         ) {
             // Tên bàn
             Text(
-                text = "Bàn ${table.tableName}",
+                text = "Bàn ${table.table_name}",
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -137,17 +132,7 @@ fun TableItemRow(table: Table, onClickDetail: () -> Unit, onClickPay: () -> Unit
 
             // Vị trí bàn
             Text(
-                text = "Vị trí: ${table.location}",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Gray
-                )
-            )
-
-            // Số khách hiện tại
-            Text(
-                text = "Số lượng: ${table.currentGuests}",
+                text = ": ${table.customer_name}",
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
@@ -156,15 +141,15 @@ fun TableItemRow(table: Table, onClickDetail: () -> Unit, onClickPay: () -> Unit
             )
 
             // Tổng tiền
-            Text(
-                text = "Tổng tiền: ${totalAmount} đ",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
-                ),
-                modifier = Modifier.padding(top = 8.dp)
-            )
+//            Text(
+//                text = "Tổng tiền: ${totalAmount} đ",
+//                style = TextStyle(
+//                    fontSize = 16.sp,
+//                    fontWeight = FontWeight.SemiBold,
+//                    color = Color.Black
+//                ),
+//                modifier = Modifier.padding(top = 8.dp)
+//            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -208,24 +193,23 @@ fun TableItemRow(table: Table, onClickDetail: () -> Unit, onClickPay: () -> Unit
 
 @Composable
 fun TableDetailDialog(
-    table: Table,
-    orderItems: List<OrderItem>, // List of orders
-    onAddItem: (List<OrderItem>) -> Unit, // Hàm để thêm sản phẩm vào danh sách order
+    table: Tabledata,
+    orders: List<OrderItem>, // List of orders fetched for the table
+    onAddItem: (List<OrderItem>) -> Unit,
     onDismiss: () -> Unit
 ) {
     val maxItemsToShow = 5
-    val displayedOrderItems =
-        if (orderItems.size > maxItemsToShow) orderItems.take(maxItemsToShow) else orderItems
-    val totalPrice = orderItems.sumOf { it.price * it.quantity }
+    val displayedOrderItems = if (orders.size > maxItemsToShow) orders.take(maxItemsToShow) else orders
+    val totalPrice = orders.sumOf { it.price * it.quantity }
     val decimalFormat = DecimalFormat("#,###.00")
-    // Biến trạng thái để quản lý việc hiển thị AddItemsDialog
+
     var showAddItemsDialog by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Chi tiết bàn ${table.tableName}",
+                text = "Chi tiết bàn ${table.table_name}",
                 style = MaterialTheme.typography.headlineSmall.copy(
                     color = Color(0xFFFF6D00),
                     fontWeight = FontWeight.Bold
@@ -241,11 +225,11 @@ fun TableDetailDialog(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Bàn ${table.tableName}  ${table.location}",
+                    text = "Bàn ${table.table_name} - ${table.customer_name}",
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                Text(text = "Số lượng: ${table.currentGuests}")
+
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
@@ -259,42 +243,21 @@ fun TableDetailDialog(
                         .padding(vertical = 4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "Món",
-                        modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = "SL",
-                        modifier = Modifier.weight(0.5f),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = "Giá",
-                        modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    Text(text = "Món", modifier = Modifier.weight(1f))
+                    Text(text = "SL", modifier = Modifier.weight(0.5f))
+                    Text(text = "Giá", modifier = Modifier.weight(1f))
                 }
 
                 Divider(color = Color.Gray, thickness = 1.dp)
 
-                LazyColumn(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(vertical = 8.dp)
-                ) {
-                    items(orderItems) { orderItem ->
+                LazyColumn(modifier = Modifier.weight(1f).padding(vertical = 8.dp)) {
+                    items(orders) { orderItem ->
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(text = orderItem.name, modifier = Modifier.weight(1f))
-                            Text(
-                                text = orderItem.quantity.toString(),
-                                modifier = Modifier.weight(0.5f)
-                            )
+                            Text(text = orderItem.quantity.toString(), modifier = Modifier.weight(0.5f))
                             Text(text = "${orderItem.price} đ", modifier = Modifier.weight(1f))
                         }
 
@@ -320,9 +283,7 @@ fun TableDetailDialog(
         },
         confirmButton = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
@@ -336,9 +297,7 @@ fun TableDetailDialog(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Button(
-                    onClick = {
-                        showAddItemsDialog = true // Hiển thị AddItemsDialog khi nhấn "Thêm món"
-                    },
+                    onClick = { showAddItemsDialog = true },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFCDD2)),
                     modifier = Modifier.weight(1f)
                 ) {
@@ -348,18 +307,13 @@ fun TableDetailDialog(
 
             if (showAddItemsDialog) {
                 AddItemsDialog(
-                    products = ListData, // Truyền danh sách sản phẩm
+                    products = dishSampleList,
                     onDismiss = { showAddItemsDialog = false },
                     onAddItems = { selectedItems ->
                         val newOrderItems = selectedItems.map { (product, quantity) ->
-                            OrderItem(
-                                name = product.name,
-                                quantity = quantity,
-                                price = product.price.toDoubleOrNull() ?: 0.0
-
-                            )
+                            OrderItem(name = product.name, quantity = quantity, price = product.price.toDoubleOrNull() ?: 0.0)
                         }
-                        onAddItem(newOrderItems) // Cập nhật danh sách orderItems
+                        onAddItem(newOrderItems)
                         showAddItemsDialog = false
                     }
                 )
@@ -367,6 +321,7 @@ fun TableDetailDialog(
         }
     )
 }
+
 
 @Composable
 fun ConfirmPaymentDialog(

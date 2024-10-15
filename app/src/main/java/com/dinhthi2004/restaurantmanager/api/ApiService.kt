@@ -21,7 +21,6 @@ import com.dinhthi2004.restaurantmanager.model.user.User
 import com.dinhthi2004.restaurantmanager.model.user.UserRegistration
 import com.dinhthi2004.restaurantmanager.model.user.UserResponse
 import com.dinhthi2004.restaurantmanager.model.user.UserResponse1
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.Table
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -313,5 +312,5 @@ interface ApiService {
 
     /////////////////- TABLE -////////////////////////
     @GET("tables")
-    suspend fun getAllTables(@Header("Authorization") token: String): ApiResponse1<List<Table>>
+    suspend fun getAllTables(@Header("Authorization") token: String): ApiResponse1<List<Tabledata>>
 }

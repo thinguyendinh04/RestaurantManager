@@ -1,16 +1,10 @@
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -18,19 +12,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.Table
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.material3.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Invoice
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Table.ItemOrderProduct
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.ListData
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.OrderItem
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataProduct
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataTables
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.tableSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table.InUseTables
-import java.text.DecimalFormat
 
 @Composable
 fun TableWaiterScreen(navController: NavHostController) {
@@ -38,12 +23,18 @@ fun TableWaiterScreen(navController: NavHostController) {
     val tabs = listOf("Bàn đang sử dụng", "Bàn trống", "Bàn đặt")
 
     // Sử dụng remember để lưu danh sách bàn sử dụng và bàn trống
-    var useTables by remember { mutableStateOf(dataTables.filter { it.status == "Occupied" }) }
-    var emptyTables by remember { mutableStateOf(dataTables.filter { it.status == "Empty" }) }
-    val bookingTables = remember { dataTables.filter { it.status == "Booked" } }
+    var useTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Occupied" }) }
+    var emptyTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Empty" }) }
+    var bookingTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Booked" }) }
 
     // Khởi tạo danh sách hóa đơn
     val invoices = remember { mutableStateListOf<Invoice>() }
+
+    fun reloadTables() {
+        // Cập nhật lại danh sách bàn trống và bàn đặt ngay sau khi có sự thay đổi
+        emptyTables = tableSampleList.filter { it.status == "Empty" }
+        bookingTables = tableSampleList.filter { it.status == "Booked" }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         TabRow(
@@ -73,29 +64,81 @@ fun TableWaiterScreen(navController: NavHostController) {
             0 -> InUseTables(
                 tables = useTables,
                 onTableUpdate = { updatedTables ->
-                    useTables = updatedTables // Cập nhật danh sách bàn đang sử dụng
+                    useTables = updatedTables
                 },
                 onEmptyTableUpdate = { updatedEmptyTables ->
-                    emptyTables = updatedEmptyTables // Cập nhật danh sách bàn trống sau khi thanh toán
+                    emptyTables = updatedEmptyTables
                 },
-                invoices = invoices // Truyền danh sách hóa đơn
+                invoices = invoices
             )
-            1 -> EmptyTables(tables = emptyTables)
+            1 -> EmptyTables(
+                tables = emptyTables,
+                navigateToBooking = { selectedTabIndex = 2 },
+                reloadTables = { reloadTables() }
+            )
             2 -> BookingTable(tables = bookingTables)
         }
     }
 }
 
 @Composable
-fun EmptyTables(tables: List<Table>) {
-    var selectedTable by remember { mutableStateOf<Table?>(null) }
+fun EmptyTables(
+    tables: List<Tabledata>,
+    navigateToBooking: () -> Unit,
+    reloadTables: () -> Unit
+) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(tables) { table ->
+            EmptyTableItemRow(
+                table = table,
+                onOrderClick = { /* Xử lý gọi món */ },
+                onBookClick = {
+                    showBookingDialog(table, reloadTables, navigateToBooking)
+                },
+                navigateToBooking = navigateToBooking,
+                reloadTables = reloadTables
+            )
+        }
+    }
+}
+
+@Composable
+fun showBookingDialog(
+    table: Tabledata,
+    reloadTables: () -> Unit,
+    navigateToBooking: () -> Unit
+) {
+    var showDialog by remember { mutableStateOf(true) }
+
+    if (showDialog) {
+        BookingDialog(
+            tableName = table.table_name,
+            location = table.customer_name,
+            onDismiss = { showDialog = false },
+            onConfirm = { bookerName, bookingTime ->
+                table.status = "Booked"
+                reloadTables()
+                navigateToBooking()
+                showDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+fun BookingTable(tables: List<Tabledata>) {
+    var selectedTable by remember { mutableStateOf<Tabledata?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(tables) { table ->
             BookingTableItemRow(
                 table = table,
-                onClick = {
+                onOrderClick = {
+                    selectedTable = table
+                    showDialog = true
+                },
+                onBookClick = {
                     selectedTable = table
                     showDialog = true
                 }
@@ -112,141 +155,137 @@ fun EmptyTables(tables: List<Table>) {
 }
 
 @Composable
-fun BookingTable(tables: List<Table>) {
-    var selectedTable by remember { mutableStateOf<Table?>(null) }
-    var showDialog by remember { mutableStateOf(false) }
+fun EmptyTableItemRow(
+    table: Tabledata,
+    onOrderClick: () -> Unit,
+    onBookClick: @Composable () -> Unit,
+    navigateToBooking: () -> Unit,
+    reloadTables: () -> Unit
+) {
+    var showBookingDialog by remember { mutableStateOf(false) }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(tables) { table ->
-            BookingTableItemRow(
-                table = table,
-                onClick = {
-                    selectedTable = table
-                    showDialog = true
-                }
-            )
-        }
-    }
-
-    if (showDialog && selectedTable != null) {
-        BookingTableDialog(
-            table = selectedTable!!,
-            onDismiss = { showDialog = false }
-        )
-    }
-}
-
-@Composable
-fun BookingTableItemRow(table: Table, onClick: () -> Unit) {
-    // Card bao quanh
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .clickable(onClick = onClick),
+            .padding(8.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Tên bàn
-            Text(
-                text = "Bàn ${table.tableName}",
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF333333) // Màu chữ tối hơn
-                ),
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            // Vị trí bàn
-            Text(
-                text = "Vị trí: ${table.location}",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color(0xFF666666) // Màu xám nhạt
-                ),
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-
-            // Sức chứa bàn
-            Text(
-                text = "Sức chứa: ${table.capacity}",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color(0xFF666666) // Màu xám nhạt
-                ),
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-
-            // Trạng thái bàn
-            Text(
-                text = "Trạng thái: ${table.status}",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF4CAF50) // Màu xanh lá cây đẹp mắt hơn
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Bàn ${table.table_name}",
+                    style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color(0xFF333333)),
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
-            )
+                Text(
+                    text = "Trạng thái: ${table.status}",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal, color = Color(0xFF666666)),
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
+
+            Column(horizontalAlignment = Alignment.End, modifier = Modifier.padding(start = 16.dp)) {
+                Button(
+                    onClick = { showBookingDialog = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5722), contentColor = Color.White),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                ) {
+                    Text(text = "Đặt bàn")
+                }
+
+                Button(
+                    onClick = onOrderClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)
+                ) {
+                    Text(text = "Gọi món")
+                }
+            }
         }
+    }
+
+    if (showBookingDialog) {
+        BookingDialog(
+            tableName = table.table_name,
+            location = table.customer_name,
+            onDismiss = { showBookingDialog = false },
+            onConfirm = { bookerName, bookingTime ->
+                table.status = "Booked"
+                reloadTables()
+                navigateToBooking()
+                showBookingDialog = false
+            }
+        )
     }
 }
 
 @Composable
-fun BookingTableDialog(table: Table, onDismiss: () -> Unit) {
+fun BookingDialog(
+    tableName: String,
+    location: String,
+    onDismiss: () -> Unit,
+    onConfirm: (bookerName: String, bookingTime: String) -> Unit
+) {
+    var bookerName by remember { mutableStateOf("") }
+    var bookingTime by remember { mutableStateOf("") }
+
+    var errorMessage by remember { mutableStateOf("") }
+
+    fun validate(): Boolean {
+        errorMessage = ""
+        if (bookerName.isBlank()) {
+            errorMessage = "Họ tên không được để trống!"
+            return false
+        }
+        return true
+    }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Chi tiết bàn ${table.tableName}",
-                style = TextStyle(
-                    color = Color(0xFF333333), // Màu chữ đậm hơn
-                    fontWeight = FontWeight.Bold
-                )
+                text = "Đặt bàn",
+                style = TextStyle(color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold, fontSize = 24.sp)
             )
         },
         text = {
             Column {
-                Text(
-                    text = "Vị trí: ${table.location}",
-                    style = TextStyle(color = Color(0xFF666666)) // Màu chữ nhạt hơn
+                Text(text = "Bàn $tableName $location")
+                OutlinedTextField(
+                    value = bookerName,
+                    onValueChange = { bookerName = it },
+                    label = { Text(text = "Nhập họ tên người đặt") },
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                 )
-                Text(
-                    text = "Sức chứa: ${table.capacity}",
-                    style = TextStyle(color = Color(0xFF666666)) // Màu chữ nhạt hơn
-                )
-                Text(
-                    text = "Tên người đặt: ${table.bookerName}",
-                    style = TextStyle(color = Color(0xFF666666)) // Màu chữ nhạt hơn
-                )
-                Text(
-                    text = "Số điện thoại: ${table.bookerPhone}",
-                    style = TextStyle(color = Color(0xFF666666)) // Màu chữ nhạt hơn
-                )
-                Text(
-                    text = "Thời gian đặt: ${table.bookingTime}",
-                    style = TextStyle(color = Color(0xFF666666)) // Màu chữ nhạt hơn
-                )
-                Text(
-                    text = "Tiền cọc: ${table.depositAmount} đ",
-                    style = TextStyle(
-                        color = Color(0xFF333333),
-                        fontWeight = FontWeight.SemiBold
-                    ) // Màu chữ tối hơn và đậm
+                OutlinedTextField(
+                    value = bookingTime,
+                    onValueChange = { bookingTime = it },
+                    label = { Text(text = "Thời gian đặt bàn") },
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                 )
             }
         },
         confirmButton = {
             Button(
+                onClick = {
+                    if (validate()) {
+                        onConfirm(bookerName, bookingTime)
+                        onDismiss()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5722), contentColor = Color.White)
+            ) {
+                Text(text = "Xác nhận")
+            }
+        },
+        dismissButton = {
+            Button(
                 onClick = onDismiss,
-                colors = ButtonDefaults.buttonColors(
-                    Color(0xFF4CAF50), // Màu xanh lá cây
-                    contentColor = Color.White // Màu chữ trắng cho nút
-                )
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0), contentColor = Color.Black)
             ) {
                 Text(text = "Đóng")
             }
@@ -254,4 +293,76 @@ fun BookingTableDialog(table: Table, onDismiss: () -> Unit) {
     )
 }
 
+@Composable
+fun BookingTableItemRow(table: Tabledata, onOrderClick: () -> Unit, onBookClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { },
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Bàn ${table.table_name}",
+                    style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color(0xFF333333)),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Trạng thái: ${table.status}",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = if (table.status == "Bàn trống") Color(0xFF4CAF50) else Color(0xFFFF5722))
+                )
+            }
 
+            Column(horizontalAlignment = Alignment.End, modifier = Modifier.padding(start = 16.dp)) {
+                Button(
+                    onClick = onBookClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5722), contentColor = Color.White),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                ) {
+                    Text(text = "Đặt bàn")
+                }
+
+                Button(
+                    onClick = onOrderClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)
+                ) {
+                    Text(text = "Gọi món")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BookingTableDialog(table: Tabledata, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Chi tiết bàn ${table.table_name}",
+                style = TextStyle(color = Color(0xFF333333), fontWeight = FontWeight.Bold)
+            )
+        },
+        text = {
+            Column {
+                Text(text = "Tên người đặt: ${table.customer_name}", style = TextStyle(color = Color(0xFF666666)))
+                Text(text = "Thời gian đặt: ${table.created_at}", style = TextStyle(color = Color(0xFF666666)))
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(Color(0xFF4CAF50), contentColor = Color.White)
+            ) {
+                Text(text = "Đóng")
+            }
+        }
+    )
+}
