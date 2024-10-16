@@ -7,3 +7,8 @@ data class OrderResponse(
     val data: OrderData,
     val message:Any
 )
+
+data class OrderResponse1<DataType>(
+    val data: DataType,
+    val message:Any
+)
