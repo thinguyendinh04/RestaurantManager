@@ -20,17 +20,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.dinhthi2004.restaurantmanager.model.OrderData
+import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Oder.OrderItemRow
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Order.FinishedOrder
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table.TableDetailDialog
-
-//import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dataTables
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dishSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.orderSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.tableSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.OrderItem
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table.getOrdersForTable
 
 @Composable
 fun OrderWaiterScreen(navController: NavHostController) {
@@ -80,7 +79,7 @@ fun OrderWaiterScreen(navController: NavHostController) {
 
 @Composable
 fun WaitingTablesTab(
-    tables: List<Tabledata>, // Use Tabledata
+    tables: List<Tabledata>, // Sử dụng Tabledata
     onCompleteTable: (Tabledata) -> Unit,
 ) {
     var selectedTable by remember { mutableStateOf<Tabledata?>(null) }
@@ -105,27 +104,34 @@ fun WaitingTablesTab(
 
     // Hiển thị dialog nếu showDialog là true
     if (showDialog && selectedTable != null) {
-        val ordersForTable = getOrdersForTable(selectedTable!!.id) // Fetch the orders using the table id
-        TableDetailDialog(
-            table = selectedTable!!,
-            orders = ordersForTable, // Pass fetched orders here
-            onAddItem = { /* Handle adding new items */ },
-            onDismiss = { showDialog = false }
-        )
+        val ordersForTable = getOrdersForTable(selectedTable?.id ?: -1) // Ensure valid tableId
+        if (ordersForTable.isNotEmpty()) {
+            TableDetailDialog(
+                table = selectedTable!!,
+                orders = ordersForTable, // Pass fetched orders here
+                onAddItem = { newItems ->
+                    // Xử lý logic khi thêm món mới
+                    ordersForTable.addAll(newItems) // Cộng món mới vào danh sách hiện tại
+                },
+                onDismiss = { showDialog = false }
+            )
+        }
     }
 }
-@Composable
-// Fetch the orders for a given table by its table ID
-fun getOrdersForTable(tableId: Int?): List<OrderItem> {
-    return orderSampleList.filter { it.table_id == tableId }.map { orderData ->
+
+// Cập nhật hàm lấy danh sách order của bàn
+fun getOrdersForTable(tableId: Int): MutableList<Pair<OrderData, Dish>> {
+    if (tableId == -1) return mutableListOf() // Trả về danh sách rỗng nếu tableId không hợp lệ
+    return orderSampleList.filter { it.table_id == tableId }.mapNotNull { orderData ->
         val dish = dishSampleList.find { it.id == orderData.dish_id }
-        OrderItem(
-            name = dish?.name ?: "Unknown Dish",
-            quantity = orderData.amount,
-            price = dish?.price?.toDoubleOrNull() ?: 0.0
-        )
-    }
+        if (dish != null) {
+            orderData to dish
+        } else {
+            null
+        }
+    }.toMutableList()
 }
+
 @Composable
 fun CompletedTablesTab(completedTables: List<Tabledata>) {
     var selectedTable by remember { mutableStateOf<Tabledata?>(null) }
