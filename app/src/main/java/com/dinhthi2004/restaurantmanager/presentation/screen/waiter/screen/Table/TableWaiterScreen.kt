@@ -14,7 +14,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Invoice
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dishSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.tableSampleList
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table.AddItemsDialog
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table.InUseTables
 
 @Composable
@@ -26,15 +28,10 @@ fun TableWaiterScreen(navController: NavHostController) {
     var useTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Occupied" }) }
     var emptyTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Available" }) }
     var bookingTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Booked" }) }
-
     // Khởi tạo danh sách hóa đơn
     val invoices = remember { mutableStateListOf<Invoice>() }
 
-    fun reloadTables() {
-        // Cập nhật lại danh sách bàn trống và bàn đặt ngay sau khi có sự thay đổi
-        emptyTables = tableSampleList.filter { it.status == "Empty" }
-        bookingTables = tableSampleList.filter { it.status == "Booked" }
-    }
+
 
     Column(modifier = Modifier.fillMaxSize()) {
         TabRow(
@@ -74,9 +71,21 @@ fun TableWaiterScreen(navController: NavHostController) {
             1 -> EmptyTables(
                 tables = emptyTables,
                 navigateToBooking = { selectedTabIndex = 2 },
-                reloadTables = { reloadTables() }
+                reloadTables = {
+                    reloadTables(
+                        setUseTables = { useTables = it },
+                        setEmptyTables = { emptyTables = it },
+                        setBookingTables = { bookingTables = it }
+                    )
+                }
             )
-            2 -> BookingTable(tables = bookingTables)
+            2 -> BookingTable(tables = bookingTables, reloadTables = {
+                reloadTables(
+                    setUseTables = { useTables = it },
+                    setEmptyTables = { emptyTables = it },
+                    setBookingTables = { bookingTables = it }
+                )
+            })
         }
     }
 }
@@ -91,7 +100,7 @@ fun EmptyTables(
         items(tables) { table ->
             EmptyTableItemRow(
                 table = table,
-                onOrderClick = { /* Xử lý gọi món */ },
+                onOrderClick = { },
                 onBookClick = {
                     showBookingDialog(table, reloadTables, navigateToBooking)
                 },
@@ -113,9 +122,8 @@ fun showBookingDialog(
     if (showDialog) {
         BookingDialog(
             tableName = table.table_name,
-            location = table.customer_name,
             onDismiss = { showDialog = false },
-            onConfirm = { bookerName, bookingTime ->
+            onConfirm = { bookerName->
                 table.status = "Booked"
                 reloadTables()
                 navigateToBooking()
@@ -126,7 +134,10 @@ fun showBookingDialog(
 }
 
 @Composable
-fun BookingTable(tables: List<Tabledata>) {
+fun BookingTable(
+    tables: List<Tabledata>,
+    reloadTables: () -> Unit
+) {
     var selectedTable by remember { mutableStateOf<Tabledata?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
@@ -141,7 +152,8 @@ fun BookingTable(tables: List<Tabledata>) {
                 onBookClick = {
                     selectedTable = table
                     showDialog = true
-                }
+                },
+                reloadTables = reloadTables // Truyền hàm reloadTables để cập nhật danh sách bàn sau khi thêm món
             )
         }
     }
@@ -154,6 +166,17 @@ fun BookingTable(tables: List<Tabledata>) {
     }
 }
 
+fun reloadTables(
+    setUseTables: (List<Tabledata>) -> Unit,
+    setEmptyTables: (List<Tabledata>) -> Unit,
+    setBookingTables: (List<Tabledata>) -> Unit
+) {
+    setUseTables(tableSampleList.filter { it.status == "Occupied" })
+    setEmptyTables(tableSampleList.filter { it.status == "Available" })
+    setBookingTables(tableSampleList.filter { it.status == "Booked" })
+}
+
+
 @Composable
 fun EmptyTableItemRow(
     table: Tabledata,
@@ -163,6 +186,7 @@ fun EmptyTableItemRow(
     reloadTables: () -> Unit
 ) {
     var showBookingDialog by remember { mutableStateOf(false) }
+    var showAddItemsDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -199,10 +223,10 @@ fun EmptyTableItemRow(
                 }
 
                 Button(
-                    onClick = onOrderClick,
+                    onClick = { showAddItemsDialog = true }, // Mở dialog thêm món
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)
                 ) {
-                    Text(text = "Gọi món")
+                    Text(text = "Thêm món")
                 }
             }
         }
@@ -211,9 +235,8 @@ fun EmptyTableItemRow(
     if (showBookingDialog) {
         BookingDialog(
             tableName = table.table_name,
-            location = table.customer_name,
             onDismiss = { showBookingDialog = false },
-            onConfirm = { bookerName, bookingTime ->
+            onConfirm = { bookerName ->
                 table.status = "Booked"
                 reloadTables()
                 navigateToBooking()
@@ -221,17 +244,30 @@ fun EmptyTableItemRow(
             }
         )
     }
+
+    if (showAddItemsDialog) {
+        AddItemsDialog(
+            products = dishSampleList, // Chọn món từ danh sách sẵn có
+            onDismiss = { showAddItemsDialog = false },
+            onAddItems = { selectedItems ->
+                // Cập nhật trạng thái bàn thành "Occupied"
+                table.status = "Occupied"
+                reloadTables() // Cập nhật lại danh sách bàn
+                showAddItemsDialog = false
+            }
+        )
+    }
 }
+
+
 
 @Composable
 fun BookingDialog(
     tableName: String,
-    location: String,
     onDismiss: () -> Unit,
-    onConfirm: (bookerName: String, bookingTime: String) -> Unit
+    onConfirm: (bookerName: String) -> Unit
 ) {
     var bookerName by remember { mutableStateOf("") }
-    var bookingTime by remember { mutableStateOf("") }
 
     var errorMessage by remember { mutableStateOf("") }
 
@@ -254,17 +290,11 @@ fun BookingDialog(
         },
         text = {
             Column {
-                Text(text = "Bàn $tableName $location")
+                Text(text = "Bàn $tableName")
                 OutlinedTextField(
                     value = bookerName,
                     onValueChange = { bookerName = it },
                     label = { Text(text = "Nhập họ tên người đặt") },
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-                )
-                OutlinedTextField(
-                    value = bookingTime,
-                    onValueChange = { bookingTime = it },
-                    label = { Text(text = "Thời gian đặt bàn") },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                 )
             }
@@ -273,7 +303,7 @@ fun BookingDialog(
             Button(
                 onClick = {
                     if (validate()) {
-                        onConfirm(bookerName, bookingTime)
+                        onConfirm(bookerName)
                         onDismiss()
                     }
                 },
@@ -294,7 +324,14 @@ fun BookingDialog(
 }
 
 @Composable
-fun BookingTableItemRow(table: Tabledata, onOrderClick: () -> Unit, onBookClick: () -> Unit) {
+fun BookingTableItemRow(
+    table: Tabledata,
+    onOrderClick: () -> Unit,
+    onBookClick: () -> Unit,
+    reloadTables: () -> Unit // Thêm tham số reloadTables
+) {
+    var showAddItemsDialog by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -316,7 +353,7 @@ fun BookingTableItemRow(table: Tabledata, onOrderClick: () -> Unit, onBookClick:
                 )
                 Text(
                     text = "Trạng thái: ${table.status}",
-                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = if (table.status == "Bàn trống") Color(0xFF4CAF50) else Color(0xFFFF5722))
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = if (table.status == "Available") Color(0xFF4CAF50) else Color(0xFFFF5722))
                 )
             }
 
@@ -330,15 +367,29 @@ fun BookingTableItemRow(table: Tabledata, onOrderClick: () -> Unit, onBookClick:
                 }
 
                 Button(
-                    onClick = onOrderClick,
+                    onClick = { showAddItemsDialog = true }, // Mở dialog thêm món
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50), contentColor = Color.White)
                 ) {
-                    Text(text = "Gọi món")
+                    Text(text = "Thêm món")
                 }
             }
         }
     }
+
+    if (showAddItemsDialog) {
+        AddItemsDialog(
+            products = dishSampleList, // Chọn món từ danh sách sẵn có
+            onDismiss = { showAddItemsDialog = false },
+            onAddItems = { selectedItems ->
+                // Cập nhật trạng thái bàn thành "Occupied"
+                table.status = "Occupied"
+                reloadTables() // Cập nhật lại danh sách bàn
+                showAddItemsDialog = false
+            }
+        )
+    }
 }
+
 
 @Composable
 fun BookingTableDialog(table: Tabledata, onDismiss: () -> Unit) {
@@ -353,7 +404,6 @@ fun BookingTableDialog(table: Tabledata, onDismiss: () -> Unit) {
         text = {
             Column {
                 Text(text = "Tên người đặt: ${table.customer_name}", style = TextStyle(color = Color(0xFF666666)))
-                Text(text = "Thời gian đặt: ${table.created_at}", style = TextStyle(color = Color(0xFF666666)))
             }
         },
         confirmButton = {

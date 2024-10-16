@@ -2,12 +2,10 @@ package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Tabl
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,13 +35,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dinhthi2004.restaurantmanager.model.OrderData
+import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Invoice
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.OrderItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dishSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.orderSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.tableSampleList
-import java.text.DecimalFormat
 
 @Composable
 fun InUseTables(
@@ -73,27 +71,27 @@ fun InUseTables(
     }
 
     if (showDialog && selectedTable != null) {
-        val ordersForTable = getOrdersForTable(selectedTable!!.id) // Fetch the orders using the table id
+        val ordersForTable = getOrdersForTableWithDetails(selectedTable!!.id).toMutableList()
+
         TableDetailDialog(
             table = selectedTable!!,
-            orders = ordersForTable, // Pass fetched orders here
-            onAddItem = { /* Handle adding new items */ },
+            orders = ordersForTable, // Truyền danh sách orders đã fetch
+            onAddItem = { newOrders ->
+                // Chỉ lấy phần OrderData từ Pair và thêm vào danh sách orderSampleList
+                orderSampleList.addAll(newOrders.map { it.first })
+            },
             onDismiss = { showDialog = false }
         )
     }
-
 
     if (showPaymentDialog && selectedTable != null) {
         ConfirmPaymentDialog(
             tableId = selectedTable!!.table_name, // Truyền mã bàn hoặc hóa đơn
             onConfirm = {
-                // Cập nhật trạng thái bàn thành "Available"
                 selectedTable?.let { table ->
-                    val updatedTable = table.copy(status = "Available") // Không cần xử lý orders nữa
-                    val updatedTables = tables.filter { it.table_name != table.table_name } // Xóa bàn khỏi danh sách bàn đang sử dụng
-                    onTableUpdate(updatedTables) // Cập nhật lại danh sách bàn đang sử dụng
-
-                    // Thêm bàn vừa thanh toán vào danh sách bàn trống
+                    val updatedTable = table.copy(status = "Available")
+                    val updatedTables = tables.filter { it.table_name != table.table_name }
+                    onTableUpdate(updatedTables)
                     onEmptyTableUpdate(tableSampleList.filter { it.status == "Empty" } + updatedTable)
                 }
 
@@ -104,31 +102,25 @@ fun InUseTables(
             }
         )
     }
-
 }
-// Assuming you have an orderSampleList containing all orders
-fun getOrdersForTable(tableId: Int?): List<OrderItem> {
-    // Assuming OrderData has table_id and dish_id
+
+// Hàm lấy danh sách món ăn và order từ table_id trả về MutableList
+fun getOrdersForTableWithDetails(tableId: Int?): MutableList<Pair<OrderData, Dish>> {
     return orderSampleList.filter { it.table_id == tableId }
-        .map { orderData ->
+        .mapNotNull { orderData ->
             val dish = dishSampleList.find { it.id == orderData.dish_id }
-            OrderItem(
-                name = dish?.name ?: "Unknown Dish",
-                quantity = orderData.amount,
-                price = dish?.price?.toDoubleOrNull() ?: 0.0
-            )
+            if (dish != null) orderData to dish else null
         }
+        .toMutableList() // Chuyển thành MutableList
 }
 
 @Composable
 fun TableItemRow(table: Tabledata, onClickDetail: () -> Unit, onClickPay: () -> Unit) {
-    // Tính tổng tiền từ danh sách orderItems
-//    val totalAmount = table.orders.sumOf { it.price * it.quantity }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        shape = RoundedCornerShape(16.dp), // Góc bo cho Card
+        shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -136,7 +128,7 @@ fun TableItemRow(table: Tabledata, onClickDetail: () -> Unit, onClickPay: () -> 
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Tên bàn
+            // Hiển thị tên bàn và chi tiết khách hàng
             Text(
                 text = "Bàn ${table.table_name}",
                 style = TextStyle(
@@ -146,10 +138,8 @@ fun TableItemRow(table: Tabledata, onClickDetail: () -> Unit, onClickPay: () -> 
                 ),
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-
-            // Vị trí bàn
             Text(
-                text = ": ${table.customer_name}",
+                text = "Khách: ${table.customer_name}",
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
@@ -157,31 +147,20 @@ fun TableItemRow(table: Tabledata, onClickDetail: () -> Unit, onClickPay: () -> 
                 )
             )
 
-            // Tổng tiền
-//            Text(
-//                text = "Tổng tiền: ${totalAmount} đ",
-//                style = TextStyle(
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.SemiBold,
-//                    color = Color.Black
-//                ),
-//                modifier = Modifier.padding(top = 8.dp)
-//            )
-
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Nút Chi tiết và Thanh toán
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Nút Chi tiết
                 OutlinedButton(
                     onClick = onClickDetail,
                     border = BorderStroke(1.dp, Color.Red),
-                    shape = RoundedCornerShape(50), // Bo góc cho nút
+                    shape = RoundedCornerShape(50),
                     modifier = Modifier
                         .padding(end = 8.dp)
-                        .height(36.dp) // Đảm bảo chiều cao
+                        .height(36.dp)
                 ) {
                     Text(
                         text = "Chi tiết",
@@ -193,12 +172,11 @@ fun TableItemRow(table: Tabledata, onClickDetail: () -> Unit, onClickPay: () -> 
                     )
                 }
 
-                // Nút Thanh toán
                 Button(
                     onClick = onClickPay,
                     colors = ButtonDefaults.buttonColors(Color(0xFFE0FFE0)),
-                    modifier = Modifier.height(36.dp), // Đảm bảo chiều cao
-                    shape = RoundedCornerShape(50) // Bo góc cho nút
+                    modifier = Modifier.height(36.dp),
+                    shape = RoundedCornerShape(50)
                 ) {
                     Text(text = "Thanh toán", color = Color.Black)
                 }
@@ -207,18 +185,14 @@ fun TableItemRow(table: Tabledata, onClickDetail: () -> Unit, onClickPay: () -> 
     }
 }
 
-
 @Composable
 fun TableDetailDialog(
     table: Tabledata,
-    orders: List<OrderItem>, // List of orders fetched for the table
-    onAddItem: (List<OrderItem>) -> Unit,
+    orders: MutableList<Pair<OrderData, Dish>>, // Danh sách hiện tại cần MutableList để có thể cập nhật
+    onAddItem: (List<Pair<OrderData, Dish>>) -> Unit, // Callback để thêm món vào danh sách hiện tại
     onDismiss: () -> Unit
 ) {
-    val maxItemsToShow = 5
-    val displayedOrderItems = if (orders.size > maxItemsToShow) orders.take(maxItemsToShow) else orders
-    val totalPrice = orders.sumOf { it.price * it.quantity }
-    val decimalFormat = DecimalFormat("#,###.00")
+    val totalPrice = orders.sumOf { it.second.price.toDouble() * it.first.amount } // Tính tổng tiền
 
     var showAddItemsDialog by remember { mutableStateOf(false) }
 
@@ -254,28 +228,16 @@ fun TableDetailDialog(
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                 )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "Món", modifier = Modifier.weight(1f))
-                    Text(text = "SL", modifier = Modifier.weight(0.5f))
-                    Text(text = "Giá", modifier = Modifier.weight(1f))
-                }
-
-                Divider(color = Color.Gray, thickness = 1.dp)
-
+                // Hiển thị danh sách các món ăn đã order
                 LazyColumn(modifier = Modifier.weight(1f).padding(vertical = 8.dp)) {
-                    items(orders) { orderItem ->
+                    items(orders) { (orderData, dish) ->
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = orderItem.name, modifier = Modifier.weight(1f))
-                            Text(text = orderItem.quantity.toString(), modifier = Modifier.weight(0.5f))
-                            Text(text = "${orderItem.price} đ", modifier = Modifier.weight(1f))
+                            Text(text = dish.name, modifier = Modifier.weight(1f))
+                            Text(text = orderData.amount.toString(), modifier = Modifier.weight(0.5f))
+                            Text(text = "${dish.price} đ", modifier = Modifier.weight(1f))
                         }
 
                         Divider(color = Color.LightGray, thickness = 0.5.dp)
@@ -292,7 +254,7 @@ fun TableDetailDialog(
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                     )
                     Text(
-                        text = "${decimalFormat.format(totalPrice)} đ",
+                        text = "$totalPrice đ",
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                     )
                 }
@@ -313,6 +275,7 @@ fun TableDetailDialog(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
+                // Nút Thêm món
                 Button(
                     onClick = { showAddItemsDialog = true },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFCDD2)),
@@ -322,15 +285,33 @@ fun TableDetailDialog(
                 }
             }
 
+            // Hiển thị hộp thoại thêm món khi bấm "Thêm món"
             if (showAddItemsDialog) {
                 AddItemsDialog(
                     products = dishSampleList,
                     onDismiss = { showAddItemsDialog = false },
                     onAddItems = { selectedItems ->
-                        val newOrderItems = selectedItems.map { (product, quantity) ->
-                            OrderItem(name = product.name, quantity = quantity, price = product.price.toDoubleOrNull() ?: 0.0)
+                        selectedItems.forEach { (dish, quantity) ->
+                            // Kiểm tra xem món đã tồn tại trong danh sách hay chưa
+                            val existingOrder = orders.find { it.second.id == dish.id }
+                            if (existingOrder != null) {
+                                // Nếu đã tồn tại, cộng dồn số lượng
+                                existingOrder.first.amount  += quantity
+                            } else {
+                                // Nếu chưa có, thêm món mới vào danh sách
+                                val newOrder = OrderData(
+                                    id = generateNewOrderId(), // Tạo id mới
+                                    table_id = table.id,
+                                    dish_id = dish.id,
+                                    amount = quantity,
+                                    created_at = getCurrentTime(),
+                                    updated_at = getCurrentTime()
+                                )
+                                orders.add(newOrder to dish)
+                            }
                         }
-                        onAddItem(newOrderItems)
+                        // Cập nhật danh sách mới
+                        onAddItem(orders)
                         showAddItemsDialog = false
                     }
                 )
@@ -338,21 +319,29 @@ fun TableDetailDialog(
         }
     )
 }
+// Hàm tạo id mới cho order
+fun generateNewOrderId(): Int {
+    return (orderSampleList.maxOfOrNull { it.id } ?: 0) + 1
+}
 
+// Hàm trả về thời gian hiện tại
+fun getCurrentTime(): String {
+    return "2024-10-10T12:30:00" // Bạn có thể thay thế bằng thời gian thực
+}
 
 @Composable
 fun ConfirmPaymentDialog(
-    tableId: String, // Mã đơn hàng cần hiển thị
-    onConfirm: () -> Unit, // Hành động khi xác nhận
-    onCancel: () -> Unit // Hành động khi hủy
+    tableId: String,
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit
 ) {
     AlertDialog(
-        onDismissRequest = onCancel, // Khi nhấn ngoài hộp thoại hoặc nhấn nút "Hủy"
+        onDismissRequest = onCancel,
         title = {
             Text(
                 text = "THÔNG BÁO",
                 style = TextStyle(
-                    color = Color(0xFFFF6D00), // Màu chữ cam đậm giống hình ảnh
+                    color = Color(0xFFFF6D00),
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 ),
@@ -361,98 +350,30 @@ fun ConfirmPaymentDialog(
         },
         text = {
             Text(
-                text = "Xác nhận thanh toán hóa  đơn bàn:  $tableId",
+                text = "Xác nhận thanh toán hóa đơn bàn:  $tableId",
                 style = TextStyle(
                     fontSize = 16.sp,
-                    color = Color(0xFF333333) // Màu chữ xám đậm
+                    color = Color(0xFF333333)
                 )
             )
         },
         confirmButton = {
             Button(
-                onClick = onConfirm, // Xác nhận thanh toán
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00C853)), // Màu xanh giống hình
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00C853)),
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                Text(text = "Xác nhận", color = Color.White) // Nút "Xác nhận" màu xanh lá cây
+                Text(text = "Xác nhận", color = Color.White)
             }
         },
         dismissButton = {
             Button(
-                onClick = onCancel, // Đóng thông báo
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF0F0F0)), // Nút màu xám
+                onClick = onCancel,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF0F0F0)),
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                Text(text = "Hủy", color = Color.Gray) // Nút "Hủy" màu xám
+                Text(text = "Hủy", color = Color.Gray)
             }
         }
     )
-}
-@Composable
-fun InvoiceList(invoices: List<Invoice>) {
-    if (invoices.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = "Không có hóa đơn nào.")
-        }
-    } else {
-        LazyColumn(modifier = Modifier.padding(16.dp)) {
-            items(invoices) { invoice ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = "Hóa đơn #${invoice.invoiceId}",
-                            style = TextStyle(
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF333333)
-                            )
-                        )
-                        Text(
-                            text = "Bàn: ${invoice.tableName}",
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xFF666666)
-                            )
-                        )
-                        Text(
-                            text = "Tổng tiền: ${invoice.totalAmount} đ",
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF00C853)
-                            )
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Danh sách món:",
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFF6D00)
-                            )
-                        )
-                        invoice.orderList.forEach { orderItem ->
-                            Text(
-                                text = "${orderItem.name} x${orderItem.quantity} - ${orderItem.price} đ",
-                                style = TextStyle(
-                                    fontSize = 14.sp,
-                                    color = Color.Gray
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
