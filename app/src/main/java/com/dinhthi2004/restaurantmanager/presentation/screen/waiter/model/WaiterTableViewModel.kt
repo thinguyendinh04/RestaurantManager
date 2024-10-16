@@ -3,6 +3,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinhthi2004.restaurantmanager.api.HttpReq
+import com.dinhthi2004.restaurantmanager.model.OrderData
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import kotlinx.coroutines.launch
@@ -18,6 +19,10 @@ class WaiterTableViewModel: ViewModel(){
 
     private val _tables = MutableLiveData<List<Tabledata>>()
     val tables: LiveData<List<Tabledata>> = _tables
+
+    private var listOfTableOrders:List<OrderData>? = emptyList()
+    private val _tableOrders = MutableLiveData<List<OrderData>>()
+    val tableOrders: LiveData<List<OrderData>> = _tableOrders
 
     fun getTablebyID(id: String){
         viewModelScope.launch {
@@ -49,4 +54,26 @@ class WaiterTableViewModel: ViewModel(){
         }
     }
 
+    fun getOrdersByTableID(id: Int){
+        viewModelScope.launch {
+            try{
+                val response = api.getAllOrders(token)
+                if (response.code() == 200){
+                    listOfTableOrders = response.body()?.data?.filter { it.table_id == id }
+//                    _tableOrders.postValue()
+                }else{
+//                    _tableOrders.postValue(emptyList())
+                }
+            }catch (e: RuntimeException){
+                println(e)
+            }
+
+            if (listOfTableOrders!!.isNotEmpty()){
+                for (tableOrder in listOfTableOrders!!){
+                    println(tableOrder.dish_id)
+                }
+            }
+
+        }
+    }
 }
