@@ -14,7 +14,9 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,15 +28,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_report.RevenueReportViewModel
+import com.dinhthi2004.restaurantmanager.viewmodel.BillViewModel
 
 @Composable
 fun RevenueReports(
-    navController: NavController
+    navController: NavController,
+    billViewModel: BillViewModel = viewModel()
 ) {
+    val token = TokenManager.token
+    val order by billViewModel.bills.observeAsState(emptyList())
+    LaunchedEffect(Unit) {
+        billViewModel.getBills("Bearer $token")
+    }
+    val totalRevenue = order.sumOf { it.tong_tien.toDouble() }
     var title by remember { mutableStateOf("Thống kê doanh thu") }
-    var money by remember { mutableStateOf("49.000.000 VND") }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,7 +86,7 @@ fun RevenueReports(
                 )
             }
             BasicText(
-                text = money,
+                text = totalRevenue.toString() + "VNĐ",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = 32.sp,
                     color = Color.Blue

@@ -11,9 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.dinhthi2004.restaurantmanager.R
 import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import com.dinhthi2004.restaurantmanager.presentation.navigation.bottomnav.BottomBar
@@ -43,6 +45,7 @@ fun RestaurantManagerScreen(
         Column(
             modifier = Modifier
                 .padding(it)
+                .fillMaxSize()
                 .background(Color.White)
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
@@ -93,4 +96,10 @@ fun RestaurantManagerScreen(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun previewm(){
+    RestaurantManagerScreen(navController = rememberNavController())
 }

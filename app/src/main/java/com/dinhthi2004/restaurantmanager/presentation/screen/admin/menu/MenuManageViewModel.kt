@@ -15,7 +15,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import java.io.File
 
 class MenuManageViewModel : ViewModel() {
@@ -29,26 +28,12 @@ class MenuManageViewModel : ViewModel() {
     private val _successMessage = MutableStateFlow<String?>(null)
     val successMessage: StateFlow<String?> = _successMessage
 
-    // State to hold the meal list
     private val _dishList = MutableStateFlow<List<Dish>>(emptyList())
     val dishList: StateFlow<List<Dish>> = _dishList
 
-    // State to manage search query
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery: StateFlow<String> = _searchQuery
-
-    // State to manage delete meal
     private val _deleteMealState = MutableStateFlow<Result<String>?>(null)
     val deleteMealState: StateFlow<Result<String>?> = _deleteMealState
 
-    fun updateSearchQuery(query: String) {
-        _searchQuery.value = query
-    }
-
-    fun filteredItems(dishes: List<Dish>): List<Dish> {
-        val query = searchQuery.value.lowercase()
-        return dishes.filter { it.name.lowercase().contains(query) }
-    }
 
     fun getAllDishes() {
         viewModelScope.launch {
@@ -69,32 +54,28 @@ class MenuManageViewModel : ViewModel() {
         }
     }
 
-
     fun createDish(
         name: String,
         price: Float,
         status: String,
         idType: Int,
         information: String,
-        imageBytes: ByteArray? // Nhận byte[] từ UI
+        imageBytes: ByteArray?
     ) {
         viewModelScope.launch {
             try {
                 if (token != null) {
-                    // Tạo các RequestBody từ các tham số
                     val nameBody = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
                     val priceBody = RequestBody.create("text/plain".toMediaTypeOrNull(), price.toString())
                     val statusBody = RequestBody.create("text/plain".toMediaTypeOrNull(), status)
                     val idTypeBody = RequestBody.create("text/plain".toMediaTypeOrNull(), idType.toString())
                     val informationBody = RequestBody.create("text/plain".toMediaTypeOrNull(), information)
 
-                    // Xử lý imageBytes nếu có
                     val imagePart = imageBytes?.let {
                         val requestFile = it.toRequestBody("image/*".toMediaTypeOrNull())
                         MultipartBody.Part.createFormData("image_url", "image.jpg", requestFile)
                     }
 
-                    // Gọi API để tạo món ăn mới
                     val response = api.addNewDish(
                         token = "Bearer $token",
                         name = nameBody,
@@ -120,10 +101,6 @@ class MenuManageViewModel : ViewModel() {
         }
     }
 
-
-
-
-
     fun updateDish(
         id: String,
         name: String,
@@ -136,21 +113,18 @@ class MenuManageViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 if (token != null) {
-                    // Create RequestBody for each field
                     val nameBody = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
                     val priceBody = RequestBody.create("text/plain".toMediaTypeOrNull(), price.toString())
                     val statusBody = RequestBody.create("text/plain".toMediaTypeOrNull(), status)
                     val idTypeBody = RequestBody.create("text/plain".toMediaTypeOrNull(), idType.toString())
                     val informationBody = RequestBody.create("text/plain".toMediaTypeOrNull(), information)
 
-                    // Handle image if provided
                     val imagePart = imageUri?.let {
                         val file = File(it.path!!)
                         val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
                         MultipartBody.Part.createFormData("image_url", file.name, requestFile)
                     }
 
-                    // Make API call
                     val response = api.updateDish(
                         token = "Bearer $token",
                         dishId = id,
@@ -176,21 +150,14 @@ class MenuManageViewModel : ViewModel() {
         }
     }
 
-
-    // DELETE an existing dish
     fun deleteDish(id: String) {
         viewModelScope.launch {
             try {
                 if (token != null) {
                     val response = api.deleteDish("Bearer $token", id)
                     if (response.isSuccessful) {
-                        val dishResponse = response.body()
-                        if (dishResponse != null) {
-                            _successMessage.value = "Dish deleted successfully!"
-                            getAllDishes()
-                        } else {
-                            _errorMessage.value = "Failed to delete dish: Response body is null"
-                        }
+                        _successMessage.value = "Dish deleted successfully!"
+                        getAllDishes()
                     } else {
                         _errorMessage.value = "Failed to delete dish: ${response.message()}"
                     }
@@ -203,5 +170,3 @@ class MenuManageViewModel : ViewModel() {
         }
     }
 }
-
-

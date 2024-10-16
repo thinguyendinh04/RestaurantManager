@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,7 +22,6 @@ import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.DeleteConfirmationDialog
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.MealDetailDialog
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuManagementScreen(
@@ -29,15 +29,19 @@ fun MenuManagementScreen(
     viewModel: MenuManageViewModel = viewModel(),
 ) {
     val dishList by viewModel.dishList.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
-    val filteredItems = viewModel.filteredItems(dishList)
 
-    var selectedDish by remember { mutableStateOf<Dish?>(null) }
-    var dishToDelete by remember { mutableStateOf<Dish?>(null) }
-    val showDialog = remember { mutableStateOf(false) }
-    val showDeleteDialog = remember { mutableStateOf(false) }
+    var selectedDish by rememberSaveable { mutableStateOf<Dish?>(null) }
+    var dishToDelete by rememberSaveable { mutableStateOf<Dish?>(null) }
+    val showDialog = rememberSaveable { mutableStateOf(false) }
+    val showDeleteDialog = rememberSaveable { mutableStateOf(false) }
 
-    val context = LocalContext.current  // Get the context for Toast
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filteredDish = dishList.filter {
+        it.name.contains(searchQuery, ignoreCase = true)
+    }
+
+    val context = LocalContext.current
     val deleteMealState by viewModel.deleteMealState.collectAsState(null)
     LaunchedEffect(deleteMealState) {
         deleteMealState?.let {
@@ -48,10 +52,11 @@ fun MenuManagementScreen(
             }
             it.onFailure { error ->
                 Log.e("MenuManagement", "Error: ${error.localizedMessage}")
-                Toast.makeText(context, "Xóa món ăn thành công", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Xóa món ăn thất bại", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
     LaunchedEffect(Unit) {
         viewModel.getAllDishes()
     }
@@ -90,7 +95,7 @@ fun MenuManagementScreen(
         ) {
             OutlinedTextField(
                 value = searchQuery,
-                onValueChange = { viewModel.updateSearchQuery(it) },
+                onValueChange = { searchQuery = it },
                 label = { Text("Search") },
                 leadingIcon = {
                     Icon(
@@ -105,7 +110,7 @@ fun MenuManagementScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (filteredItems.isEmpty()) {
+            if (filteredDish.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -115,7 +120,7 @@ fun MenuManagementScreen(
                 }
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(filteredItems) { dish ->
+                    items(filteredDish) { dish ->
                         MenuItemCard(
                             dish = dish,
                             onClick = {
@@ -160,6 +165,3 @@ fun MenuManagementScreen(
         }
     }
 }
-
-
-

@@ -30,10 +30,11 @@ fun HomeEmployeeScreen(
 ) {
 
     val employees by viewModel.employees.observeAsState(emptyList())
-  val token=TokenManager.token
+    val token = TokenManager.token
     var searchQuery by remember { mutableStateOf("") }
     val filteredEmployees = employees.filter {
-        it.full_name.contains(searchQuery, ignoreCase = true) }
+        it.full_name.contains(searchQuery, ignoreCase = true)
+    }
     LaunchedEffect(Unit) {
         viewModel.getUserManager("Bearer $token")
     }
@@ -76,7 +77,7 @@ fun HomeEmployeeScreen(
                     .background(Color.White)
             ) {
                 items(filteredEmployees) { index ->
-                    EmployeeCard(employee= index) {}
+                    EmployeeCard(employee = index) {}
                 }
             }
         }

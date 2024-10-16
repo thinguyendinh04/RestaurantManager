@@ -1,35 +1,48 @@
 package com.dinhthi2004.restaurantmanager.ui.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.dinhthi2004.restaurantmanager.R
+import com.dinhthi2004.restaurantmanager.model.TokenManager
+import com.dinhthi2004.restaurantmanager.model.bill.BillData
 import com.dinhthi2004.restaurantmanager.presentation.navigation.bottomnav.BottomBar
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.components.OrderItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_report.RevenueReportViewModel
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_report.component.DatePickerField
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.revenue_report.component.RevenueRow
-
+import com.dinhthi2004.restaurantmanager.viewmodel.BillViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RevenueReportScreen(
     navController: NavController,
-    viewModel: RevenueReportViewModel = viewModel()
+    viewModel: RevenueReportViewModel = viewModel(),
+    billViewModel: BillViewModel = viewModel()
 ) {
+    val token = TokenManager.token
+    LaunchedEffect(Unit) {
+        billViewModel.getBills("Bearer $token")
+    }
+    val order by billViewModel.bills.observeAsState(emptyList())
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedOrder by remember { mutableStateOf<BillData?>(null) }
+
+    // Tính tổng tiền tất cả hóa đơn bằng vòng for
+    val totalRevenue = order.sumOf { it.tong_tien.toDouble() }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -52,76 +65,47 @@ fun RevenueReportScreen(
         bottomBar = {
             BottomBar(navController = navController)
         }
-    ) {
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(it)
                 .fillMaxSize()
-                .background(Color.White)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(paddingValues)
+                .background(Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            DatePickerField(
-                label = "Chọn ngày bắt đầu :",
-                date = viewModel.startDate,
-                onDateSelected = { selectedDate ->
-                    viewModel.onStartDateSelected(selectedDate)
-                }
+            OutlinedTextField(
+                value = totalRevenue.toString(),
+                onValueChange = {},
+                label = { Text(text = "Tổng tiền tất cả hóa đơn") },
+                enabled = false,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
             )
 
-            DatePickerField(
-                label = "Chọn ngày kết thúc :",
-                date = viewModel.endDate,
-                onDateSelected = { selectedDate ->
-                    viewModel.onEndDateSelected(selectedDate)
-                }
-            )
-
-            Button(onClick = {
-                viewModel.generateReport()
-            }) {
-                Text(text = "Thống kê")
-            }
-
-            viewModel.reportData?.let { data ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(top = 16.dp)
-                        .border(1.dp, Color.Black)
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text("STT", fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                    Text("Ngày", fontWeight = FontWeight.Bold, modifier = Modifier.weight(2f))
-                    Text(
-                        "Doanh thu (VND)",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(2f)
-                    )
-                }
-
-                data.revenues.forEachIndexed { index, revenue ->
-                    RevenueRow(index + 1, revenue.date, revenue.revenue)
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(top = 16.dp),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Text(
-                        text = "Tổng doanh thu: ${data.totalRevenue}",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    )
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(16.dp)
+            ) {
+                items(order) { currentOrder ->
+                    OrderItem(order = currentOrder) { selected ->
+                        selectedOrder = selected
+                        showDialog = true
+                    }
                 }
             }
         }
     }
+}
+
+
+@Preview
+@Composable
+fun PreviewRevenue() {
+    RevenueReportScreen(navController = rememberNavController())
 }

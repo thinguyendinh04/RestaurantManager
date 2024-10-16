@@ -101,7 +101,7 @@ val tableSampleList = listOf(
     Tabledata(
         id = 5,
         table_name = "Table 5",
-        status = "Available",
+        status = "Booked",
         customer_name = "",
         created_at = "2024-10-05T08:00:00",
         updated_at = "2024-10-10T12:00:00"
@@ -109,7 +109,7 @@ val tableSampleList = listOf(
 )
 
 // Dữ liệu mẫu cho OrderData
-val orderSampleList = listOf(
+val orderSampleList = mutableListOf<OrderData>(
     OrderData(
         id = 1,
         table_id = 1,

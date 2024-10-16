@@ -13,7 +13,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,12 +28,30 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dinhthi2004.restaurantmanager.R
+import com.dinhthi2004.restaurantmanager.model.TokenManager
+import com.dinhthi2004.restaurantmanager.presentation.screen.Manager.viewmodel.HomeEmployeeViewModel
 
 @Composable
-fun HomeHeader() {
+fun HomeHeader(
+    homeEmployeeViewModel: HomeEmployeeViewModel = viewModel()
+) {
+    val token = TokenManager.token
+    var userId = TokenManager.userId
+    var fullName by remember { mutableStateOf("") }
+
+    val employees = homeEmployeeViewModel.employee.observeAsState().value
+    employees?.let {
+        fullName = it.full_name
+    }
+    LaunchedEffect(userId) {
+        userId?.let {
+            homeEmployeeViewModel.getUserInfo("Bearer $token", it)
+        }
+    }
+
     var title by remember { mutableStateOf("Hello") }
-    var name by remember { mutableStateOf("Dinh Thi") }
 
     Box(
         modifier = Modifier
@@ -54,7 +74,7 @@ fun HomeHeader() {
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
                 Text(
-                    text = name,
+                    text = fullName,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
