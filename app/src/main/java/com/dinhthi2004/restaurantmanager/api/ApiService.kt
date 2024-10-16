@@ -7,6 +7,7 @@ import com.dinhthi2004.restaurantmanager.model.Ingredient
 import com.dinhthi2004.restaurantmanager.model.LoginRequest
 import com.dinhthi2004.restaurantmanager.model.Meal
 import com.dinhthi2004.restaurantmanager.model.Order
+import com.dinhthi2004.restaurantmanager.model.OrderData
 import com.dinhthi2004.restaurantmanager.model.bill.BillData
 import com.dinhthi2004.restaurantmanager.model.bill.BillResponse
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
@@ -197,13 +198,13 @@ interface ApiService {
     ): BillResponse1<BillData>
 
     @GET("orders")
-    suspend fun getAllOrders(@Header("authorization") jwtToken: String): Response<List<Order>>
+    suspend fun getAllOrders(@Header("authorization") jwtToken: String): Response<OrderResponse1<List<OrderData>>>
 
     @GET("orders/{id}")
     suspend fun get1Order(
         @Header("authorization") jwtToken: String,
         @Path("id") id: String
-    ): Response<Order>
+    ): Response<OrderResponse1<OrderData>>
 
     //Manager
     @GET("ingredients")
