@@ -1,3 +1,4 @@
+import android.os.Handler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -59,6 +60,7 @@ fun TableWaiterScreen(navController: NavHostController) {
             }
         }
     }
+
     val tables by waiterTableViewModel!!.tables.observeAsState(emptyList())
 
     var useTables by remember { mutableStateOf(tables) }
@@ -413,8 +415,10 @@ fun BookingTableItemRow(
                     }
                 }
                 table.status = "Occupied"
-                waiterTableViewModel?.updateTable(table.id!!.toString(), newTableData = table)
-                reloadTables() // Cập nhật lại danh sách bàn
+                waiterTableViewModel!!.updateTable(table.id!!.toString(), newTableData = table)
+                Handler().postDelayed({
+                    reloadTables()
+                },300) // Cập nhật lại danh sách bàn
                 showAddItemsDialog = false
             }
         )

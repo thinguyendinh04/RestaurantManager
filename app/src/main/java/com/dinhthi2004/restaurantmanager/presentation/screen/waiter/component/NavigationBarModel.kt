@@ -8,11 +8,10 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.BarIte
 class NavigationBarModel {
     val barItems = listOf(
         BarItem(
-            title = "Trang Chủ",
+            title = "Hoá đơn",
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home,
-            route = "OrderStore",
-            badgeCount = "14+"
+            route = "OrderStore"
         ),
         BarItem(
             title = "Bàn ăn",

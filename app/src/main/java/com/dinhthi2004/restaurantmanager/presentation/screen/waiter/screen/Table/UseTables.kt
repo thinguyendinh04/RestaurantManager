@@ -1,6 +1,7 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table
 
 import WaiterTableViewModel
+import android.os.Handler
 import android.util.MutableFloat
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -57,10 +58,6 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.Waiter
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.WaiterOrderViewModel
 import java.text.DecimalFormat
 
-var waiterTableViewModel: WaiterTableViewModel? = null
-var waiterHomeViewModel: WaiterHomeViewModel? = null
-var waiterOrderViewModel: WaiterOrderViewModel? = null
-
 @Composable
 fun InUseTables(
     tables: List<Tabledata>,
@@ -71,9 +68,7 @@ fun InUseTables(
     var showDialog by remember { mutableStateOf(false) }
     var showPaymentDialog by remember { mutableStateOf(false) }
 
-    waiterOrderViewModel = viewModel()
-    waiterTableViewModel = viewModel()
-    waiterHomeViewModel = viewModel()
+    val waiterTableViewModel: WaiterTableViewModel = viewModel()
 
     LazyColumn(modifier = Modifier.padding(16.dp)) {
         items(tables) { table ->
@@ -103,8 +98,8 @@ fun InUseTables(
             table = selectedTable!!, // Truyền mã bàn hoặc hóa đơn
             onConfirm = { table ->
                 table.status = "Available"
-                waiterTableViewModel!!.updateTable(table.id!!.toString(), table)
-                waiterTableViewModel!!.getTables()
+                waiterTableViewModel.updateTable(table.id!!.toString(), table)
+                waiterTableViewModel.getTables()
                 showPaymentDialog = false // Đóng dialog sau khi xác nhận
             },
             onCancel = {
@@ -112,16 +107,6 @@ fun InUseTables(
             }
         )
     }
-}
-
-// Hàm lấy danh sách món ăn và order từ table_id trả về MutableList
-fun getOrdersForTableWithDetails(tableId: Int?): MutableList<Pair<OrderData, Dish>> {
-    return orderSampleList.filter { it.table_id == tableId }
-        .mapNotNull { orderData ->
-            val dish = dishSampleList.find { it.id == orderData.dish_id }
-            if (dish != null) orderData to dish else null
-        }
-        .toMutableList() // Chuyển thành MutableList
 }
 
 @Composable
@@ -197,30 +182,36 @@ fun TableItemRow(table: Tabledata, onClickDetail: () -> Unit, onClickPay: () -> 
 
 @Composable
 fun TableDetailDialog(
-    table: Tabledata, // Danh sách hiện tại cần MutableList để có thể cập nhật
-    onDismiss: () -> Unit
+    table: Tabledata,
+    onDismiss: () -> Unit,
 ) {
     var totalPrice by remember { mutableFloatStateOf(0f) }
 
     var showAddItemsDialog by remember { mutableStateOf(false) }
 
-    val tableOrders by waiterTableViewModel?.tableOrders!!.observeAsState(emptyList())
-    val meals by waiterHomeViewModel?.meals!!.observeAsState(emptyList())
+    val waiterTableViewModel: WaiterTableViewModel = viewModel()
+    val waiterHomeViewModel: WaiterHomeViewModel = viewModel()
+    val waiterOrderViewModel: WaiterOrderViewModel = viewModel()
+
+    val tableOrders by waiterTableViewModel.tableOrders.observeAsState(emptyList())
+    val meals by waiterHomeViewModel.meals.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
-        waiterTableViewModel!!.getOrdersByTableID(table.id!!)
-        waiterHomeViewModel!!.getMeals()
-    }
-
-    LaunchedEffect(tableOrders) {
-        for (tableOrder in tableOrders!!){
-            totalPrice += (meals.find { it.id == tableOrder.dish_id }!!.price.toFloat() * tableOrder.amount)
-        }
+        waiterTableViewModel.getOrdersByTableID(table.id!!)
+        waiterHomeViewModel.getMeals()
     }
 
     if(tableOrders == null || meals.isNotEmpty()){
-        waiterTableViewModel!!.getOrdersByTableID(table.id!!)
-        waiterHomeViewModel!!.getMeals()
+        waiterTableViewModel.getOrdersByTableID(table.id!!)
+        waiterHomeViewModel.getMeals()
+    }
+
+    LaunchedEffect(tableOrders, meals) {
+        if(tableOrders != null && meals.isNotEmpty()){
+            for (tableOrder in tableOrders!!){
+                totalPrice += (meals.find { it.id == tableOrder.dish_id }!!.price.toFloat() * tableOrder.amount)
+            }
+        }
     }
 
     AlertDialog(
@@ -257,17 +248,19 @@ fun TableDetailDialog(
 
                 // Hiển thị danh sách các món ăn đã order
                 LazyColumn(modifier = Modifier.weight(1f).padding(vertical = 8.dp)) {
-                    items(tableOrders!!) { tableOrder ->
-                        val aMeal = meals.find { it.id == tableOrder.dish_id }
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = aMeal!!.name, modifier = Modifier.weight(1f))
-                            Text(text = tableOrder.amount.toString(), modifier = Modifier.weight(0.5f))
-                            Text(text = "${aMeal.price.toFloat() * tableOrder.amount} đ", modifier = Modifier.weight(1f))
+                    if(meals.isNotEmpty()){
+                        items(tableOrders!!) { tableOrder ->
+                            val aMeal = meals.find { it.id == tableOrder.dish_id }
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(text = aMeal!!.name, modifier = Modifier.weight(1f))
+                                Text(text = tableOrder.amount.toString(), modifier = Modifier.weight(0.5f))
+                                Text(text = "${aMeal.price.toFloat() * tableOrder.amount} đ", modifier = Modifier.weight(1f))
+                            }
+                            HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
                         }
-                        HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
                     }
                 }
 
@@ -315,31 +308,24 @@ fun TableDetailDialog(
             // Hiển thị hộp thoại thêm món khi bấm "Thêm món"
             if (showAddItemsDialog) {
                 AddItemsDialog(
-                    products = waiterHomeViewModel!!.meals.value!!,
+                    products = waiterHomeViewModel.meals.value!!,
                     onDismiss = { showAddItemsDialog = false },
                     onAddItems = { selectedItems ->
-                        for (meal in waiterHomeViewModel?.meals?.value!!){
+                        for (meal in waiterHomeViewModel.meals.value!!){
                             val amount = selectedItems[meal]
                             if(amount != 0){
-                                waiterOrderViewModel!!.addOrder(Order(table.id!!, meal.id!!, amount!!))
+                                waiterOrderViewModel.addOrder(Order(table.id!!, meal.id!!, amount!!))
                             }
                         }
+                        Handler().postDelayed({
+                            waiterTableViewModel.getOrdersByTableID(table.id!!)
+                        },300)
                         showAddItemsDialog = false
                     }
                 )
             }
         }
     )
-}
-
-// Hàm tạo id mới cho order
-fun generateNewOrderId(): Int {
-    return (orderSampleList.maxOfOrNull { it.id } ?: 0) + 1
-}
-
-// Hàm trả về thời gian hiện tại
-fun getCurrentTime(): String {
-    return "2024-10-10T12:30:00" // Bạn có thể thay thế bằng thời gian thực
 }
 
 @Composable

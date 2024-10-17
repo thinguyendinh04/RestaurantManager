@@ -12,7 +12,7 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.*
 fun NavHostComponent(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "OrderStore") {
         composable("OrderStore") {
-            OrderWaiterScreen(navController) // Điều hướng tới OderWaiterScreen
+            OrderWaiterScreen() // Điều hướng tới OderWaiterScreen
         }
         composable("table") {
             TableWaiterScreen(navController) // Điều hướng tới TableWaiterScreen
