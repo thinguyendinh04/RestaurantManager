@@ -1,5 +1,7 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen
 
+import WaiterTableViewModel
+import android.os.Handler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,10 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.model.OrderData
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.model.table.Tabledata
@@ -34,25 +33,35 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dishSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.orderSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.tableSampleList
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.OrderItem
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.WaiterOrderViewModel
 
 @Composable
-fun OrderWaiterScreen(navController: NavHostController) {
+fun OrderWaiterScreen() {
     var selectedTabIndex by remember { mutableStateOf(0) }
 
     // Danh sách các tab
     val tabs = listOf("Đang chờ", "Hoàn Thành")
 
-    // Dữ liệu bàn
-    var waitingTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Occupied" }) }
-    var completedTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Paid" }) }
-
+    val waiterTableViewModel: WaiterTableViewModel = viewModel()
     val waiterOrderViewModel: WaiterOrderViewModel = viewModel()
+
+    val tables by waiterTableViewModel.tables.observeAsState(emptyList())
+    val bills by waiterOrderViewModel.bills.observeAsState(emptyList())
+
+    var useTables by remember { mutableStateOf(tables) }
+    var emptyTables by remember { mutableStateOf(tables) }
+    var bookingTables by remember { mutableStateOf(tables) }
+
+    if (tables.isNotEmpty()){
+        useTables = tables.filter { it.status == "Occupied" }
+        emptyTables = tables.filter {it.status == "Available"}
+        bookingTables = tables.filter { it.status == "Booked" }
+    }
+
     LaunchedEffect(Unit) {
         waiterOrderViewModel.getBills()
+        waiterTableViewModel.getTables()
     }
-    val orders by waiterOrderViewModel.bills.observeAsState(emptyList())
 
     // Màn hình chính
     Column(modifier = Modifier.fillMaxSize()) {
@@ -78,13 +87,18 @@ fun OrderWaiterScreen(navController: NavHostController) {
 
         when (selectedTabIndex) {
             0 -> WaitingTablesTab(
-                tables = waitingTables,
-                onCompleteTable = { completedTable ->
-                    waitingTables = waitingTables.filter { it != completedTable }.toMutableList()
-                    completedTables = completedTables + completedTable
+                tables = useTables,
+                onCompleteTable = {
+//                    var updateTable = it
+                    it.status = "Available"
+//                    println(it)
+                    waiterTableViewModel.updateTable(it.id.toString(), it)
+                    Handler().postDelayed({
+                        waiterTableViewModel.getTables()
+                    },300)
                 }
             )
-            1 -> CompletedTablesTab(completedTables)
+            1 -> CompletedTablesTab(emptyTables)
         }
     }
 }
@@ -116,13 +130,11 @@ fun WaitingTablesTab(
 
     // Hiển thị dialog nếu showDialog là true
     if (showDialog && selectedTable != null) {
-        val ordersForTable = getOrdersForTable(selectedTable?.id ?: -1) // Ensure valid tableId
-        if (ordersForTable.isNotEmpty()) {
-            TableDetailDialog(
-                table = selectedTable!!,
-                onDismiss = { showDialog = false }
-            )
-        }
+        println(selectedTable)
+        TableDetailDialog(
+            table = selectedTable!!,
+            onDismiss = { showDialog = false }
+        )
     }
 }
 
