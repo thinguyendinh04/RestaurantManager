@@ -12,13 +12,18 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.model.OrderData
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
@@ -30,6 +35,7 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dis
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.orderSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.tableSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.OrderItem
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.WaiterOrderViewModel
 
 @Composable
 fun OrderWaiterScreen(navController: NavHostController) {
@@ -41,6 +47,12 @@ fun OrderWaiterScreen(navController: NavHostController) {
     // Dữ liệu bàn
     var waitingTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Occupied" }) }
     var completedTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Paid" }) }
+
+    val waiterOrderViewModel: WaiterOrderViewModel = viewModel()
+    LaunchedEffect(Unit) {
+        waiterOrderViewModel.getBills()
+    }
+    val orders by waiterOrderViewModel.bills.observeAsState(emptyList())
 
     // Màn hình chính
     Column(modifier = Modifier.fillMaxSize()) {
@@ -108,11 +120,6 @@ fun WaitingTablesTab(
         if (ordersForTable.isNotEmpty()) {
             TableDetailDialog(
                 table = selectedTable!!,
-                orders = ordersForTable, // Pass fetched orders here
-                onAddItem = { newItems ->
-                    // Xử lý logic khi thêm món mới
-                    ordersForTable.addAll(newItems) // Cộng món mới vào danh sách hiện tại
-                },
                 onDismiss = { showDialog = false }
             )
         }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dinhthi2004.restaurantmanager.api.HttpReq
 import com.dinhthi2004.restaurantmanager.model.OrderData
 import com.dinhthi2004.restaurantmanager.model.TokenManager
+import com.dinhthi2004.restaurantmanager.model.bill.BillData
 import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import kotlinx.coroutines.launch
 
@@ -20,9 +21,10 @@ class WaiterTableViewModel: ViewModel(){
     private val _tables = MutableLiveData<List<Tabledata>>()
     val tables: LiveData<List<Tabledata>> = _tables
 
-    private var listOfTableOrders:List<OrderData>? = emptyList()
-    private val _tableOrders = MutableLiveData<List<OrderData>>()
-    val tableOrders: LiveData<List<OrderData>> = _tableOrders
+    var listOfTableOrders: List<OrderData>? = emptyList()
+
+    private val _tableOrders = MutableLiveData<List<OrderData>?>()
+    val tableOrders: LiveData<List<OrderData>?> = _tableOrders
 
     fun getTablebyID(id: String){
         viewModelScope.launch {
@@ -54,26 +56,34 @@ class WaiterTableViewModel: ViewModel(){
         }
     }
 
+    fun updateTable(id: String, newTableData: Tabledata){
+        viewModelScope.launch {
+            try {
+                val response = api.updateTable(token, id, newTableData)
+                if (response.code() == 200){
+                    _aTable.postValue(response.body()?.data)
+                }else{
+                    _aTable.postValue(null)
+                }
+            }catch (e: RuntimeException){
+                println(e)
+            }
+        }
+    }
+
     fun getOrdersByTableID(id: Int){
         viewModelScope.launch {
             try{
                 val response = api.getAllOrders(token)
                 if (response.code() == 200){
                     listOfTableOrders = response.body()?.data?.filter { it.table_id == id }
-//                    _tableOrders.postValue()
+                    _tableOrders.postValue(listOfTableOrders)
                 }else{
-//                    _tableOrders.postValue(emptyList())
+                    _tableOrders.postValue(emptyList())
                 }
             }catch (e: RuntimeException){
                 println(e)
             }
-
-            if (listOfTableOrders!!.isNotEmpty()){
-                for (tableOrder in listOfTableOrders!!){
-                    println(tableOrder.dish_id)
-                }
-            }
-
         }
     }
 }

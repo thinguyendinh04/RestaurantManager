@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.dinhthi2004.restaurantmanager.api.HttpReq
 import com.dinhthi2004.restaurantmanager.model.Bill
 import com.dinhthi2004.restaurantmanager.model.Order
+import com.dinhthi2004.restaurantmanager.model.OrderData
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 import com.dinhthi2004.restaurantmanager.model.bill.BillData
 import com.dinhthi2004.restaurantmanager.model.table.Tabledata
@@ -38,10 +39,16 @@ class WaiterOrderViewModel: ViewModel() {
     private val _tables = MutableLiveData<List<Tabledata>>()
     val tables: LiveData<List<Tabledata>> = _tables
 
+    private val _orders = MutableLiveData<List<OrderData>>()
+    val orders: LiveData<List<OrderData>> = _orders
+
+    private val _anOrder = MutableLiveData<OrderData?>()
+    val anOrder: LiveData<OrderData?> = _anOrder
+
     fun getBills(){
         viewModelScope.launch {
             try {
-                val response = api.getAllBills(token)
+                val response = api.getAllBill(token)
                 if (response.code() == 200){
                     _bills.postValue(response.body()?.data)
                 }else{
@@ -72,6 +79,36 @@ class WaiterOrderViewModel: ViewModel() {
                     _aBill.postValue(response.body())
                 }else{
                     _aBill.postValue(null)
+                }
+            }catch (e: RuntimeException){
+                println(e)
+            }
+        }
+    }
+
+    fun getOrders(){
+        viewModelScope.launch {
+            try{
+                val response = api.getAllOrders(token)
+                if (response.code() == 200){
+                    _orders.postValue(response.body()?.data)
+                }else{
+                    _orders.postValue(emptyList())
+                }
+            }catch (e: RuntimeException){
+                println(e)
+            }
+        }
+    }
+
+    fun addOrder(newOrder: Order){
+        viewModelScope.launch {
+            try{
+                val response = api.addOrders(token, newOrder)
+                if (response.code() == 200){
+                    _anOrder.postValue(response.body()?.data)
+                }else{
+                    _anOrder.postValue(null)
                 }
             }catch (e: RuntimeException){
                 println(e)

@@ -19,6 +19,7 @@ import com.dinhthi2004.restaurantmanager.model.table.TableResponse
 import com.dinhthi2004.restaurantmanager.model.table.Tabledata
 import com.dinhthi2004.restaurantmanager.model.dish_type.Dish_type
 import com.dinhthi2004.restaurantmanager.model.dish_type.Dish_type_response
+import com.dinhthi2004.restaurantmanager.model.table.TableResponse1
 import com.dinhthi2004.restaurantmanager.model.user.User
 import com.dinhthi2004.restaurantmanager.model.user.UserRegistration
 import com.dinhthi2004.restaurantmanager.model.user.UserResponse
@@ -165,6 +166,9 @@ interface ApiService {
     @GET("orders")
     suspend fun getAllOrders(@Header("authorization") jwtToken: String): Response<OrderResponse1<List<OrderData>>>
 
+    @POST("orders")
+    suspend fun addOrders(@Header("authorization") jwtToken: String, @Body newOrder: Order): Response<OrderResponse1<OrderData>>
+
     //Manager
     @GET("ingredients")
     suspend fun getAllIngredient(@Header("authorization") jwtToken: String): Response<IngredientResponse>
@@ -183,7 +187,7 @@ interface ApiService {
     ): Response<Tabledata>
 
     @PUT("tables/{id}")
-    suspend fun updateTable(@Header("authorization") jwtToken: String, @Path("id") id: String, @Body tabledata: Tabledata): Response<Tabledata>
+    suspend fun updateTable(@Header("authorization") jwtToken: String, @Path("id") id: String, @Body tabledata: Tabledata): Response<TableResponse1<Tabledata>>
 
     @DELETE("tables/{id}")
     suspend fun deleteTable(
@@ -207,6 +211,12 @@ interface ApiService {
     suspend fun getAllBill(
         @Header("authorization") jwtToken: String
     ): Response<BillResponse>
+
+    @GET("bills/{id}")
+    suspend fun get1Bill(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: String
+    ): BillResponse1<BillData>
     //Waiter
 
     @PUT("bill/{id}")
