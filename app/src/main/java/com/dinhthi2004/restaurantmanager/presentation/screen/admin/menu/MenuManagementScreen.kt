@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,10 +20,7 @@ import com.dinhthi2004.restaurantmanager.model.dish.Dish
 import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.DeleteConfirmationDialog
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.MealDetailDialog
-
-import androidx.compose.material3.CircularProgressIndicator
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,10 +31,10 @@ fun MenuManagementScreen(
 ) {
     val dishList by viewModel.dishList.collectAsState()
 
-    var selectedDish by rememberSaveable { mutableStateOf<Dish?>(null) }
-    var dishToDelete by rememberSaveable { mutableStateOf<Dish?>(null) }
-    val showDialog = rememberSaveable { mutableStateOf(false) }
-    val showDeleteDialog = rememberSaveable { mutableStateOf(false) }
+    var selectedDish by remember { mutableStateOf<Dish?>(null) }
+    var dishToDelete by remember { mutableStateOf<Dish?>(null) }
+    val showDialog = remember { mutableStateOf(false) }
+    val showDeleteDialog = remember { mutableStateOf(false) }
 
     var searchQuery by remember { mutableStateOf("") }
 
@@ -148,7 +144,6 @@ fun MenuManagementScreen(
                                 onUpdateClick = {
                                     navController.navigate("update_food?dishId=${dish.id}")
                                 }
-
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                         }
@@ -167,7 +162,7 @@ fun MenuManagementScreen(
                 DeleteConfirmationDialog(
                     dish = dishToDelete!!,
                     onConfirm = {
-                        dishToDelete!!.id.let { viewModel.deleteDish(id = it.toString()) }
+                        dishToDelete!!.id?.let { viewModel.deleteDish(id = it.toString()) }
                         showDeleteDialog.value = false
                     },
                     onDismiss = {
@@ -178,4 +173,5 @@ fun MenuManagementScreen(
         }
     }
 }
+
 

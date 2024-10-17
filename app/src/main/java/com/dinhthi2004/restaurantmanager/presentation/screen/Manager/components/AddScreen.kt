@@ -130,7 +130,6 @@ fun AddIngredientDialog(
                             }
                         }
 
-                        // Gửi request tạo nguyên liệu mới cùng hình ảnh
                         ingreViewModel.createIngredient(
                             name = name,
                             amount = amount.toInt(),

@@ -44,7 +44,7 @@ fun AddNewFoodScreen(
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var status by remember { mutableStateOf("") }
-    var typeId by remember { mutableStateOf(2) }
+    val typeId by remember { mutableStateOf(2) }
     var info by remember { mutableStateOf("") }
 
     var errorMessage by remember { mutableStateOf("") }

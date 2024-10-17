@@ -47,7 +47,7 @@ fun Setting(navigationController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var role by remember { mutableStateOf("") }
-    var userId=TokenManager.userId
+    var userId = TokenManager.userId
     val employees = homeEmployeeViewModel.employee.observeAsState().value
     employees?.let {
         fullName = it.full_name
@@ -57,11 +57,13 @@ fun Setting(navigationController: NavHostController) {
     }
     LaunchedEffect(userId) {
         userId?.let {
-            homeEmployeeViewModel.getUserInfo( "Bearer $token",it)
+            homeEmployeeViewModel.getUserInfo("Bearer $token", it)
         }
     }
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -129,7 +131,7 @@ fun Setting(navigationController: NavHostController) {
                 )
                 Box(modifier = Modifier.align(Alignment.BottomEnd)) {
                     IconButton(
-                        onClick = {  },
+                        onClick = { },
                         colors = IconButtonDefaults.iconButtonColors(containerColor = Color.White),
                         modifier = Modifier
                             .padding(8.dp)
@@ -164,11 +166,14 @@ fun Setting(navigationController: NavHostController) {
                 }
 
                 // Gọi hàm cập nhật thông tin người dùng trong ViewModel
-                userId?.let { updatedUser?.let { it1 ->
-                    homeEmployeeViewModel.updateUser("Bearer $token", it,
-                        it1
-                    )
-                } }
+                userId?.let {
+                    updatedUser?.let { it1 ->
+                        homeEmployeeViewModel.updateUser(
+                            "Bearer $token", it,
+                            it1
+                        )
+                    }
+                }
                 Log.d("jjjj", "Setting:${homeEmployeeViewModel} ")
                 navigationController.navigate(Route.Welcome.screen) {
                     // Xóa các màn hình trước đó để không trở lại màn hình Setting

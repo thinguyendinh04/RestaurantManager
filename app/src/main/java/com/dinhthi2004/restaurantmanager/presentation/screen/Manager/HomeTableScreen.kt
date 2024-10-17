@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -55,7 +56,6 @@ fun HomeTableScreen(navigationController: NavHostController) {
         }
     }
 
-    // Khởi tạo tables với giá trị mặc định là một danh sách rỗng
     val tables by tableViewModel.tables.observeAsState(emptyList())
     var tableToDelete by remember { mutableStateOf<Tabledata?>(null) }
 
@@ -102,6 +102,7 @@ fun HomeTableScreen(navigationController: NavHostController) {
     Column(
         Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
