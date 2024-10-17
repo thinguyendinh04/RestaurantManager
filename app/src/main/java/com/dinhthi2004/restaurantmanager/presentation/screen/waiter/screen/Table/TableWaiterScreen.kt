@@ -4,6 +4,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -11,27 +12,69 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dinhthi2004.restaurantmanager.model.table.Tabledata
-import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.component.Invoice
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.dishSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.database.tableSampleList
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table.AddItemsDialog
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.screen.Table.InUseTables
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.dinhthi2004.restaurantmanager.model.Order
+import com.dinhthi2004.restaurantmanager.model.OrderData
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.WaiterHomeViewModel
+import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.model.WaiterOrderViewModel
+import kotlin.random.Random
+
+var waiterTableViewModel: WaiterTableViewModel? = null
+var waiterHomeViewModel: WaiterHomeViewModel? = null
+var waiterOrderViewModel: WaiterOrderViewModel? = null
 
 @Composable
 fun TableWaiterScreen(navController: NavHostController) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Bàn đang sử dụng", "Bàn trống", "Bàn đặt")
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+
+    waiterTableViewModel = viewModel()
+    waiterHomeViewModel = viewModel()
+    waiterOrderViewModel = viewModel()
+
+    LaunchedEffect(lifecycleState) {
+        when(lifecycleState){
+            Lifecycle.State.INITIALIZED -> {}
+            Lifecycle.State.DESTROYED -> {}
+            Lifecycle.State.CREATED -> {}
+            Lifecycle.State.STARTED -> {
+                waiterTableViewModel!!.getTables()
+                waiterHomeViewModel!!.getMeals()
+            }
+            Lifecycle.State.RESUMED -> {
+                waiterTableViewModel!!.getTables()
+            }
+        }
+    }
+    val tables by waiterTableViewModel!!.tables.observeAsState(emptyList())
+
+    var useTables by remember { mutableStateOf(tables) }
+    var emptyTables by remember { mutableStateOf(tables) }
+    var bookingTables by remember { mutableStateOf(tables) }
+
     // Sử dụng remember để lưu danh sách bàn sử dụng và bàn trống
-    var useTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Occupied" }) }
-    var emptyTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Available" }) }
-    var bookingTables by remember { mutableStateOf(tableSampleList.filter { it.status == "Booked" }) }
-    // Khởi tạo danh sách hóa đơn
-    val invoices = remember { mutableStateListOf<Invoice>() }
+    if (tables.isNotEmpty()){
+        useTables = tables.filter { it.status == "Occupied" }
+        emptyTables = tables.filter {it.status == "Available"}
+        bookingTables = tables.filter { it.status == "Booked" }
+    }
 
-
+    fun reloadTables() {
+        waiterTableViewModel!!.getTables()
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         TabRow(
@@ -65,26 +108,20 @@ fun TableWaiterScreen(navController: NavHostController) {
                 },
                 onEmptyTableUpdate = { updatedEmptyTables ->
                     emptyTables = updatedEmptyTables
-                },
-                invoices = invoices
+                }
             )
             1 -> EmptyTables(
                 tables = emptyTables,
-                navigateToBooking = { selectedTabIndex = 2 },
+                navigateToBooking = {
+//                    selectedTabIndex = 2
+                },
                 reloadTables = {
-                    reloadTables(
-                        setUseTables = { useTables = it },
-                        setEmptyTables = { emptyTables = it },
-                        setBookingTables = { bookingTables = it }
-                    )
+                    reloadTables()
                 }
             )
-            2 -> BookingTable(tables = bookingTables, reloadTables = {
-                reloadTables(
-                    setUseTables = { useTables = it },
-                    setEmptyTables = { emptyTables = it },
-                    setBookingTables = { bookingTables = it }
-                )
+            2 -> BookingTable(tables = bookingTables,
+                reloadTables = {
+                    reloadTables()
             })
         }
     }
@@ -100,10 +137,6 @@ fun EmptyTables(
         items(tables) { table ->
             EmptyTableItemRow(
                 table = table,
-                onOrderClick = { },
-                onBookClick = {
-                    showBookingDialog(table, reloadTables, navigateToBooking)
-                },
                 navigateToBooking = navigateToBooking,
                 reloadTables = reloadTables
             )
@@ -145,10 +178,6 @@ fun BookingTable(
         items(tables) { table ->
             BookingTableItemRow(
                 table = table,
-                onOrderClick = {
-                    selectedTable = table
-                    showDialog = true
-                },
                 onBookClick = {
                     selectedTable = table
                     showDialog = true
@@ -166,22 +195,9 @@ fun BookingTable(
     }
 }
 
-fun reloadTables(
-    setUseTables: (List<Tabledata>) -> Unit,
-    setEmptyTables: (List<Tabledata>) -> Unit,
-    setBookingTables: (List<Tabledata>) -> Unit
-) {
-    setUseTables(tableSampleList.filter { it.status == "Occupied" })
-    setEmptyTables(tableSampleList.filter { it.status == "Available" })
-    setBookingTables(tableSampleList.filter { it.status == "Booked" })
-}
-
-
 @Composable
 fun EmptyTableItemRow(
     table: Tabledata,
-    onOrderClick: () -> Unit,
-    onBookClick: @Composable () -> Unit,
     navigateToBooking: () -> Unit,
     reloadTables: () -> Unit
 ) {
@@ -237,7 +253,10 @@ fun EmptyTableItemRow(
             tableName = table.table_name,
             onDismiss = { showBookingDialog = false },
             onConfirm = { bookerName ->
+                table.customer_name = bookerName
                 table.status = "Booked"
+//                println(table)
+                waiterTableViewModel?.updateTable(table.id!!.toString(), newTableData = table)
                 reloadTables()
                 navigateToBooking()
                 showBookingDialog = false
@@ -247,19 +266,25 @@ fun EmptyTableItemRow(
 
     if (showAddItemsDialog) {
         AddItemsDialog(
-            products = dishSampleList, // Chọn món từ danh sách sẵn có
+            products = waiterHomeViewModel?.meals?.value!!, // Chọn món từ danh sách sẵn có
             onDismiss = { showAddItemsDialog = false },
             onAddItems = { selectedItems ->
-                // Cập nhật trạng thái bàn thành "Occupied"
+                for (meal in waiterHomeViewModel?.meals?.value!!){
+                    val amount = selectedItems[meal]
+                    if(amount != 0){
+//                        println(Order(table.id!!, meal.id!!, amount!!))
+                        waiterOrderViewModel!!.addOrder(Order(table.id!!, meal.id!!, amount!!))
+                    }
+                }
+                table.customer_name = "Không có"
                 table.status = "Occupied"
+                waiterTableViewModel?.updateTable(table.id!!.toString(), newTableData = table)
                 reloadTables() // Cập nhật lại danh sách bàn
                 showAddItemsDialog = false
             }
         )
     }
 }
-
-
 
 @Composable
 fun BookingDialog(
@@ -326,9 +351,8 @@ fun BookingDialog(
 @Composable
 fun BookingTableItemRow(
     table: Tabledata,
-    onOrderClick: () -> Unit,
     onBookClick: () -> Unit,
-    reloadTables: () -> Unit // Thêm tham số reloadTables
+    reloadTables: () -> Unit // Thêm tham số reloadTables){}
 ) {
     var showAddItemsDialog by remember { mutableStateOf(false) }
 
@@ -378,18 +402,24 @@ fun BookingTableItemRow(
 
     if (showAddItemsDialog) {
         AddItemsDialog(
-            products = dishSampleList, // Chọn món từ danh sách sẵn có
+            products = waiterHomeViewModel!!.meals.value!!, // Chọn món từ danh sách sẵn có
             onDismiss = { showAddItemsDialog = false },
             onAddItems = { selectedItems ->
-                // Cập nhật trạng thái bàn thành "Occupied"
+                for (meal in waiterHomeViewModel?.meals?.value!!){
+                    val amount = selectedItems[meal]
+                    if(amount != 0){
+//                        println(Order(table.id!!, meal.id!!, amount!!))
+                        waiterOrderViewModel!!.addOrder(Order(table.id!!, meal.id!!, amount!!))
+                    }
+                }
                 table.status = "Occupied"
+                waiterTableViewModel?.updateTable(table.id!!.toString(), newTableData = table)
                 reloadTables() // Cập nhật lại danh sách bàn
                 showAddItemsDialog = false
             }
         )
     }
 }
-
 
 @Composable
 fun BookingTableDialog(table: Tabledata, onDismiss: () -> Unit) {

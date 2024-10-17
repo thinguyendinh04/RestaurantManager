@@ -6,3 +6,8 @@ data class TableResponse (
     val `data`: List<Tabledata>,
     val message: Any
 )
+
+data class TableResponse1<DataType> (
+    val data: DataType,
+    val message: Any
+)
