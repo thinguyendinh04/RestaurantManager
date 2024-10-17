@@ -62,16 +62,10 @@ interface ApiService {
         @Path("id") id: String
     ): Response<Dish>
 
-    @Multipart
     @POST("dishes")
     suspend fun addNewDish(
         @Header("Authorization") token: String,
-        @Part("name") name: RequestBody,
-        @Part("price") price: RequestBody,
-        @Part("status") status: RequestBody,
-        @Part("id_type") idType: RequestBody,
-        @Part("information") information: RequestBody,
-        @Part image_url: MultipartBody.Part?
+        @Body dish: Dish
     ): Response<Dish>
     //
 
@@ -87,19 +81,11 @@ interface ApiService {
     ): Response<IngredientData>
 
 
-
-
-    @Multipart
     @POST("dishes/{id}")
     suspend fun updateDish(
         @Header("Authorization") token: String,
         @Path("id") dishId: String,
-        @Part("name") name: RequestBody,
-        @Part("price") price: RequestBody,
-        @Part("status") status: RequestBody,
-        @Part("id_type") idType: RequestBody,
-        @Part("information") information: RequestBody,
-        @Part image_url: MultipartBody.Part?
+        @Body dish: Dish
     ): Response<Dish>
 
     @DELETE("dishes/{id}")
@@ -167,7 +153,10 @@ interface ApiService {
     suspend fun getAllOrders(@Header("authorization") jwtToken: String): Response<OrderResponse1<List<OrderData>>>
 
     @POST("orders")
-    suspend fun addOrders(@Header("authorization") jwtToken: String, @Body newOrder: Order): Response<OrderResponse1<OrderData>>
+    suspend fun addOrders(
+        @Header("authorization") jwtToken: String,
+        @Body newOrder: Order
+    ): Response<OrderResponse1<OrderData>>
 
     //Manager
     @GET("ingredients")
@@ -179,7 +168,10 @@ interface ApiService {
     ): Response<TableResponse>
 
     @GET("tables/{id}")
-    suspend fun getTableByID(@Header("authorization") jwtToken: String, @Path("id") id:String): Response<Tabledata>
+    suspend fun getTableByID(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: String
+    ): Response<Tabledata>
 
     @POST("tables")
     suspend fun addTable(
@@ -187,7 +179,11 @@ interface ApiService {
     ): Response<Tabledata>
 
     @PUT("tables/{id}")
-    suspend fun updateTable(@Header("authorization") jwtToken: String, @Path("id") id: String, @Body tabledata: Tabledata): Response<TableResponse1<Tabledata>>
+    suspend fun updateTable(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: String,
+        @Body tabledata: Tabledata
+    ): Response<TableResponse1<Tabledata>>
 
     @DELETE("tables/{id}")
     suspend fun deleteTable(
@@ -220,7 +216,11 @@ interface ApiService {
     //Waiter
 
     @PUT("bill/{id}")
-    suspend fun updateBill(@Header("authorization") jwtToken: String, @Path("id") id: String, @Body newBillData: BillData): Response<BillData>
+    suspend fun updateBill(
+        @Header("authorization") jwtToken: String,
+        @Path("id") id: String,
+        @Body newBillData: BillData
+    ): Response<BillData>
 
     @GET("ingredient/get-list")
     suspend fun getIngredients(@Header("authorization") jwtToken: String): ApiResponse<List<Ingredient>>

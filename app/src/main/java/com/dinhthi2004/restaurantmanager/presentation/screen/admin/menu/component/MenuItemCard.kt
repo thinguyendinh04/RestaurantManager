@@ -64,19 +64,6 @@ fun MenuItemCard(
             Column(
 
             ) {
-                IconButton(
-                    onClick = {
-                        dish.id?.let { onUpdateClick(it) }
-                    },
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Delete Meal",
-                        tint = Color.Black
-                    )
-                }
-
                 Spacer(Modifier.height(10.dp))
                 IconButton(
                     onClick = {

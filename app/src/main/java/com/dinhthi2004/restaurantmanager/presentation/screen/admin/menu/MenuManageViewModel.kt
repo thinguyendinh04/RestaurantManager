@@ -1,22 +1,13 @@
 package com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu
 
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dinhthi2004.restaurantmanager.api.HttpReq
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import com.dinhthi2004.restaurantmanager.model.dish.Dish
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 
 class MenuManageViewModel : ViewModel() {
     private val api = HttpReq.getInstance()
@@ -83,39 +74,13 @@ class MenuManageViewModel : ViewModel() {
         }
     }
 
-    fun createDish(
-        name: String,
-        price: Float,
-        status: String,
-        idType: Int,
-        information: String,
-        imageBytes: ByteArray?
-    ) {
+    fun createDish(dish: Dish) {
         viewModelScope.launch {
             try {
                 if (token != null) {
-                    val nameBody = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
-                    val priceBody =
-                        RequestBody.create("text/plain".toMediaTypeOrNull(), price.toString())
-                    val statusBody = RequestBody.create("text/plain".toMediaTypeOrNull(), status)
-                    val idTypeBody =
-                        RequestBody.create("text/plain".toMediaTypeOrNull(), idType.toString())
-                    val informationBody =
-                        RequestBody.create("text/plain".toMediaTypeOrNull(), information)
-
-                    val imagePart = imageBytes?.let {
-                        val requestFile = it.toRequestBody("image/*".toMediaTypeOrNull())
-                        MultipartBody.Part.createFormData("image_url", "image.jpg", requestFile)
-                    }
-
                     val response = api.addNewDish(
                         token = "Bearer $token",
-                        name = nameBody,
-                        price = priceBody,
-                        status = statusBody,
-                        idType = idTypeBody,
-                        information = informationBody,
-                        image_url = imagePart
+                        dish = dish
                     )
 
                     if (response.isSuccessful) {
@@ -133,42 +98,15 @@ class MenuManageViewModel : ViewModel() {
         }
     }
 
-    fun updateDish(
-        id: Int,
-        name: String,
-        price: Float,
-        status: String,
-        idType: Int,
-        information: String,
-        imageUri: Uri?
-    ) {
+
+    fun updateDish(dish: Dish) {
         viewModelScope.launch {
             try {
                 if (token != null) {
-                    val nameBody = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
-                    val priceBody =
-                        RequestBody.create("text/plain".toMediaTypeOrNull(), price.toString())
-                    val statusBody = RequestBody.create("text/plain".toMediaTypeOrNull(), status)
-                    val idTypeBody =
-                        RequestBody.create("text/plain".toMediaTypeOrNull(), idType.toString())
-                    val informationBody =
-                        RequestBody.create("text/plain".toMediaTypeOrNull(), information)
-
-                    val imagePart = imageUri?.let {
-                        val file = File(it.path!!)
-                        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-                        MultipartBody.Part.createFormData("image_url", file.name, requestFile)
-                    }
-
                     val response = api.updateDish(
                         token = "Bearer $token",
-                        dishId = id.toString(),
-                        name = nameBody,
-                        price = priceBody,
-                        status = statusBody,
-                        idType = idTypeBody,
-                        information = informationBody,
-                        image_url = imagePart
+                        dishId = dish.id.toString(),
+                        dish = dish
                     )
 
                     if (response.isSuccessful) {
@@ -184,6 +122,7 @@ class MenuManageViewModel : ViewModel() {
             }
         }
     }
+
 
     fun deleteDish(id: String) {
         viewModelScope.launch {

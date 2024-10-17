@@ -27,28 +27,6 @@ import com.dinhthi2004.restaurantmanager.model.dish.Dish
 fun MealDetailDialog(
     dish: Dish, onDismiss: () -> Unit
 ) {
-    var showUpdateDialog by remember { mutableStateOf(false) }
-
-    // Thêm Log để kiểm tra trạng thái
-    if (showUpdateDialog) {
-        Log.d("MealDetailDialog", "Hiển thị UpdateFoodDialog")
-        UpdateFoodDialog(
-            dish = dish,
-            onDismiss = {
-                showUpdateDialog = false
-                Log.d("MealDetailDialog", "Dialog đóng lại, showUpdateDialog = $showUpdateDialog")
-            },
-            onUpdateFood = {
-                // Logic cập nhật món ăn
-                showUpdateDialog = false
-                Log.d(
-                    "MealDetailDialog",
-                    "Đã cập nhật món ăn, showUpdateDialog = $showUpdateDialog"
-                )
-            }
-        )
-    }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -85,20 +63,8 @@ fun MealDetailDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    showUpdateDialog = true
-                    Log.d(
-                        "MealDetailDialog",
-                        "Nút Update Dish được nhấn, showUpdateDialog = $showUpdateDialog"
-                    )
+                   onDismiss()
                 },
-                modifier = Modifier.padding(end = 8.dp)
-            ) {
-                Text("Update Dish")
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = onDismiss,
                 modifier = Modifier.padding(end = 8.dp)
             ) {
                 Text("Close")
