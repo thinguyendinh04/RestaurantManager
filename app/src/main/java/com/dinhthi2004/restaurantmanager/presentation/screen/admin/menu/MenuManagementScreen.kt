@@ -22,6 +22,11 @@ import com.dinhthi2004.restaurantmanager.presentation.navigation.Routes
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.DeleteConfirmationDialog
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.component.MealDetailDialog
 
+import androidx.compose.material3.CircularProgressIndicator
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuManagementScreen(
@@ -60,6 +65,9 @@ fun MenuManagementScreen(
     LaunchedEffect(Unit) {
         viewModel.getAllDishes()
     }
+
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
 
     Scaffold(
         topBar = {
@@ -110,35 +118,40 @@ fun MenuManagementScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (filteredDish.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .wrapContentSize(Alignment.Center)
-                ) {
-                    Text("No items found", style = MaterialTheme.typography.titleSmall)
+            SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = {
+                    viewModel.getAllDishes()
                 }
-            } else {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(filteredDish) { dish ->
-                        MenuItemCard(
-                            dish = dish,
-                            onClick = {
-                                selectedDish = dish
-                                showDialog.value = true
-                            },
-                            onDeleteClick = {
-                                dishToDelete = dish
-                                showDeleteDialog.value = true
-                            },
-                            onUpdateClick = {
-                                navController.navigate(
-                                    Routes.UPDATE_FOOD +
-                                            "?dishId=${dish.id}"
-                                )
-                            }
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+            ) {
+                if (filteredDish.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(Alignment.Center)
+                    ) {
+                        Text("No items found", style = MaterialTheme.typography.titleSmall)
+                    }
+                } else {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(filteredDish) { dish ->
+                            MenuItemCard(
+                                dish = dish,
+                                onClick = {
+                                    selectedDish = dish
+                                    showDialog.value = true
+                                },
+                                onDeleteClick = {
+                                    dishToDelete = dish
+                                    showDeleteDialog.value = true
+                                },
+                                onUpdateClick = {
+                                    navController.navigate("update_food?dishId=${dish.id}")
+                                }
+
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
                     }
                 }
             }
@@ -165,3 +178,4 @@ fun MenuManagementScreen(
         }
     }
 }
+

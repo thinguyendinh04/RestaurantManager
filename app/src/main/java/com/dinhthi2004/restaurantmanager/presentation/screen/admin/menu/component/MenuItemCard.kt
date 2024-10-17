@@ -21,7 +21,7 @@ fun MenuItemCard(
     dish: Dish,
     onClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onUpdateClick: () -> Unit
+    onUpdateClick: (Int) -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -45,7 +45,7 @@ fun MenuItemCard(
                 Image(
                     painter = painterResource(id = R.drawable.img2),
                     contentDescription = "Meal image",
-                    modifier = Modifier.size(64.dp)
+                    modifier = Modifier.size(100.dp)
                 )
 
                 Spacer(modifier = Modifier.width(10.dp))
@@ -66,7 +66,7 @@ fun MenuItemCard(
             ) {
                 IconButton(
                     onClick = {
-                        onUpdateClick()
+                        dish.id?.let { onUpdateClick(it) }
                     },
                     modifier = Modifier.size(24.dp)
                 ) {
@@ -77,6 +77,7 @@ fun MenuItemCard(
                     )
                 }
 
+                Spacer(Modifier.height(10.dp))
                 IconButton(
                     onClick = {
                         onDeleteClick()

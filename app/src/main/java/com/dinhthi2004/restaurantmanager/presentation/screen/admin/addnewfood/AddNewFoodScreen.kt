@@ -110,32 +110,11 @@ fun AddNewFoodScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_dish),
+                contentDescription = ""
+            )
 
-            // Button to pick an image
-            Button(
-                onClick = { imagePickerLauncher.launch("image/*") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Pick an Image")
-            }
-
-            // Display selected image
-            imageUri?.let { uri ->
-                Card(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(200.dp)
-                        .align(Alignment.CenterHorizontally),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(uri),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
             // Input for name
             OutlinedTextField(
                 value = name,

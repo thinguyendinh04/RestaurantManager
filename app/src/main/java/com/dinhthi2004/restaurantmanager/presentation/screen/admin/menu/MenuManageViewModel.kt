@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dinhthi2004.restaurantmanager.api.HttpReq
 import com.dinhthi2004.restaurantmanager.model.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,9 +35,35 @@ class MenuManageViewModel : ViewModel() {
     private val _deleteMealState = MutableStateFlow<Result<String>?>(null)
     val deleteMealState: StateFlow<Result<String>?> = _deleteMealState
 
+    private val _selectedDish = MutableStateFlow<Dish?>(null)
+    val selectedDish: StateFlow<Dish?> = _selectedDish
+
+    // Thêm biến trạng thái isRefreshing để quản lý việc làm mới
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
+    fun getDishByID(dishId: Int) {
+        viewModelScope.launch {
+            try {
+                if (token != null) {
+                    val response = api.getDishByID("Bearer $token", dishId.toString())
+                    if (response.isSuccessful) {
+                        _selectedDish.value = response.body() // Lưu chi tiết món ăn vào StateFlow
+                    } else {
+                        _errorMessage.value = "Failed to fetch dish: ${response.message()}"
+                    }
+                } else {
+                    _errorMessage.value = "Token is missing."
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Error: ${e.localizedMessage}"
+            }
+        }
+    }
 
     fun getAllDishes() {
         viewModelScope.launch {
+            _isRefreshing.value = true // Đặt trạng thái bắt đầu làm mới
             try {
                 if (token != null) {
                     val response = api.getAllDishes("Bearer $token")
@@ -50,6 +77,8 @@ class MenuManageViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 _errorMessage.value = "Error: ${e.localizedMessage}"
+            } finally {
+                _isRefreshing.value = false // Đặt trạng thái kết thúc làm mới
             }
         }
     }
@@ -66,10 +95,13 @@ class MenuManageViewModel : ViewModel() {
             try {
                 if (token != null) {
                     val nameBody = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
-                    val priceBody = RequestBody.create("text/plain".toMediaTypeOrNull(), price.toString())
+                    val priceBody =
+                        RequestBody.create("text/plain".toMediaTypeOrNull(), price.toString())
                     val statusBody = RequestBody.create("text/plain".toMediaTypeOrNull(), status)
-                    val idTypeBody = RequestBody.create("text/plain".toMediaTypeOrNull(), idType.toString())
-                    val informationBody = RequestBody.create("text/plain".toMediaTypeOrNull(), information)
+                    val idTypeBody =
+                        RequestBody.create("text/plain".toMediaTypeOrNull(), idType.toString())
+                    val informationBody =
+                        RequestBody.create("text/plain".toMediaTypeOrNull(), information)
 
                     val imagePart = imageBytes?.let {
                         val requestFile = it.toRequestBody("image/*".toMediaTypeOrNull())
@@ -102,7 +134,7 @@ class MenuManageViewModel : ViewModel() {
     }
 
     fun updateDish(
-        id: String,
+        id: Int,
         name: String,
         price: Float,
         status: String,
@@ -114,10 +146,13 @@ class MenuManageViewModel : ViewModel() {
             try {
                 if (token != null) {
                     val nameBody = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
-                    val priceBody = RequestBody.create("text/plain".toMediaTypeOrNull(), price.toString())
+                    val priceBody =
+                        RequestBody.create("text/plain".toMediaTypeOrNull(), price.toString())
                     val statusBody = RequestBody.create("text/plain".toMediaTypeOrNull(), status)
-                    val idTypeBody = RequestBody.create("text/plain".toMediaTypeOrNull(), idType.toString())
-                    val informationBody = RequestBody.create("text/plain".toMediaTypeOrNull(), information)
+                    val idTypeBody =
+                        RequestBody.create("text/plain".toMediaTypeOrNull(), idType.toString())
+                    val informationBody =
+                        RequestBody.create("text/plain".toMediaTypeOrNull(), information)
 
                     val imagePart = imageUri?.let {
                         val file = File(it.path!!)
@@ -127,7 +162,7 @@ class MenuManageViewModel : ViewModel() {
 
                     val response = api.updateDish(
                         token = "Bearer $token",
-                        dishId = id,
+                        dishId = id.toString(),
                         name = nameBody,
                         price = priceBody,
                         status = statusBody,
@@ -170,3 +205,4 @@ class MenuManageViewModel : ViewModel() {
         }
     }
 }
+

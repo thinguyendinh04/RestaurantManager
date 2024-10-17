@@ -12,7 +12,6 @@ import com.dinhthi2004.restaurantmanager.presentation.screen.admin.home.HomeAdmi
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.menu.MenuManagementScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.addnewfood.AddNewFoodScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.admin.restaurant_management.RestaurantManagerScreen
-import com.dinhthi2004.restaurantmanager.presentation.screen.admin.updatefood.UpdateFoodScreen
 import com.dinhthi2004.restaurantmanager.presentation.screen.waiter.NavigationBarWithScaffold
 import com.dinhthi2004.restaurantmanager.ui.screen.EmployeeScreen
 import com.dinhthi2004.restaurantmanager.ui.screen.RevenueReportScreen
@@ -37,7 +36,6 @@ fun MyApp() {
         composable(Routes.MENU_MANAGEMENT_ADMIN) { MenuManagementScreen(navController) }
         composable(Routes.ADD_NEW_FOOD) { AddNewFoodScreen(navController) }
         composable(Routes.ADD_NEW_EMPLOYEE) { AddNewEmployeeScreen(navController) }
-        composable(Routes.UPDATE_FOOD) { UpdateFoodScreen(navController) }
 
         //Manager
         composable(Route.BottomNavigation.screen) { BottomNavigation(navController) }

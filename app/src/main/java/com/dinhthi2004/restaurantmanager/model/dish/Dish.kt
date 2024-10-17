@@ -4,7 +4,7 @@ data class Dish(
     val id: Int?,
     val id_type: Int,
     val image_url: String?,
-    val information: String?,
+    val information: String,
     val name: String,
     val price: String,
     val status: String,

@@ -107,7 +107,7 @@ fun MenuItemCard(dish: Dish) {
             Image(
                 painter = painterResource(id = R.drawable.img2),
                 contentDescription = "Meal image",
-                modifier = Modifier.size(64.dp)
+                modifier = Modifier.size(100.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {

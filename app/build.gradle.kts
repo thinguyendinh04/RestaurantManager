@@ -85,4 +85,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     // Debug Test
     debugImplementation(libs.bundles.debugging)
+
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.24.13-rc")
+
 }
